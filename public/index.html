@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>墨枢光影导演台 · 演示版</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a1410 0%, #2d1f18 50%, #1a1410 100%);
+      min-height: 100vh;
+      color: #f5e6d3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      width: 100%;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .logo {
+      font-size: 48px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #c2410c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      letter-spacing: 4px;
+    }
+    .subtitle {
+      font-size: 16px;
+      color: #a8a29e;
+      letter-spacing: 2px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 20px;
+      font-size: 12px;
+      color: #f59e0b;
+      margin-bottom: 20px;
+    }
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .module-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .module-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(245, 158, 11, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    .module-card:hover::before {
+      opacity: 1;
+    }
+    .module-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(234, 88, 12, 0.1));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .module-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fef3c7;
+    }
+    .module-desc {
+      font-size: 13px;
+      color: #a8a29e;
+      line-height: 1.6;
+    }
+    .module-tag {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 2px 8px;
+      background: rgba(34, 197, 94, 0.15);
+      border-radius: 4px;
+      font-size: 11px;
+      color: #4ade80;
+    }
+    .info-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+    .info-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fef3c7;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-title::before {
+      content: '💡';
+    }
+    .info-text {
+      font-size: 13px;
+      color: #a8a29e;
+      line-height: 1.8;
+    }
+    .info-text code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #fbbf24;
+      font-size: 12px;
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      margin: 32px 0;
+    }
+    .pipeline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .pipeline-step {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      font-size: 12px;
+      color: #a8a29e;
+    }
+    .pipeline-arrow {
+      color: #f59e0b;
+      font-size: 14px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #78716c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">DEMO VERSION</div>
+      <div class="logo">墨枢光影</div>
+      <div class="subtitle">AI 影视制片全流程导演台</div>
+    </div>
+
+    <div class="pipeline">
+      <span class="pipeline-step">剧本分析</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">角色定妆</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">分镜生成</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">视频渲染</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">成片交付</span>
+    </div>
+
+    <div class="modules">
+      <a href="script-demo.html" class="module-card">
+        <div class="module-icon">📜</div>
+        <div class="module-title">剧本分析</div>
+        <div class="module-desc">六导演协同拆解剧本，多维度解析人物、场景、动作与风格</div>
+        <span class="module-tag">六导演联审</span>
+      </a>
+      
+      <a href="character-demo.html" class="module-card">
+        <div class="module-icon">🎭</div>
+        <div class="module-title">角色定妆</div>
+        <div class="module-desc">KAPPA导演专属定妆台，视觉DNA提取，铁律锁定机制</div>
+        <span class="module-tag">版本管理</span>
+      </a>
+      
+      <a href="storyboard-demo.html" class="module-card">
+        <div class="module-icon">🎬</div>
+        <div class="module-title">分镜生成</div>
+        <div class="module-desc">GAMMA节奏导演主控，ABC三级筛选，180度轴线规则</div>
+        <span class="module-tag">时间线视图</span>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="info-box">
+      <div class="info-title">这是演示版本</div>
+      <div class="info-text">
+        当前为纯前端演示版，可浏览完整UI交互。完整功能（真实API调用、数据持久化、多用户系统）需部署到Vercel/Netlify等平台。
+        <br><br>
+        启动命令：<code>node server.js</code>
+        <br>
+        访问地址：<code>http://localhost:3000</code>
+      </div>
+    </div>
+
+    <div class="footer">
+      © 2026 墨枢光影实验室 · Ink Studio Lab
+    </div>
+  </div>
+</body>
+</html>
