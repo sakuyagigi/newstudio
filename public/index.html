@@ -3,247 +3,2685 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>墨枢光影导演台 · 演示版</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+  <title>墨枢光影 · AI制片导演台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: {
+              primary: '#1a1613',
+              secondary: '#26201c',
+              tertiary: '#2e2620',
+              card: '#2a231e',
+            },
+            border: {
+              DEFAULT: '#3d332c',
+              light: '#4a3d34',
+            },
+            text: {
+              primary: '#f5f0eb',
+              secondary: '#b8a99c',
+              tertiary: '#8b7d6f',
+              muted: '#66594f',
+            },
+            accent: {
+              orange: {
+                50: '#fff7ed',
+                100: '#ffedd5',
+                200: '#fed7aa',
+                300: '#fdba74',
+                400: '#fb923c',
+                500: '#f97316',
+                600: '#ea580c',
+                700: '#c2410c',
+              },
+              amber: {
+                50: '#fffbeb',
+                100: '#fef3c7',
+                400: '#fbbf24',
+                500: '#f59e0b',
+                600: '#d97706',
+              },
+              green: {
+                50: '#f0fdf4',
+                400: '#4ade80',
+                500: '#22c55e',
+                600: '#16a34a',
+              },
+              red: {
+                50: '#fef2f2',
+                400: '#f87171',
+                500: '#ef4444',
+                600: '#dc2626',
+              },
+              purple: {
+                50: '#faf5ff',
+                400: '#c084fc',
+                500: '#a855f7',
+                600: '#9333ea',
+              },
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'glow-orange': '0 0 20px rgba(249, 115, 22, 0.2)',
+            'card': '0 2px 8px rgba(0, 0, 0, 0.3)',
+            'card-hover': '0 8px 24px rgba(0, 0, 0, 0.4)',
+          }
+        }
+      }
     }
-    body {
-      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #1a1410 0%, #2d1f18 50%, #1a1410 100%);
-      min-height: 100vh;
-      color: #f5e6d3;
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      -webkit-font-smoothing: antialiased;
+      background: #1a1613;
+      color: #f5f0eb;
+    }
+    
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #4a3d34; border-radius: 3px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #5d4e42; }
+    
+    .fade-in { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card {
+      background: #2a231e;
+      border: 1px solid #3d332c;
+      border-radius: 14px;
+      transition: all 0.25s ease;
+    }
+    .card:hover {
+      border-color: #5d4e42;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: white;
+      transition: all 0.2s ease;
+      border-radius: 10px;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #2e2620;
+      border: 1px solid #4a3d34;
+      color: #b8a99c;
+      transition: all 0.2s ease;
+      border-radius: 10px;
+    }
+    .btn-secondary:hover {
+      border-color: #f97316;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.1);
+    }
+    
+    .btn-ghost {
+      color: #8b7d6f;
+      transition: all 0.2s ease;
+      border-radius: 8px;
+    }
+    .btn-ghost:hover {
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.1);
+    }
+    
+    .nav-item {
+      transition: all 0.2s ease;
+      border-radius: 10px;
+      position: relative;
+    }
+    .nav-item:hover {
+      background: #2e2620;
+      color: #f5f0eb;
+    }
+    .nav-item.active {
+      background: rgba(249, 115, 22, 0.15);
+      color: #f97316;
+      font-weight: 500;
+    }
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 20px;
+      background: #f97316;
+      border-radius: 0 3px 3px 0;
+    }
+    
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 9999px;
+    }
+    .tag-orange { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
+    .tag-green { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+    .tag-red { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .tag-amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .tag-purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+    .tag-neutral { background: #3d332c; color: #b8a99c; }
+    .tag-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    
+    .progress-bar {
+      background: #3d332c;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f97316, #fb923c);
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f5f0eb;
+      margin-bottom: 12px;
+    }
+    
+    .divider {
+      height: 1px;
+      background: #3d332c;
+      margin: 14px 0;
+    }
+    
+    .sidebar-panel {
+      background: #26201c;
+      border: 1px solid #3d332c;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .sidebar-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid #3d332c;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #2a231e;
+    }
+    
+    .sidebar-header h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f5f0eb;
+    }
+    
+    .list-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border-bottom: 1px solid #332a24;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .list-item:hover {
+      background: #2e2620;
+    }
+    .list-item.active {
+      background: rgba(249, 115, 22, 0.1);
+      border-left: 3px solid #f97316;
+      padding-left: 13px;
+    }
+    
+    .step-nav {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      gap: 6px;
     }
-    .container {
-      max-width: 900px;
+    .step-item {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #8b7d6f;
+      background: #2e2620;
+      transition: all 0.2s ease;
+    }
+    .step-item.active {
+      background: rgba(249, 115, 22, 0.2);
+      color: #fb923c;
+    }
+    .step-item.completed {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+    }
+    .step-arrow {
+      color: #4a3d34;
+      font-size: 12px;
+    }
+    
+    .input-field {
       width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #3d332c;
+      border-radius: 10px;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      background: #2e2620;
+      color: #f5f0eb;
     }
-    .header {
+    .input-field:focus {
+      outline: none;
+      border-color: #f97316;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+    .input-field::placeholder {
+      color: #66594f;
+    }
+    
+    textarea.input-field {
+      resize: none;
+      line-height: 1.6;
+    }
+    
+    .stat-card {
       text-align: center;
-      margin-bottom: 60px;
+      padding: 16px;
+      background: #2e2620;
+      border-radius: 10px;
+      border: 1px solid #3d332c;
     }
-    .logo {
-      font-size: 48px;
+    .stat-number {
+      font-size: 22px;
       font-weight: 700;
-      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #c2410c 100%);
+      color: #f5f0eb;
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #8b7d6f;
+      margin-top: 4px;
+    }
+    
+    .score-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .score-bar .label {
+      width: 60px;
+      font-size: 11px;
+      color: #8b7d6f;
+      font-weight: 500;
+    }
+    .score-bar .bar {
+      flex: 1;
+      height: 6px;
+      background: #3d332c;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .score-bar .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f97316, #fb923c);
+      border-radius: 3px;
+    }
+    .score-bar .score {
+      width: 30px;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 600;
+      color: #f5f0eb;
+    }
+    
+    /* 页面切换动画 */
+    .page-content {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    /* 胶囊按钮组 */
+    .capsule-group {
+      display: inline-flex;
+      background: #2e2620;
+      border-radius: 9999px;
+      padding: 3px;
+      border: 1px solid #3d332c;
+    }
+    .capsule-btn {
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #8b7d6f;
+      transition: all 0.2s ease;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .capsule-btn.active {
+      background: #f97316;
+      color: white;
+    }
+    .capsule-btn:hover:not(.active) {
+      color: #b8a99c;
+    }
+    
+    /* 顶部导航栏 */
+    .top-header {
+      background: rgba(26, 22, 19, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #3d332c;
+    }
+    
+    /* 侧边栏 */
+    .sidebar {
+      background: #1a1613;
+      border-right: 1px solid #3d332c;
+    }
+    
+    /* 渐变文字 */
+    .gradient-text {
+      background: linear-gradient(135deg, #f97316, #fbbf24);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 12px;
-      letter-spacing: 4px;
     }
-    .subtitle {
-      font-size: 16px;
-      color: #a8a29e;
-      letter-spacing: 2px;
+    
+    /* 玻璃态卡片 */
+    .glass-card {
+      background: rgba(42, 35, 30, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(61, 51, 44, 0.6);
     }
-    .badge {
-      display: inline-block;
-      padding: 4px 12px;
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: 20px;
-      font-size: 12px;
-      color: #f59e0b;
-      margin-bottom: 20px;
+    
+    /* 脉冲动画 */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
-    .modules {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 24px;
-      margin-bottom: 48px;
-    }
-    .module-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 28px;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .module-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #f59e0b, transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .module-card:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(245, 158, 11, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-    .module-card:hover::before {
-      opacity: 1;
-    }
-    .module-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(234, 88, 12, 0.1));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 16px;
-    }
-    .module-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #fef3c7;
-    }
-    .module-desc {
-      font-size: 13px;
-      color: #a8a29e;
-      line-height: 1.6;
-    }
-    .module-tag {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 2px 8px;
-      background: rgba(34, 197, 94, 0.15);
-      border-radius: 4px;
-      font-size: 11px;
-      color: #4ade80;
-    }
-    .info-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 24px;
-      margin-top: 32px;
-    }
-    .info-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fef3c7;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .info-title::before {
-      content: '💡';
-    }
-    .info-text {
-      font-size: 13px;
-      color: #a8a29e;
-      line-height: 1.8;
-    }
-    .info-text code {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-      color: #fbbf24;
-      font-size: 12px;
-    }
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      margin: 32px 0;
-    }
-    .pipeline {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 40px;
-      flex-wrap: wrap;
-    }
-    .pipeline-step {
-      padding: 8px 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      font-size: 12px;
-      color: #a8a29e;
-    }
-    .pipeline-arrow {
-      color: #f59e0b;
-      font-size: 14px;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 12px;
-      color: #78716c;
+    .pulse-dot {
+      animation: pulse-dot 2s ease-in-out infinite;
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="badge">DEMO VERSION</div>
-      <div class="logo">墨枢光影</div>
-      <div class="subtitle">AI 影视制片全流程导演台</div>
-    </div>
+<body class="min-h-screen">
+  
 
-    <div class="pipeline">
-      <span class="pipeline-step">剧本分析</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">角色定妆</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">分镜生成</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">视频渲染</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">成片交付</span>
-    </div>
-
-    <div class="modules">
-      <a href="script-demo.html" class="module-card">
-        <div class="module-icon">📜</div>
-        <div class="module-title">剧本分析</div>
-        <div class="module-desc">六导演协同拆解剧本，多维度解析人物、场景、动作与风格</div>
-        <span class="module-tag">六导演联审</span>
-      </a>
-      
-      <a href="character-demo.html" class="module-card">
-        <div class="module-icon">🎭</div>
-        <div class="module-title">角色定妆</div>
-        <div class="module-desc">KAPPA导演专属定妆台，视觉DNA提取，铁律锁定机制</div>
-        <span class="module-tag">版本管理</span>
-      </a>
-      
-      <a href="storyboard-demo.html" class="module-card">
-        <div class="module-icon">🎬</div>
-        <div class="module-title">分镜生成</div>
-        <div class="module-desc">GAMMA节奏导演主控，ABC三级筛选，180度轴线规则</div>
-        <span class="module-tag">时间线视图</span>
-      </a>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="info-box">
-      <div class="info-title">这是演示版本</div>
-      <div class="info-text">
-        当前为纯前端演示版，可浏览完整UI交互。完整功能（真实API调用、数据持久化、多用户系统）需部署到Vercel/Netlify等平台。
-        <br><br>
-        启动命令：<code>node server.js</code>
-        <br>
-        访问地址：<code>http://localhost:3000</code>
+  <div id="app" class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="sidebar w-60 flex flex-col flex-shrink-0">
+      <!-- Logo 区 -->
+      <div class="px-5 py-5 border-b border-[#3d332c]">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-base font-bold text-text-primary leading-tight">墨枢导演台</h1>
+            <p class="text-[11px] text-text-tertiary">Director Studio v2.0</p>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="footer">
-      © 2026 墨枢光影实验室 · Ink Studio Lab
-    </div>
+      
+      <!-- 导航 -->
+      <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto scrollbar-thin">
+        <button onclick="showPage('dashboard')
+    // 隐藏初始加载动画
+    var loadingEl = document.getElementById('initial-loading')
+    if (loadingEl) loadingEl.style.display = 'none'" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 text-sm text-text-secondary transition-colors" data-page="dashboard">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+          </svg>
+          项目总览
+        </button>
+        
+        <button onclick="showPage('script')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 text-sm text-text-secondary transition-colors" data-page="script">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          剧本分析
+        </button>
+        
+        <button onclick="showPage('character')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 text-sm text-text-secondary transition-colors" data-page="character">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          角色定妆
+        </button>
+        
+        <button onclick="showPage('storyboard')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 text-sm text-text-secondary transition-colors" data-page="storyboard">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+          分镜生成
+        </button>
+        
+        <button onclick="showPage('cost')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 text-sm text-text-secondary transition-colors" data-page="cost">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8c-1.657 0-3 .895-3 2s1.345 2 3 2 3 .895 3 2-1.345 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          成本中心
+        </button>
+      </nav>
+      
+      <!-- 底部信息 -->
+      <div class="p-4 border-t border-[#3d332c]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-2 h-2 rounded-full bg-green-500 pulse-dot"></div>
+          <span class="text-xs text-text-tertiary">系统运行中</span>
+        </div>
+        <div class="text-[11px] text-text-muted mt-1.5">五导演协同 · 全链路生产</div>
+      </div>
+    </aside>
+    
+    <!-- 主内容区 -->
+    <main class="flex-1 flex flex-col overflow-hidden min-w-0">
+      <!-- 顶部栏 -->
+      <header class="top-header h-16 flex items-center justify-between px-8 flex-shrink-0 z-10">
+        <div>
+          <h2 id="page-title" class="text-lg font-semibold text-text-primary">项目总览</h2>
+          <p id="page-subtitle" class="text-xs text-text-tertiary mt-0.5">从剧本到分镜的全流程AI制片</p>
+        </div>
+        <div id="header-actions" class="flex items-center gap-2"></div>
+      </header>
+      
+      <!-- 内容区 -->
+      <div id="page-content" class="flex-1 overflow-y-auto p-6 scrollbar-thin page-content">
+      </div>
+    </main>
   </div>
+  
+  <!-- Toast 通知 -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+  
+  <!-- 图片预览 Modal -->
+  <div id="image-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80" onclick="closeImageModal()">
+    <img id="modal-image" class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl" src="" alt="预览"/>
+  </div>
+
+  <script>
+    // ========= 全局状态 =========
+    const state = {
+      currentPage: 'dashboard',
+      script: '',
+      pipelineResult: null,
+      characterChainResult: null,
+      sceneChainResult: null,
+      storyboardResult: null,
+      runningTasks: {},
+      selectedStyles: [],
+      customStyles: {},
+      currentShotIndex: 0,
+      currentParaIndex: 0,
+      // 项目管理
+      projects: [],
+      currentProject: null,
+      episodes: [],
+      currentEpisode: null,
+      autoSaveTimer: null,
+      isSaving: false,
+    }
+    
+    const directorColors = {
+      alpha: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/30' },
+      beta: { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/30' },
+      gamma: { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/30' },
+      kappa: { bg: 'bg-pink-500/10', text: 'text-pink-400', border: 'border-pink-500/30' },
+      epsilon: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },
+    }
+    
+    const pageTitles = {
+      dashboard: { title: '项目总览', subtitle: '从剧本到分镜的全流程AI制片' },
+      script: { title: '剧本分析', subtitle: '五导演联合深度拆解 · 全维度剧本分析' },
+      character: { title: '角色定妆', subtitle: 'KAPPA导演工作室 · 角色视觉一致性锚定' },
+      storyboard: { title: '分镜生成', subtitle: 'GAMMA节奏导演 · 镜头语言设计工作台' },
+      cost: { title: '成本中心', subtitle: '用量统计 · 成本明细 · 套餐方案' },
+    }
+    
+    // ========= 工具函数 =========
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container')
+      const toast = document.createElement('div')
+      const styles = {
+        info: 'bg-bg-card border border-border text-text-primary shadow-xl',
+        success: 'bg-green-500/10 border border-green-500/30 text-green-400 shadow-xl',
+        error: 'bg-red-500/10 border border-red-500/30 text-red-400 shadow-xl',
+        warning: 'bg-amber-500/10 border border-amber-500/30 text-amber-400 shadow-xl',
+      }
+      toast.className = `${styles[type]} px-4 py-3 rounded-xl text-sm fade-in backdrop-blur`
+      toast.textContent = message
+      container.appendChild(toast)
+      setTimeout(() => toast.remove(), 3000)
+    }
+    
+    function formatCost(cost) {
+      if (cost === undefined || cost === null) return '¥0.00'
+      return `¥${parseFloat(cost).toFixed(2)}`
+    }
+    
+    function openImageModal(src) {
+      document.getElementById('modal-image').src = src
+      document.getElementById('image-modal').classList.remove('hidden')
+      document.getElementById('image-modal').classList.add('flex')
+    }
+    
+    function closeImageModal() {
+      document.getElementById('image-modal').classList.add('hidden')
+      document.getElementById('image-modal').classList.remove('flex')
+    }
+    
+    async function apiCall(endpoint, method = 'GET', body = null) {
+      try {
+        const options = { method, headers: { 'Content-Type': 'application/json' } }
+        if (body) options.body = JSON.stringify(body)
+        const res = await fetch(endpoint, options)
+        return await res.json()
+      } catch (e) {
+        return { success: false, error: e.message }
+      }
+    }
+    
+    function pollTask(taskId, onProgress, onComplete, onError) {
+      const poll = async () => {
+        const result = await apiCall(`/api/image/status/${taskId}`)
+        if (!result.success) {
+          onError && onError(result.error || '查询失败')
+          return
+        }
+        const data = result.data
+        onProgress && onProgress(data)
+        if (data.status === 'completed') {
+          onComplete && onComplete(data.result)
+          delete state.runningTasks[taskId]
+        } else if (data.status === 'failed') {
+          onError && onError(data.error || '任务失败')
+          delete state.runningTasks[taskId]
+        } else {
+          state.runningTasks[taskId] = data
+          setTimeout(poll, 3000)
+        }
+      }
+      poll()
+    }
+    
+    // ========= 项目管理 =========
+    async function loadProjects() {
+      const res = await apiCall('/api/projects')
+      if (res.success) {
+        state.projects = res.projects
+      }
+      return res
+    }
+    
+    async function createProject(name, description = '') {
+      const res = await apiCall('/api/projects', 'POST', { name, description })
+      if (res.success) {
+        state.projects.unshift(res.project)
+      }
+      return res
+    }
+    
+    async function selectProject(projectId) {
+      const res = await apiCall(`/api/projects/${projectId}`)
+      if (res.success) {
+        state.currentProject = res.project
+        state.episodes = res.episodes || []
+        if (state.episodes.length > 0) {
+          state.currentEpisode = state.episodes[0]
+          await loadEpisodeData(state.currentEpisode.id)
+        } else {
+          state.script = ''
+          state.pipelineResult = null
+          state.characterChainResult = null
+          state.sceneChainResult = null
+          state.storyboardResult = null
+        }
+      }
+      return res
+    }
+    
+    async function loadEpisodeData(episodeId) {
+      const res = await apiCall(`/api/episodes/${episodeId}`)
+      if (res.success) {
+        state.currentEpisode = res.episode
+        state.script = res.episode.script || ''
+        state.pipelineResult = res.episode.pipeline_result || null
+        state.characterChainResult = res.episode.character_chain || null
+        state.sceneChainResult = res.episode.scene_chain || null
+        state.storyboardResult = res.episode.storyboard || null
+      }
+      return res
+    }
+    
+    async function createEpisode(projectId, name, script = '') {
+      const res = await apiCall(`/api/projects/${projectId}/episodes`, 'POST', { name, script })
+      if (res.success) {
+        state.episodes.push(res.episode)
+      }
+      return res
+    }
+    
+    async function saveScript() {
+      if (!state.currentEpisode) return
+      state.isSaving = true
+      const res = await apiCall(`/api/episodes/${state.currentEpisode.id}`, 'PUT', {
+        script: state.script
+      })
+      state.isSaving = false
+      return res
+    }
+    
+    function autoSaveScript() {
+      if (!state.currentEpisode) return
+      if (state.autoSaveTimer) clearTimeout(state.autoSaveTimer)
+      state.autoSaveTimer = setTimeout(() => {
+        saveScript()
+        updateSaveStatus()
+      }, 2000)
+    }
+    
+    function updateSaveStatus() {
+      const el = document.getElementById('save-status')
+      if (!el) return
+      if (state.isSaving) {
+        el.textContent = '保存中...'
+        el.className = 'text-xs text-text-tertiary'
+      } else {
+        el.textContent = '已自动保存'
+        el.className = 'text-xs text-green-400'
+      }
+    }
+    
+    async function uploadScriptFile(file) {
+      const formData = new FormData()
+      formData.append('file', file)
+      try {
+        const res = await fetch('/api/script/upload', {
+          method: 'POST',
+          body: formData
+        })
+        return await res.json()
+      } catch (e) {
+        return { success: false, error: e.message }
+      }
+    }
+    
+    async function autoSplitEpisodes(projectId, script) {
+      const res = await apiCall(`/api/projects/${projectId}/episodes/auto-split`, 'POST', { script })
+      if (res.success) {
+        state.episodes = res.episodes
+        if (state.episodes.length > 0) {
+          await selectEpisode(state.episodes[0].id)
+        }
+      }
+      return res
+    }
+    
+    async function selectEpisode(episodeId) {
+      // 先保存当前剧本
+      if (state.currentEpisode && state.script) {
+        await saveScript()
+      }
+      return await loadEpisodeData(episodeId)
+    }
+    
+    function renderEpisodeSelector() {
+      if (!state.currentProject || state.episodes.length === 0) return ''
+      const current = state.currentEpisode
+      return `
+        <select id="episode-select" class="btn-secondary px-3 py-1.5 text-sm cursor-pointer" onchange="handleEpisodeChange(this.value)">
+          ${state.episodes.map(ep => `
+            <option value="${ep.id}" ${current && current.id === ep.id ? 'selected' : ''}>${ep.name}</option>
+          `).join('')}
+        </select>
+      `
+    }
+    
+    async function handleEpisodeChange(episodeId) {
+      await selectEpisode(episodeId)
+      showPage(state.currentPage)
+    }
+    
+    // ========= 页面导航 =========
+    function showPage(pageName) {
+      state.currentPage = pageName
+      
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        if (btn.dataset.page === pageName) {
+          btn.classList.add('active')
+        } else {
+          btn.classList.remove('active')
+        }
+      })
+      
+      const pageInfo = pageTitles[pageName]
+      document.getElementById('page-title').textContent = pageInfo.title
+      document.getElementById('page-subtitle').textContent = pageInfo.subtitle
+      
+      const content = document.getElementById('page-content')
+      content.innerHTML = ''
+      content.classList.remove('fade-in')
+      void content.offsetWidth // 触发重绘
+      content.classList.add('fade-in')
+      
+      document.getElementById('header-actions').innerHTML = ''
+      
+      // 如果有当前项目且非首页，显示集选择器
+      if (state.currentProject && state.episodes.length > 0 && pageName !== 'dashboard') {
+        document.getElementById('header-actions').innerHTML = renderEpisodeSelector()
+      }
+      
+      switch(pageName) {
+        case 'dashboard': renderDashboard(content); break
+        case 'script': renderScriptPage(content); break
+        case 'character': renderCharacterPage(content); break
+        case 'storyboard': renderStoryboardPage(content); break
+        case 'cost': renderCostPage(content); break
+      }
+    }
+    
+    // ========= 1. 项目总览 =========
+    function renderDashboard(container) {
+      if (!state.currentProject) {
+        // 未选择项目：显示欢迎页 + 项目列表
+        renderProjectList(container)
+        return
+      }
+      
+      // 已选择项目：显示项目总览
+      renderProjectDashboard(container)
+    }
+    
+    function renderProjectList(container) {
+      const projects = state.projects || []
+      
+      container.innerHTML = `
+        <div class="max-w-6xl mx-auto space-y-6">
+          <!-- Hero 卡片 -->
+          <div class="card p-8 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5"></div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            
+            <div class="relative z-10">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium mb-4 border border-orange-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 pulse-dot"></span>
+                墨枢光影导演台
+              </div>
+              
+              <h2 class="text-2xl font-bold text-text-primary mb-1">AI 驱动的全流程制片</h2>
+              <p class="text-sm text-text-secondary mb-6">五导演协同工作流 · 从剧本到分镜一键生成</p>
+              
+              <button onclick="openNewProjectModal()" class="btn-primary px-6 py-3 text-sm font-medium">
+                + 创建新项目
+              </button>
+            </div>
+          </div>
+          
+          <!-- 项目列表 -->
+          <div>
+            <div class="flex items-center justify-between mb-3 px-1">
+              <h3 class="text-sm font-semibold text-text-primary">我的项目</h3>
+              <span class="text-xs text-text-tertiary">${projects.length} 个项目</span>
+            </div>
+            
+            ${projects.length === 0 ? `
+              <div class="card p-12 text-center">
+                <div class="w-16 h-16 rounded-2xl bg-bg-tertiary flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                  </svg>
+                </div>
+                <h4 class="text-base font-medium text-text-primary mb-2">暂无项目</h4>
+                <p class="text-sm text-text-tertiary mb-4">创建你的第一个项目，开始 AI 制片之旅</p>
+                <button onclick="openNewProjectModal()" class="btn-primary px-5 py-2 text-sm font-medium">
+                  创建项目
+                </button>
+              </div>
+            ` : `
+              <div class="grid grid-cols-3 gap-4">
+                ${projects.map(p => `
+                  <div class="card p-5 cursor-pointer hover:border-orange-500/30 transition-all group" onclick="handleSelectProject('${p.id}')">
+                    <div class="flex items-start justify-between mb-3">
+                      <div class="w-11 h-11 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
+                        </svg>
+                      </div>
+                      <span class="text-xs text-text-muted">${formatDate(p.updated_at)}</span>
+                    </div>
+                    <h4 class="font-semibold text-text-primary mb-1 group-hover:text-orange-400 transition-colors">${p.name}</h4>
+                    <p class="text-xs text-text-tertiary mb-3 line-clamp-2">${p.description || '暂无描述'}</p>
+                    <div class="flex items-center gap-3 text-xs text-text-tertiary">
+                      <span>集数: ${p.episode_count || 0}</span>
+                      <span>·</span>
+                      <span>消耗: ${formatCost(p.total_cost || 0)}</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+          
+          <!-- 五导演团队 -->
+          <div>
+            <h3 class="text-sm font-semibold text-text-primary mb-3 px-1">五导演团队</h3>
+            <div class="grid grid-cols-5 gap-3">
+              ${directorCards.map(d => {
+                const colors = directorColors[d.key] || { bg: 'bg-slate-500/10', text: 'text-slate-400' }
+                return `
+                  <div class="card p-4">
+                    <div class="w-10 h-10 rounded-xl ${colors.bg} flex items-center justify-center mb-3">
+                      <span class="text-sm font-bold ${colors.text}">${d.name.charAt(0)}</span>
+                    </div>
+                    <div class="font-semibold text-text-primary text-sm">${d.name}</div>
+                    <div class="text-xs text-orange-400 mb-1.5 font-medium">${d.role}</div>
+                    <div class="text-xs text-text-tertiary">${d.desc}</div>
+                  </div>
+                `
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `
+    }
+    
+    function renderProjectDashboard(container) {
+      const hasData = state.pipelineResult !== null
+      const totalCost = calculateTotalCost()
+      const project = state.currentProject
+      
+      container.innerHTML = `
+        <div class="max-w-6xl mx-auto space-y-6">
+          <!-- 项目信息栏 -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <button onclick="backToProjectList()" class="btn-ghost p-2 rounded-lg hover:bg-bg-tertiary">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+              </button>
+              <div>
+                <h2 class="text-lg font-bold text-text-primary">${project.name}</h2>
+                <p class="text-xs text-text-tertiary">${project.description || ''}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              ${renderEpisodeSelector()}
+              <button onclick="openNewEpisodeModal()" class="btn-secondary px-3 py-1.5 text-sm">
+                + 新建集
+              </button>
+            </div>
+          </div>
+          
+          <!-- Hero 卡片 -->
+          <div class="card p-8 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5"></div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            
+            <div class="relative z-10">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium mb-4 border border-orange-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 pulse-dot"></span>
+                ${state.currentEpisode ? state.currentEpisode.name : '未选择集'}
+              </div>
+              
+              <h3 class="text-xl font-bold text-text-primary mb-1">制片进度</h3>
+              <p class="text-sm text-text-secondary mb-6">五导演协同工作流</p>
+              
+              <!-- 步骤导航 -->
+              <div class="step-nav mb-6 flex-wrap">
+                <div class="step-item ${hasData ? 'completed' : ''}">📝 剧本分析</div>
+                <span class="step-arrow">→</span>
+                <div class="step-item ${state.characterChainResult ? 'completed' : ''}">🎭 角色定妆</div>
+                <span class="step-arrow">→</span>
+                <div class="step-item ${state.storyboardResult ? 'completed' : ''}">🎬 分镜生成</div>
+                <span class="step-arrow">→</span>
+                <div class="step-item">🎞️ 视频渲染</div>
+                <span class="step-arrow">→</span>
+                <div class="step-item">📦 成片交付</div>
+              </div>
+              
+              ${hasData ? `
+                <div class="grid grid-cols-4 gap-3 mb-6">
+                  <div class="stat-card">
+                    <div class="stat-number text-green-400">${state.pipelineResult.results?.alpha?.success ? '✓' : '—'}</div>
+                    <div class="stat-label">剧本分析</div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-number text-green-400">${state.pipelineResult.results?.beta?.success ? '✓' : '—'}</div>
+                    <div class="stat-label">视觉设计</div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-number text-green-400">${state.pipelineResult.results?.gamma?.success ? '✓' : '—'}</div>
+                    <div class="stat-label">分镜生成</div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-number text-green-400">${state.characterChainResult?.success ? '✓' : '—'}</div>
+                    <div class="stat-label">角色链条</div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="text-sm">
+                    <span class="text-text-tertiary">累计消耗</span>
+                    <span class="font-semibold text-orange-400 ml-2">${formatCost(totalCost)}</span>
+                  </div>
+                  <button onclick="showPage('script')" class="btn-primary px-5 py-2.5 text-sm font-medium">
+                    继续编辑
+                  </button>
+                </div>
+              ` : `
+                <button onclick="showPage('script')" class="btn-primary px-6 py-3 text-sm font-medium">
+                  开始剧本分析 →
+                </button>
+              `}
+            </div>
+          </div>
+          
+          <!-- 功能模块卡片 -->
+          <div class="grid grid-cols-3 gap-4">
+            <div class="card p-5 cursor-pointer hover:border-orange-500/30 transition-all group" onclick="showPage('script')">
+              <div class="w-11 h-11 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition-colors">
+                <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <h4 class="font-semibold text-text-primary mb-2">剧本分析</h4>
+              <p class="text-xs text-text-tertiary mb-4">上传剧本，五导演联合深度分析，拆解人物、场景、节奏</p>
+              <button class="text-xs text-orange-400 font-medium hover:text-orange-300 transition-colors">
+                六导演联审 →
+              </button>
+            </div>
+            
+            <div class="card p-5 cursor-pointer hover:border-purple-500/30 transition-all group" onclick="showPage('character')">
+              <div class="w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+              </div>
+              <h4 class="font-semibold text-text-primary mb-2">角色定妆</h4>
+              <p class="text-xs text-text-tertiary mb-4">视觉DNA锚定，多角度一致性生成，五导演评分审核</p>
+              <button class="text-xs text-purple-400 font-medium hover:text-purple-300 transition-colors">
+                版本管理 →
+              </button>
+            </div>
+            
+            <div class="card p-5 cursor-pointer hover:border-green-500/30 transition-all group" onclick="showPage('storyboard')">
+              <div class="w-11 h-11 rounded-xl bg-green-500/10 flex items-center justify-center mb-4 group-hover:bg-green-500/20 transition-colors">
+                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <h4 class="font-semibold text-text-primary mb-2">分镜生成</h4>
+              <p class="text-xs text-text-tertiary mb-4">智能分镜设计，批量生成画面，时间线视图管理</p>
+              <button class="text-xs text-green-400 font-medium hover:text-green-300 transition-colors">
+                时间线视图 →
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+    }
+    
+    const directorCards = [
+      { key: 'alpha', name: 'ALPHA', role: '叙事导演', desc: '剧本结构拆解' },
+      { key: 'beta', name: 'BETA', role: '视觉导演', desc: '画面风格设定' },
+      { key: 'gamma', name: 'GAMMA', role: '节奏导演', desc: '分镜镜头设计' },
+      { key: 'kappa', name: 'KAPPA', role: '角色导演', desc: '角色定妆生成' },
+      { key: 'epsilon', name: 'EPSILON', role: 'AI制片', desc: '生产计划调度' },
+    ]
+    
+    function formatDate(dateStr) {
+      if (!dateStr) return ''
+      const d = new Date(dateStr)
+      return d.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+    }
+    
+    async function handleSelectProject(projectId) {
+      const res = await selectProject(projectId)
+      if (res.success) {
+        showPage('dashboard')
+        showToast('项目加载成功', 'success')
+      } else {
+        showToast('加载项目失败: ' + (res.error || '未知错误'), 'error')
+      }
+    }
+    
+    function backToProjectList() {
+      state.currentProject = null
+      state.currentEpisode = null
+      state.episodes = []
+      state.script = ''
+      state.pipelineResult = null
+      state.characterChainResult = null
+      state.sceneChainResult = null
+      state.storyboardResult = null
+      showPage('dashboard')
+    }
+    
+    function openNewProjectModal() {
+      const name = prompt('请输入项目名称:')
+      if (!name || !name.trim()) return
+      const desc = prompt('请输入项目描述（可选）:') || ''
+      handleCreateProject(name.trim(), desc.trim())
+    }
+    
+    async function handleCreateProject(name, description) {
+      const res = await createProject(name, description)
+      if (res.success) {
+        showToast('项目创建成功', 'success')
+        renderProjectList(document.getElementById('page-content'))
+      } else {
+        showToast('创建失败: ' + (res.error || '未知错误'), 'error')
+      }
+    }
+    
+    function openNewEpisodeModal() {
+      if (!state.currentProject) return
+      const name = prompt('请输入集名称（如：第一集）:')
+      if (!name || !name.trim()) return
+      handleCreateEpisode(name.trim())
+    }
+    
+    async function handleCreateEpisode(name) {
+      const res = await createEpisode(state.currentProject.id, name)
+      if (res.success) {
+        showToast('集创建成功', 'success')
+        // 选中新创建的集
+        await selectEpisode(res.episode.id)
+        showPage('dashboard')
+      } else {
+        showToast('创建失败: ' + (res.error || '未知错误'), 'error')
+      }
+    }
+    
+    // ========= 2. 剧本分析页 =========
+    function renderScriptPage(container) {
+      const hasResult = state.pipelineResult !== null
+      const directors = ['alpha', 'beta', 'gamma', 'kappa', 'epsilon']
+      const directorNames = {
+        alpha: 'ALPHA 叙事导演',
+        beta: 'BETA 视觉导演',
+        gamma: 'GAMMA 节奏导演',
+        kappa: 'KAPPA 角色导演',
+        epsilon: 'EPSILON AI制片',
+      }
+      
+      document.getElementById('header-actions').innerHTML = `
+        <div class="flex items-center gap-2">
+          ${state.currentProject ? renderEpisodeSelector() : ''}
+          <select id="tier-select" class="input-field text-sm px-3 py-2 w-28">
+            <option value="standard">标准版</option>
+            <option value="pro">专业版</option>
+            <option value="full">旗舰版</option>
+          </select>
+          <button onclick="runPipeline()" class="btn-primary px-4 py-2 text-sm font-medium">
+            ▶ 开始分析
+          </button>
+        </div>
+      `
+      
+      container.innerHTML = `
+        <div class="h-full flex gap-4" style="height: calc(100vh - 120px);">
+          <!-- 左栏：剧本输入 -->
+          <div class="sidebar-panel flex flex-col w-72 flex-shrink-0">
+            <div class="sidebar-header">
+              <h4>📝 剧本内容</h4>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-text-tertiary" id="script-stats">0 字</span>
+                <span class="text-xs text-text-tertiary">·</span>
+                <span class="text-xs text-green-400" id="save-status">已保存</span>
+              </div>
+            </div>
+            <div class="p-3 flex-1 overflow-y-auto">
+              <textarea id="script-input" placeholder="在此粘贴或输入剧本内容...&#10;&#10;支持标准剧本格式，系统将自动识别：&#10;• 场景标题&#10;• 角色对话&#10;• 动作描述&#10;• 场景转换" 
+                class="input-field w-full h-full"
+                style="min-height: 200px;"
+                oninput="handleScriptInput()">${state.script || ''}</textarea>
+            </div>
+            <div class="p-3 border-t border-border space-y-2">
+              <div class="flex gap-2">
+                <button onclick="document.getElementById('script-file').click()" class="btn-secondary px-3 py-2 text-xs flex-1">
+                  📂 上传文件
+                </button>
+                <button onclick="autoSplitEpisodesBtn()" class="btn-secondary px-3 py-2 text-xs flex-1">
+                  ✂️ 自动分集
+                </button>
+                <input type="file" id="script-file" class="hidden" accept=".txt,.docx,.pdf,.md" onchange="handleScriptFileUpload(event)">
+              </div>
+              <div class="text-xs text-text-tertiary">快速示例：</div>
+              <div class="flex gap-2 flex-wrap">
+                <button onclick="loadSampleScript()" class="capsule-btn hover:bg-orange-500/10 hover:text-orange-400">
+                  爱情短片
+                </button>
+                <button onclick="loadSampleScript2()" class="capsule-btn hover:bg-orange-500/10 hover:text-orange-400">
+                  悬疑片段
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 中栏：导演分析结果 -->
+          <div class="sidebar-panel flex flex-col flex-1 min-w-0 overflow-hidden">
+            <div class="sidebar-header">
+              <h4>🎬 导演分析结果</h4>
+              <div class="text-xs text-text-tertiary">
+                ${hasResult ? '分析完成' : '等待开始'}
+              </div>
+            </div>
+            
+            <!-- 导演标签页 -->
+            <div class="flex border-b border-border px-2 pt-2 bg-bg-secondary">
+              ${directors.map((d, i) => {
+                const result = state.pipelineResult?.results?.[d]
+                let statusIcon = ''
+                if (result?.success) statusIcon = '✓'
+                else if (result?.error) statusIcon = '✕'
+                
+                return `
+                  <button onclick="switchDirectorTab('${d}')" 
+                    class="director-tab flex-1 px-2 py-2.5 text-xs font-medium rounded-t-lg transition-colors relative whitespace-nowrap ${i === 0 ? 'active bg-bg-card text-orange-400 border-b-2 border-orange-500' : 'text-text-tertiary hover:text-text-secondary'}"
+                    data-director="${d}"
+                    style="border-bottom: 2px solid ${i === 0 ? '#f97316' : 'transparent'}">
+                    ${d.toUpperCase()}
+                    ${statusIcon ? `<span class="ml-1 ${result?.success ? 'text-green-400' : 'text-red-400'}">${statusIcon}</span>` : ''}
+                  </button>
+                `
+              }).join('')}
+            </div>
+            
+            <!-- 分析内容区 -->
+            <div id="director-content" class="flex-1 overflow-y-auto p-5">
+              ${hasResult ? renderDirectorAnalysis('alpha') : renderEmptyAnalysis()}
+            </div>
+          </div>
+          
+          <!-- 右栏：概览与状态 -->
+          <div class="w-64 flex-shrink-0 space-y-4 overflow-y-auto scrollbar-thin">
+            <!-- 分析进度 -->
+            <div class="sidebar-panel">
+              <div class="sidebar-header">
+                <h4>📊 分析进度</h4>
+              </div>
+              <div class="p-4 space-y-3">
+                ${directors.map(d => {
+                  const result = state.pipelineResult?.results?.[d]
+                  const isDone = result?.success
+                  const isError = result?.error
+                  
+                  return `
+                    <div class="flex items-center gap-3">
+                      <div class="w-7 h-7 rounded-lg ${directorColors[d]?.bg || 'bg-bg-tertiary'} flex items-center justify-center text-xs font-bold ${directorColors[d]?.text || 'text-text-tertiary'}">
+                        ${d.charAt(0).toUpperCase()}
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-xs font-medium text-text-secondary truncate">${directorNames[d]}</div>
+                        <div class="progress-bar h-1.5 mt-1">
+                          <div class="progress-fill" style="width: ${isDone || isError ? '100%' : '0%'}; ${isError ? 'background: #ef4444;' : ''}"></div>
+                        </div>
+                      </div>
+                      <div class="text-xs ${isDone ? 'text-green-400' : isError ? 'text-red-400' : 'text-text-muted'}">
+                        ${isDone ? '完成' : isError ? '失败' : '等待'}
+                      </div>
+                    </div>
+                  `
+                }).join('')}
+              </div>
+            </div>
+            
+            <!-- 剧本信息 -->
+            ${hasResult ? `
+              <div class="sidebar-panel">
+                <div class="sidebar-header">
+                  <h4>📋 剧本概览</h4>
+                </div>
+                <div class="p-4 space-y-3">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-tertiary">预估时长</span>
+                    <span class="font-medium text-text-primary">${state.pipelineResult.estimatedDuration || '—'}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-tertiary">场景数量</span>
+                    <span class="font-medium text-text-primary">${state.pipelineResult.sceneCount || '—'}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-tertiary">角色数量</span>
+                    <span class="font-medium text-text-primary">${state.pipelineResult.characterCount || '—'}</span>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-tertiary">分析消耗</span>
+                    <span class="font-semibold text-orange-400">${formatCost(state.pipelineResult.totalCost)}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 风格标签 -->
+              <div class="sidebar-panel">
+                <div class="sidebar-header">
+                  <h4>🎨 风格标签</h4>
+                </div>
+                <div class="p-4">
+                  <div class="flex flex-wrap gap-2">
+                    ${(state.pipelineResult.styleTags || ['剧情', '写实', '现代']).map(tag => `
+                      <span class="tag tag-orange">${tag}</span>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            ` : `
+              <div class="sidebar-panel">
+                <div class="sidebar-header">
+                  <h4>💡 使用提示</h4>
+                </div>
+                <div class="p-4">
+                  <ul class="text-xs text-text-tertiary space-y-2">
+                    <li>• 粘贴完整剧本获取最佳分析效果</li>
+                    <li>• 标准版 = 2导演 · 专业版 = 4导演</li>
+                    <li>• 支持中英日韩多语言剧本</li>
+                    <li>• 分析完成后可进入角色定妆环节</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <!-- 套餐选择 -->
+              <div class="sidebar-panel">
+                <div class="sidebar-header">
+                  <h4>💎 选择套餐</h4>
+                </div>
+                <div class="p-3 space-y-2">
+                  <label class="flex items-center p-3 rounded-lg cursor-pointer border border-border hover:border-orange-500/30 transition-colors">
+                    <input type="radio" name="tier" value="standard" checked class="mr-3 accent-orange-500">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-text-primary">标准版</div>
+                      <div class="text-xs text-text-tertiary">2导演 · 约¥0.5</div>
+                    </div>
+                  </label>
+                  <label class="flex items-center p-3 rounded-lg cursor-pointer border border-orange-500/30 bg-orange-500/5 transition-colors">
+                    <input type="radio" name="tier" value="pro" class="mr-3 accent-orange-500">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-text-primary">专业版 <span class="tag tag-orange text-[10px] ml-1">推荐</span></div>
+                      <div class="text-xs text-text-tertiary">4导演 · 约¥1.5</div>
+                    </div>
+                  </label>
+                  <label class="flex items-center p-3 rounded-lg cursor-pointer border border-border hover:border-orange-500/30 transition-colors">
+                    <input type="radio" name="tier" value="full" class="mr-3 accent-orange-500">
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-text-primary">旗舰版</div>
+                      <div class="text-xs text-text-tertiary">5导演全链路 · 约¥3.0</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            `}
+          </div>
+        </div>
+      `
+    }
+    
+    function renderEmptyAnalysis() {
+      return `
+        <div class="text-center py-20">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-bg-tertiary flex items-center justify-center">
+            <svg class="w-8 h-8 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <p class="text-sm text-text-secondary mb-1">等待分析</p>
+          <p class="text-xs text-text-tertiary">在左侧粘贴剧本，点击"开始分析"</p>
+        </div>
+      `
+    }
+    
+    function switchDirectorTab(director) {
+      document.querySelectorAll('.director-tab').forEach(tab => {
+        if (tab.dataset.director === director) {
+          tab.classList.add('text-orange-400', 'bg-bg-card')
+          tab.classList.remove('text-text-tertiary')
+          tab.style.borderBottom = '2px solid #f97316'
+        } else {
+          tab.classList.remove('text-orange-400', 'bg-bg-card')
+          tab.classList.add('text-text-tertiary')
+          tab.style.borderBottom = '2px solid transparent'
+        }
+      })
+      
+      const content = document.getElementById('director-content')
+      content.innerHTML = renderDirectorAnalysis(director)
+    }
+    
+    function renderDirectorAnalysis(director) {
+      const result = state.pipelineResult?.results?.[director]
+      
+      if (!result) return renderEmptyAnalysis()
+      
+      if (result.error) {
+        return `
+          <div class="text-center py-16">
+            <div class="text-3xl mb-3">❌</div>
+            <p class="text-sm text-red-400">分析失败</p>
+            <p class="text-xs text-text-tertiary mt-2">${result.error}</p>
+          </div>
+        `
+      }
+      
+      const data = result.data?.content || result.data || {}
+      
+      switch(director) {
+        case 'alpha': return renderAlphaAnalysis(data)
+        case 'beta': return renderBetaAnalysis(data)
+        case 'gamma': return renderGammaAnalysis(data)
+        case 'kappa': return renderKappaAnalysis(data)
+        case 'epsilon': return renderEpsilonAnalysis(data)
+        default:
+          return `<pre class="text-xs text-text-secondary overflow-auto">${JSON.stringify(data, null, 2)}</pre>`
+      }
+    }
+    
+    function renderAlphaAnalysis(data) {
+      return `
+        <div class="space-y-5 max-w-2xl">
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+              故事梗概
+            </h5>
+            <p class="text-sm text-text-secondary leading-relaxed">${data.summary || '暂无数据'}</p>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+              核心角色
+            </h5>
+            <div class="space-y-2">
+              ${(data.characters || []).map(c => `
+                <div class="p-3 bg-bg-tertiary rounded-lg border border-border">
+                  <div class="font-medium text-sm text-text-primary">${c.name || '角色'} ${c.role ? `<span class="text-xs text-orange-400 ml-2">${c.role}</span>` : ''}</div>
+                  <div class="text-xs text-text-tertiary mt-1">${c.description || ''}</div>
+                </div>
+              `).join('') || '<p class="text-xs text-text-tertiary">暂无数据</p>'}
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+              三幕结构
+            </h5>
+            <div class="space-y-2">
+              <div class="p-4 bg-blue-500/5 rounded-lg border border-blue-500/20">
+                <div class="text-xs font-semibold text-blue-400 mb-1">第一幕 · 建置</div>
+                <p class="text-xs text-text-secondary">${data.threeActStructure?.act1 || '—'}</p>
+              </div>
+              <div class="p-4 bg-purple-500/5 rounded-lg border border-purple-500/20">
+                <div class="text-xs font-semibold text-purple-400 mb-1">第二幕 · 对抗</div>
+                <p class="text-xs text-text-secondary">${data.threeActStructure?.act2 || '—'}</p>
+              </div>
+              <div class="p-4 bg-green-500/5 rounded-lg border border-green-500/20">
+                <div class="text-xs font-semibold text-green-400 mb-1">第三幕 · 结局</div>
+                <p class="text-xs text-text-secondary">${data.threeActStructure?.act3 || '—'}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+              核心主题
+            </h5>
+            <div class="flex flex-wrap gap-2">
+              ${(data.themes || ['成长', '救赎', '爱情']).map(t => `<span class="tag tag-blue">${t}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `
+    }
+    
+    function renderBetaAnalysis(data) {
+      return `
+        <div class="space-y-5 max-w-2xl">
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+              视觉风格
+            </h5>
+            <p class="text-sm text-text-secondary">${data.visualStyle || '写实主义，自然光影'}</p>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+              色彩体系
+            </h5>
+            <div class="grid grid-cols-5 gap-2">
+              ${(data.colorPalette || [
+                { hex: '#1a1613', name: '主背景' },
+                { hex: '#2a231e', name: '卡片' },
+                { hex: '#f97316', name: '强调' },
+                { hex: '#fbbf24', name: '点缀' },
+                { hex: '#f5f0eb', name: '文字' },
+              ]).map(c => `
+                <div class="text-center">
+                  <div class="w-full aspect-square rounded-lg mb-2 border border-border" style="background: ${c.hex}"></div>
+                  <div class="text-xs text-text-tertiary">${c.name || ''}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+              参考关键词
+            </h5>
+            <div class="flex flex-wrap gap-2">
+              ${(data.referenceKeywords || ['电影感', '自然光', '景深', '暖色调']).map(k => `<span class="tag tag-purple">${k}</span>`).join('')}
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+              关键场景设定
+            </h5>
+            <div class="space-y-2">
+              ${(data.keyScenes || [
+                { name: '开场场景', description: '咖啡馆清晨，阳光透过落地窗' },
+                { name: '高潮场景', description: '雨夜街头，情绪爆发' },
+              ]).map(s => `
+                <div class="p-3 bg-purple-500/5 rounded-lg border border-purple-500/20">
+                  <div class="text-xs font-medium text-purple-400">${s.name || '场景'}</div>
+                  <p class="text-xs text-text-secondary mt-1">${s.description || ''}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `
+    }
+    
+    function renderGammaAnalysis(data) {
+      const shots = data.shots || []
+      return `
+        <div class="space-y-5">
+          <div class="grid grid-cols-3 gap-3">
+            <div class="stat-card">
+              <div class="stat-number text-lg text-orange-400">${shots.length}</div>
+              <div class="stat-label">镜头数</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number text-lg text-green-400">${data.totalDuration || 0}s</div>
+              <div class="stat-label">总时长</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number text-lg text-purple-400">${data.scenes || 3}</div>
+              <div class="stat-label">场景数</div>
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+              分镜列表
+            </h5>
+            <div class="space-y-2 max-h-80 overflow-y-auto scrollbar-thin pr-1">
+              ${shots.map((shot, i) => `
+                <div class="p-3 bg-bg-tertiary rounded-lg border border-border hover:border-orange-500/30 cursor-pointer transition-colors" onclick="selectShot(${i})">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-sm font-medium text-text-primary">镜 ${shot.shotNumber || i+1} · ${shot.shotType || '中景'}</span>
+                    <span class="tag tag-neutral">${shot.duration || 0}s</span>
+                  </div>
+                  <p class="text-xs text-text-secondary line-clamp-2">${shot.description || ''}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `
+    }
+    
+    function renderKappaAnalysis(data) {
+      return `
+        <div class="space-y-5 max-w-2xl">
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
+              主角设计
+            </h5>
+            <div class="p-4 bg-pink-500/5 rounded-xl border border-pink-500/20">
+              <div class="text-base font-semibold text-pink-400 mb-1">${data.basicInfo?.name || '主角'}</div>
+              <div class="text-xs text-text-tertiary mb-3">${data.basicInfo?.age || ''}岁 · ${data.basicInfo?.gender || ''} · ${data.basicInfo?.occupation || ''}</div>
+              <div class="text-xs text-text-secondary"><strong class="text-text-primary">外貌:</strong> ${data.appearance?.face || ''} ${data.appearance?.hair || ''}</div>
+              <div class="text-xs text-text-secondary mt-1"><strong class="text-text-primary">服装:</strong> ${data.costume?.mainOutfit || '—'}</div>
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
+              视觉DNA锚点
+            </h5>
+            <div class="flex flex-wrap gap-2">
+              ${(data.visualDNA || ['高颜值', '黑发', '杏眼', '瓜子脸']).map(d => `<span class="tag tag-orange">${d}</span>`).join('')}
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+              OOC 禁令
+            </h5>
+            <div class="flex flex-wrap gap-2">
+              ${(data.oocRules || ['禁夸张表情', '禁Q版风格', '禁变形']).map(r => `<span class="tag tag-red">${r}</span>`).join('')}
+            </div>
+          </div>
+          
+          <div class="pt-2">
+            <button onclick="showPage('character')" class="w-full btn-primary py-2.5 text-sm font-medium">
+              生成角色定妆照 →
+            </button>
+          </div>
+        </div>
+      `
+    }
+    
+    function renderEpsilonAnalysis(data) {
+      return `
+        <div class="space-y-5 max-w-2xl">
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              生产排期
+            </h5>
+            <div class="space-y-2">
+              ${(data.schedule?.phases || [
+                { name: '剧本分析', duration: '30秒' },
+                { name: '角色设计', duration: '1分钟' },
+                { name: '分镜生成', duration: '2分钟' },
+                { name: '生图渲染', duration: '3分钟' },
+              ]).map(p => `
+                <div class="flex items-center justify-between p-3 bg-amber-500/5 rounded-lg border border-amber-500/20">
+                  <span class="text-xs font-medium text-amber-400">${p.name}</span>
+                  <span class="text-xs text-text-secondary">${p.duration}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+              风险评估
+            </h5>
+            <div class="space-y-2">
+              ${(data.risks || [
+                { risk: '模型限流', probability: '中', impact: '低' },
+                { risk: '角色一致性偏差', probability: '低', impact: '高' },
+              ]).map(r => `
+                <div class="p-3 bg-red-500/5 rounded-lg border border-red-500/20">
+                  <div class="text-xs font-medium text-red-400">${r.risk}</div>
+                  <div class="text-xs text-text-tertiary mt-1">概率: ${r.probability} · 影响: ${r.impact}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+              里程碑
+            </h5>
+            <div class="flex flex-wrap gap-2">
+              ${(data.milestones || [
+                { name: '剧本定稿' },
+                { name: '角色确认' },
+                { name: '分镜审核' },
+                { name: '成片交付' },
+              ]).map(m => `<span class="tag tag-green">${m.name}</span>`).join('')}
+            </div>
+          </div>
+          
+          <div>
+            <h5 class="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+              预算预估
+            </h5>
+            <div class="p-4 bg-green-500/5 rounded-xl border border-green-500/20 text-center">
+              <div class="text-2xl font-bold text-green-400">${formatCost(data.estimatedBudget || 3.0)}</div>
+              <div class="text-xs text-text-tertiary mt-1">预计总投入</div>
+            </div>
+          </div>
+        </div>
+      `
+    }
+    
+    function handleScriptInput() {
+      const input = document.getElementById('script-input')
+      if (input) {
+        state.script = input.value
+        updateScriptStats()
+        if (state.currentEpisode) {
+          autoSaveScript()
+        }
+      }
+    }
+    
+    function updateScriptStats() {
+      const input = document.getElementById('script-input')
+      const stats = document.getElementById('script-stats')
+      if (input && stats) {
+        stats.textContent = `${input.value.length} 字`
+      }
+    }
+    
+    async function handleScriptFileUpload(event) {
+      const file = event.target.files[0]
+      if (!file) return
+      
+      if (!state.currentProject) {
+        showToast('请先创建或选择一个项目', 'warning')
+        return
+      }
+      
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      showToast('正在上传文件...', 'info')
+      
+      try {
+        const res = await fetch('/api/script/upload', {
+          method: 'POST',
+          body: formData
+        })
+        const data = await res.json()
+        
+        if (data.success) {
+          state.script = data.content
+          const input = document.getElementById('script-input')
+          if (input) {
+            input.value = data.content
+          }
+          updateScriptStats()
+          showToast('文件上传成功', 'success')
+          
+          // 自动保存
+          if (state.currentEpisode) {
+            await saveScript()
+            updateSaveStatus()
+          }
+        } else {
+          showToast('上传失败: ' + (data.error || '未知错误'), 'error')
+        }
+      } catch (e) {
+        showToast('上传失败: ' + e.message, 'error')
+      }
+      
+      event.target.value = ''
+    }
+    
+    async function autoSplitEpisodesBtn() {
+      if (!state.currentProject) {
+        showToast('请先创建或选择一个项目', 'warning')
+        return
+      }
+      
+      const script = state.script || document.getElementById('script-input')?.value
+      if (!script || script.trim().length === 0) {
+        showToast('请先输入或上传剧本内容', 'warning')
+        return
+      }
+      
+      if (!confirm('将根据剧本内容自动拆分集数，当前集数将被替换，确定继续吗？')) {
+        return
+      }
+      
+      showToast('正在自动拆分集数...', 'info')
+      
+      try {
+        const res = await apiCall(`/api/projects/${state.currentProject.id}/episodes/auto-split`, 'POST', { script })
+        if (res.success) {
+          state.episodes = res.episodes
+          if (state.episodes.length > 0) {
+            await selectEpisode(state.episodes[0].id)
+          }
+          showPage('script')
+          showToast(`成功拆分为 ${res.episodes.length} 集`, 'success')
+        } else {
+          showToast('拆分失败: ' + (res.error || '未知错误'), 'error')
+        }
+      } catch (e) {
+        showToast('拆分失败: ' + e.message, 'error')
+      }
+    }
+    
+    function loadSampleScript() {
+      const sample = `【场景一】咖啡馆·日·内
+
+阳光透过落地窗洒进来，空气中飘着咖啡香气。
+
+林小雨（25岁，文艺女青年）坐在靠窗的位置，笔记本电脑打开着，手里握着咖啡杯，眼神有些恍惚。
+
+桌上的手机震动了一下，屏幕亮起，显示"张阳"的名字。
+
+林小雨看了一眼，犹豫了一下，最终还是接起了电话。
+
+林小雨
+（轻声）
+喂...
+
+张阳 (V.O.)
+小雨，我们...还是算了吧。
+
+林小雨的手微微颤抖，咖啡杯在碟子上发出轻响。
+
+林小雨
+（努力平静）
+...好。
+
+她挂了电话，望向窗外，阳光正好，但她的眼神里满是失落。
+
+【场景二】公园·黄昏·外
+
+夕阳西下，林小雨独自走在公园的小路上，落叶纷飞。
+
+她停下脚步，看着远方的落日，眼眶微红。
+
+一个小男孩跑过，手里的气球不小心飞走了。
+
+小男孩
+（着急）
+我的气球！
+
+林小雨下意识地伸手去抓，没抓到。但她看着飞向天空的气球，忽然笑了。
+
+林小雨
+（轻声对自己）
+飞走了，也好。
+
+她继续向前走，身影被夕阳拉得很长。`
+      
+      const input = document.getElementById('script-input')
+      input.value = sample
+      updateScriptStats()
+      showToast('示例剧本已加载', 'success')
+    }
+    
+    function loadSampleScript2() {
+      const sample = `【场景一】废弃工厂·夜·内
+
+昏暗的工厂里，只有月光透过破碎的窗户照进来。
+
+陈默（30岁，警察）悄悄走进来，手电筒的光束在黑暗中晃动。
+
+他的表情严肃，手里紧握着枪。
+
+地上散落着废弃的机器零件，偶尔传来老鼠跑动的声音。
+
+突然，一声巨响从楼上传来。
+
+陈默立刻警觉起来，举枪对准楼梯方向。
+
+陈默
+（低声）
+谁在那里？
+
+没有人回应，只有回声在空旷的厂房里回荡。
+
+他深吸一口气，慢慢向楼梯走去。
+
+每走一步，老旧的楼梯就发出"吱呀"的声响。
+
+到了二楼，他看到一个黑影闪过。
+
+陈默
+站住！
+
+他追了过去，但拐角处空无一人。
+
+窗台上有一只黑色的手套，还留有余温。
+
+陈默捡起手套，眉头紧锁。
+
+陈默
+（自言自语）
+是他...
+
+窗外，月光如水，远处传来警笛声。`
+      
+      const input = document.getElementById('script-input')
+      input.value = sample
+      updateScriptStats()
+      showToast('示例剧本已加载', 'success')
+    }
+    
+    async function runPipeline() {
+      const script = document.getElementById('script-input')?.value
+      if (!script || script.trim().length < 10) {
+        showToast('请输入至少10字的剧本内容', 'warning')
+        return
+      }
+      
+      const tier = document.getElementById('tier-select')?.value || 'standard'
+      state.script = script
+      
+      // 显示加载状态
+      const content = document.getElementById('director-content')
+      content.innerHTML = `
+        <div class="text-center py-20">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-3 border-orange-500/30 border-t-orange-500 mb-4"></div>
+          <p class="text-sm text-text-primary mb-1">正在分析剧本...</p>
+          <p class="text-xs text-text-tertiary">五导演联合审片中，约需30秒</p>
+        </div>
+      `
+      
+      try {
+        const result = await apiCall('/api/directors/pipeline', 'POST', { script, tier, async: false })
+        
+        if (result.success) {
+          state.pipelineResult = result.data
+          renderScriptPage(document.getElementById('page-content'))
+          showToast('分析完成！', 'success')
+        } else {
+          showToast('分析失败: ' + (result.error || '未知错误'), 'error')
+        }
+      } catch (e) {
+        showToast('请求失败，请检查服务是否运行', 'error')
+      }
+    }
+    
+    function selectShot(index) {
+      state.currentShotIndex = index
+      if (state.pipelineResult?.results?.gamma) {
+        showPage('storyboard')
+      }
+    }
+    
+    // ========= 3. 角色定妆页 =========
+    function renderCharacterPage(container) {
+      const kappaData = state.pipelineResult?.results?.kappa?.data?.content
+      const hasChain = state.characterChainResult?.success
+      
+      document.getElementById('header-actions').innerHTML = `
+        <div class="capsule-group">
+          <button class="capsule-btn active">单图</button>
+          <button class="capsule-btn">对比</button>
+          <button class="capsule-btn">网格</button>
+          <button class="capsule-btn">标注</button>
+        </div>
+        <button class="btn-secondary px-4 py-2 text-sm font-medium">
+          导出
+        </button>
+      `
+      
+      if (!kappaData) {
+        container.innerHTML = `
+          <div class="max-w-xl mx-auto">
+            <div class="card p-12 text-center">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-bg-tertiary flex items-center justify-center">
+                <svg class="w-8 h-8 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-text-primary mb-2">请先完成剧本分析</h3>
+              <p class="text-sm text-text-tertiary mb-6">角色设计需要基于剧本分析结果生成</p>
+              <button onclick="showPage('script')" class="btn-primary px-6 py-2.5 text-sm font-medium">
+                去分析剧本
+              </button>
+            </div>
+          </div>
+        `
+        return
+      }
+      
+      const characters = kappaData.characters || [kappaData]
+      const currentChar = characters[0]
+      
+      container.innerHTML = `
+        <div class="h-full flex gap-4" style="height: calc(100vh - 120px);">
+          <!-- 左栏：角色列表 -->
+          <div class="sidebar-panel flex flex-col w-64 flex-shrink-0">
+            <div class="sidebar-header">
+              <h4>👥 角色列表</h4>
+              <button class="text-xs text-orange-400 hover:text-orange-300 font-medium">+ 添加</button>
+            </div>
+            <div class="flex-1 overflow-y-auto">
+              ${characters.map((c, i) => `
+                <div class="list-item ${i === 0 ? 'active' : ''}" onclick="selectCharacter(${i})">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500/30 to-orange-500/30 flex items-center justify-center">
+                      <span class="text-sm font-medium text-pink-300">${(c.basicInfo?.name || '角色').charAt(0)}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="text-sm font-medium text-text-primary truncate">${c.basicInfo?.name || '角色'}</div>
+                      <div class="text-xs text-text-tertiary">${c.basicInfo?.role || '主角'}</div>
+                    </div>
+                    <span class="tag tag-orange">3版</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="p-3 border-t border-border">
+              <div class="text-xs text-text-tertiary">
+                共 ${characters.length} 个角色 · 2主角 1配角
+              </div>
+            </div>
+          </div>
+          
+          <!-- 中栏：预览区 -->
+          <div class="sidebar-panel flex flex-col flex-1 min-w-0">
+            <div class="sidebar-header">
+              <div>
+                <h4 class="text-base">${currentChar.basicInfo?.name || '主角'} · v1.0</h4>
+                <span class="text-xs text-text-tertiary">NB Pro · 真人写实 · 2:3</span>
+              </div>
+              <div class="flex gap-1">
+                <button class="w-8 h-8 rounded-lg hover:bg-bg-tertiary flex items-center justify-center transition-colors">
+                  <svg class="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                  </svg>
+                </button>
+                <button class="w-8 h-8 rounded-lg hover:bg-bg-tertiary flex items-center justify-center transition-colors">
+                  <svg class="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div class="flex-1 p-6 flex flex-col items-center justify-center overflow-y-auto">
+              ${hasChain && state.characterChainResult.all_variants?.[0] ? `
+                <div class="relative max-w-sm w-full aspect-[2/3] rounded-xl overflow-hidden shadow-2xl">
+                  <img src="${state.characterChainResult.all_variants[0].url}" alt="角色定妆" class="w-full h-full object-cover" onclick="openImageModal('${state.characterChainResult.all_variants[0].url}')"/>
+                  <div class="absolute bottom-3 left-3 right-3 flex justify-between">
+                    <span class="tag tag-orange bg-black/60 border-0">正面全身</span>
+                  </div>
+                </div>
+              ` : `
+                <div class="w-full max-w-xs aspect-[2/3] rounded-xl bg-gradient-to-br from-pink-500/20 to-orange-500/20 flex flex-col items-center justify-center border border-border">
+                  <div class="text-5xl mb-3">👤</div>
+                  <p class="text-sm text-pink-300 font-medium">${currentChar.basicInfo?.name || '角色'}</p>
+                  <p class="text-xs text-text-tertiary mt-1">点击生成按钮生成定妆照</p>
+                </div>
+              `}
+              
+              <!-- 缩略图 -->
+              ${hasChain ? `
+                <div class="flex gap-2 mt-5">
+                  ${state.characterChainResult.all_variants.map((img, i) => `
+                    <div class="w-16 h-24 rounded-lg overflow-hidden cursor-pointer border-2 ${i === 0 ? 'border-orange-500' : 'border-transparent'} hover:border-orange-400 transition-all opacity-${i === 0 ? '100' : '70'} hover:opacity-100" onclick="swapMainImage('${img.url}')">
+                      <img src="${img.url}" alt="变体${i+1}" class="w-full h-full object-cover"/>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
+            </div>
+            
+            <!-- 五导演评分 -->
+            ${hasChain ? `
+              <div class="p-5 border-t border-border">
+                <div class="flex items-center justify-between mb-4">
+                  <h5 class="text-sm font-semibold text-text-primary">五导演会审评分</h5>
+                  <button class="text-xs text-orange-400 hover:text-orange-300">重新分析</button>
+                </div>
+                <div class="grid grid-cols-5 gap-4">
+                  ${[
+                    { name: 'ALPHA', score: 92, color: 'blue' },
+                    { name: 'BETA', score: 88, color: 'purple' },
+                    { name: 'GAMMA', score: 85, color: 'green' },
+                    { name: 'KAPPA', score: 95, color: 'pink' },
+                    { name: 'EPSILON', score: 90, color: 'amber' },
+                  ].map(d => `
+                    <div class="text-center">
+                      <div class="text-2xl font-bold text-${d.color}-400">${d.score}</div>
+                      <div class="text-[10px] text-text-tertiary mt-1">${d.name}</div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : `
+              <div class="p-5 border-t border-border">
+                <button onclick="generateCharacterChain()" class="w-full btn-primary py-3 text-sm font-medium">
+                  🎭 生成角色定妆照
+                </button>
+                <p class="text-xs text-center text-text-tertiary mt-2">生成4张变体 · 约需2-3分钟 · 约¥1.2</p>
+              </div>
+            `}
+          </div>
+          
+          <!-- 右栏：参数设置 -->
+          <div class="w-64 flex-shrink-0 space-y-4 overflow-y-auto scrollbar-thin">
+            <!-- 生成模型 -->
+            <div class="sidebar-panel">
+              <div class="sidebar-header">
+                <h4>🤖 生成模型</h4>
+              </div>
+              <div class="p-3 space-y-2">
+                <div class="p-3 rounded-lg border border-orange-500/30 bg-orange-500/10 cursor-pointer">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-orange-400">NB Pro</span>
+                    <span class="tag tag-orange text-[10px]">推荐</span>
+                  </div>
+                  <p class="text-xs text-text-tertiary mt-1">真人写实 · 最高精度</p>
+                </div>
+                <div class="p-3 rounded-lg border border-border cursor-pointer hover:border-text-muted transition-colors">
+                  <div class="text-sm font-medium text-text-secondary">NB2</div>
+                  <p class="text-xs text-text-tertiary mt-1">平衡质量与速度</p>
+                </div>
+                <div class="p-3 rounded-lg border border-border cursor-pointer hover:border-text-muted transition-colors">
+                  <div class="text-sm font-medium text-text-secondary">GPT Image 2</div>
+                  <p class="text-xs text-text-tertiary mt-1">创意风格化</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 画面比例 -->
+            <div class="sidebar-panel">
+              <div class="sidebar-header">
+                <h4>📐 画面比例</h4>
+              </div>
+              <div class="p-3">
+                <div class="grid grid-cols-3 gap-2">
+                  <button class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/30 text-center">
+                    <div class="text-xs font-medium text-orange-400">2:3</div>
+                    <div class="text-[10px] text-text-tertiary">竖版</div>
+                  </button>
+                  <button class="p-3 rounded-lg border border-border text-center hover:border-text-muted transition-colors">
+                    <div class="text-xs font-medium text-text-secondary">1:1</div>
+                    <div class="text-[10px] text-text-tertiary">方形</div>
+                  </button>
+                  <button class="p-3 rounded-lg border border-border text-center hover:border-text-muted transition-colors">
+                    <div class="text-xs font-medium text-text-secondary">3:4</div>
+                    <div class="text-[10px] text-text-tertiary">竖幅</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 视觉DNA -->
+            <div class="sidebar-panel">
+              <div class="sidebar-header">
+                <h4>🎯 视觉DNA</h4>
+              </div>
+              <div class="p-3">
+                <div class="flex flex-wrap gap-1.5">
+                  ${(currentChar.visualDNA || ['高颜值', '黑发', '杏眼', '瓜子脸']).map(d => `
+                    <span class="tag tag-orange text-[11px]">${d}</span>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+            
+            <!-- 服装造型 -->
+            <div class="sidebar-panel">
+              <div class="sidebar-header">
+                <h4>👕 服装造型</h4>
+              </div>
+              <div class="p-3">
+                <p class="text-xs text-text-secondary">${currentChar.costume?.mainOutfit || '简约休闲风格'}</p>
+              </div>
+            </div>
+            
+            <!-- 生成按钮 -->
+            ${!hasChain ? `
+              <button onclick="generateCharacterChain()" class="w-full btn-primary py-3.5 text-sm font-medium">
+                🎭 生成角色定妆照
+              </button>
+            ` : `
+              <div class="space-y-2">
+                <button onclick="regenerateCharacter()" class="w-full btn-secondary py-2.5 text-sm font-medium">
+                  🔄 重新生成
+                </button>
+                <button class="w-full btn-primary py-2.5 text-sm font-medium">
+                  ✅ 确认定稿
+                </button>
+              </div>
+            `}
+          </div>
+        </div>
+      `
+    }
+    
+    function selectCharacter(index) {
+      // 切换选中角色
+    }
+    
+    function swapMainImage(url) {
+      openImageModal(url)
+    }
+    
+    function generateCharacterChain() {
+      const kappaData = state.pipelineResult?.results?.kappa?.data?.content
+      if (!kappaData) {
+        showToast('请先运行五导演分析', 'warning')
+        return
+      }
+      
+      showToast('角色链条任务已启动', 'info')
+      
+      const content = document.getElementById('page-content')
+      renderCharacterPage(content)
+      
+      apiCall('/api/image/character-chain', 'POST', { characterData: kappaData, numVariants: 4 }).then(result => {
+        if (result.success) {
+          const taskId = result.taskId
+          pollTask(
+            taskId,
+            (data) => {},
+            (finalResult) => {
+              if (finalResult?.success) {
+                state.characterChainResult = finalResult
+                renderCharacterPage(document.getElementById('page-content'))
+                showToast('角色定妆照生成完成！', 'success')
+              } else {
+                showToast('生成失败: ' + (finalResult?.error || '未知错误'), 'error')
+              }
+            },
+            (error) => {
+              showToast('生成失败: ' + error, 'error')
+            }
+          )
+        } else {
+          showToast('启动失败: ' + (result.error || '未知错误'), 'error')
+        }
+      })
+    }
+    
+    function regenerateCharacter() {
+      state.characterChainResult = null
+      generateCharacterChain()
+    }
+    
+    // ========= 4. 分镜页 =========
+    function renderStoryboardPage(container) {
+      const gammaData = state.pipelineResult?.results?.gamma?.data?.content
+      const betaData = state.pipelineResult?.results?.beta?.data?.content
+      const shots = gammaData?.shots || []
+      const hasStoryboard = state.storyboardResult?.success || (state.storyboardResult?.shots && state.storyboardResult.shots.length > 0)
+      const hasSceneChain = state.sceneChainResult?.success
+      
+      if (shots.length === 0) {
+        container.innerHTML = `
+          <div class="max-w-xl mx-auto">
+            <div class="card p-12 text-center">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-bg-tertiary flex items-center justify-center">
+                <svg class="w-8 h-8 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-text-primary mb-2">请先完成剧本分析</h3>
+              <p class="text-sm text-text-tertiary mb-6">分镜设计需要基于剧本分析结果生成</p>
+              <button onclick="showPage('script')" class="btn-primary px-6 py-2.5 text-sm font-medium">
+                去分析剧本
+              </button>
+            </div>
+          </div>
+        `
+        return
+      }
+      
+      const paragraphs = [
+        { name: '开场空镜', type: '空镜', shots: shots.filter((s, i) => i < 3), duration: '15s' },
+        { name: '初次相遇', type: '对话', shots: shots.filter((s, i) => i >= 3 && i < 7), duration: '25s' },
+        { name: '深入交谈', type: '对话', shots: shots.filter((s, i) => i >= 7), duration: '20s' },
+      ]
+      
+      const currentPara = paragraphs[state.currentParaIndex || 0]
+      const currentShot = currentPara.shots[state.currentShotIndex] || currentPara.shots[0]
+      
+      document.getElementById('header-actions').innerHTML = `
+        <div class="flex items-center gap-2">
+          <div class="capsule-group">
+            <button class="capsule-btn active">文字模式</button>
+            <button class="capsule-btn">带图模式</button>
+          </div>
+          <select class="input-field text-sm px-3 py-1.5 w-24">
+            <option>16:9 宽屏</option>
+            <option>2.35:1 电影</option>
+            <option>9:16 竖屏</option>
+          </select>
+          <select class="input-field text-sm px-3 py-1.5 w-28">
+            <option>NB Pro (推荐)</option>
+            <option>NB2</option>
+            <option>GPT Image 2</option>
+          </select>
+          <button class="btn-secondary px-4 py-2 text-sm font-medium">全局质检</button>
+          <button class="btn-primary px-4 py-2 text-sm font-medium">导出</button>
+        </div>
+      `
+      
+      container.innerHTML = `
+        <div class="h-full flex gap-4" style="height: calc(100vh - 120px);">
+          <!-- 左栏：段落列表 -->
+          <div class="sidebar-panel flex flex-col w-56 flex-shrink-0">
+            <div class="sidebar-header">
+              <h4>📋 段落列表</h4>
+            </div>
+            <div class="flex-1 overflow-y-auto">
+              ${paragraphs.map((p, i) => `
+                <div class="list-item ${i === state.currentParaIndex ? 'active' : ''}" onclick="selectParagraph(${i})">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-sm font-medium text-text-primary">${p.name}</span>
+                    <span class="tag ${p.type === '空镜' ? 'tag-green' : p.type === '动作' ? 'tag-red' : 'tag-blue'} text-[10px]">${p.type}</span>
+                  </div>
+                  <div class="text-xs text-text-tertiary">${p.shots.length}镜 · ${p.duration}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="p-3 border-t border-border space-y-1.5">
+              <div class="flex justify-between text-xs">
+                <span class="text-text-tertiary">总镜头</span>
+                <span class="font-medium text-text-primary">${shots.length}</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-text-tertiary">总时长</span>
+                <span class="font-medium text-text-primary">${gammaData.totalDuration || 0}秒</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-text-tertiary">A类镜头</span>
+                <span class="font-medium text-orange-400">${Math.ceil(shots.length * 0.3)}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 中栏：分镜网格 -->
+          <div class="sidebar-panel flex flex-col flex-1 min-w-0 overflow-hidden">
+            <div class="sidebar-header">
+              <div>
+                <h4>${currentPara.name}</h4>
+                <span class="text-xs text-text-tertiary">${currentPara.shots.length} 个镜头 · ${currentPara.duration}</span>
+              </div>
+              <button class="text-xs text-orange-400 hover:text-orange-300 font-medium">+ 添加镜头</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-4">
+              <div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                ${currentPara.shots.map((shot, i) => {
+                  const sbShot = state.storyboardResult?.shots?.find(s => s.shotNumber === shot.shotNumber)
+                  const imgUrl = sbShot?.image?.url
+                  const isActive = i === state.currentShotIndex
+                  
+                  return `
+                    <div class="rounded-xl overflow-hidden border ${isActive ? 'border-orange-500 ring-2 ring-orange-500/30' : 'border-border'} bg-bg-card cursor-pointer hover:border-orange-500/50 transition-all" onclick="selectShotInStoryboard(${i})">
+                      <div class="aspect-video bg-bg-tertiary relative">
+                        ${imgUrl ? `
+                          <img src="${imgUrl}" alt="镜${shot.shotNumber}" class="w-full h-full object-cover" onclick="event.stopPropagation(); openImageModal('${imgUrl}')"/>
+                        ` : `
+                          <div class="w-full h-full flex flex-col items-center justify-center text-text-muted">
+                            <span class="text-xl mb-1">🎬</span>
+                            <span class="text-xs">未生成</span>
+                          </div>
+                        `}
+                        <div class="absolute top-2 left-2 px-2 py-0.5 bg-black/60 text-white text-xs rounded">
+                          ${shot.shotNumber || i+1} · ${shot.duration}s
+                        </div>
+                        <div class="absolute top-2 right-2">
+                          <span class="tag tag-neutral bg-black/60 border-0 text-[10px]">${shot.shotType || '中景'}</span>
+                        </div>
+                      </div>
+                      <div class="p-2.5">
+                        <p class="text-xs text-text-secondary line-clamp-2">${shot.description || ''}</p>
+                        ${shot.dialogue ? `<p class="text-xs text-orange-400 mt-1 italic line-clamp-1">"${shot.dialogue}"</p>` : ''}
+                      </div>
+                    </div>
+                  `
+                }).join('')}
+              </div>
+              
+              ${!hasStoryboard ? `
+                <div class="mt-6 text-center">
+                  <button onclick="generateStoryboardImages()" class="btn-primary px-6 py-2.5 text-sm font-medium">
+                    🎬 生成本段落分镜
+                  </button>
+                  <p class="text-xs text-text-tertiary mt-2">约需${(currentPara.shots.length * 0.5).toFixed(1)}分钟 · 约¥${(currentPara.shots.length * 0.1).toFixed(2)}</p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+          
+          <!-- 右栏：镜头详情 -->
+          <div class="w-64 flex-shrink-0 space-y-4 overflow-y-auto scrollbar-thin">
+            <div class="sidebar-panel">
+              <div class="sidebar-header">
+                <h4>🎬 镜头详情</h4>
+                <span class="tag tag-orange">镜 ${currentShot.shotNumber || 1}</span>
+              </div>
+              <div class="p-4 space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <span class="text-[11px] text-text-tertiary">景别</span>
+                    <p class="text-sm font-medium text-text-primary mt-0.5">${currentShot.shotType || '中景'}</p>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-text-tertiary">时长</span>
+                    <p class="text-sm font-medium text-text-primary mt-0.5">${currentShot.duration || 0}s</p>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-text-tertiary">运镜</span>
+                    <p class="text-sm font-medium text-text-primary mt-0.5">${currentShot.movement || '固定'}</p>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-text-tertiary">角度</span>
+                    <p class="text-sm font-medium text-text-primary mt-0.5">${currentShot.angle || '平视'}</p>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div>
+                  <span class="text-[11px] text-text-tertiary">描述</span>
+                  <p class="text-xs text-text-secondary mt-1 leading-relaxed">${currentShot.description || '—'}</p>
+                </div>
+                ${currentShot.dialogue ? `
+                  <div>
+                    <span class="text-[11px] text-text-tertiary">台词</span>
+                    <p class="text-xs text-orange-400 italic mt-1">"${currentShot.dialogue}"</p>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            
+            <!-- 场景风格 -->
+            <div class="sidebar-panel">
+              <div class="sidebar-header">
+                <h4>🎨 场景风格参考</h4>
+              </div>
+              <div class="p-3">
+                ${hasSceneChain && state.sceneChainResult.all_variants?.[0] ? `
+                  <div class="aspect-video rounded-lg overflow-hidden mb-2">
+                    <img src="${state.sceneChainResult.all_variants[0].url}" alt="场景参考" class="w-full h-full object-cover"/>
+                  </div>
+                  <p class="text-xs text-text-tertiary">${betaData?.visualStyle || '写实风格'}</p>
+                ` : `
+                  <button onclick="generateSceneChain()" class="w-full btn-secondary py-2 text-xs font-medium">
+                    生成场景概念图
+                  </button>
+                `}
+              </div>
+            </div>
+            
+            <!-- 质量评分 -->
+            ${hasStoryboard && state.storyboardResult.shots?.[state.currentShotIndex] ? `
+              <div class="sidebar-panel">
+                <div class="sidebar-header">
+                  <h4>⭐ 质量评分</h4>
+                </div>
+                <div class="p-4 space-y-2.5">
+                  <div class="score-bar">
+                    <span class="label">构图</span>
+                    <div class="bar"><div class="bar-fill" style="width: 85%"></div></div>
+                    <span class="score">85</span>
+                  </div>
+                  <div class="score-bar">
+                    <span class="label">光影</span>
+                    <div class="bar"><div class="bar-fill" style="width: 82%"></div></div>
+                    <span class="score">82</span>
+                  </div>
+                  <div class="score-bar">
+                    <span class="label">一致性</span>
+                    <div class="bar"><div class="bar-fill" style="width: 78%"></div></div>
+                    <span class="score">78</span>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+            
+            <!-- 操作按钮 -->
+            ${hasStoryboard ? `
+              <div class="space-y-2">
+                <button onclick="regenerateCurrentShot()" class="w-full btn-secondary py-2.5 text-sm font-medium">
+                  🔄 重生成当前镜头
+                </button>
+                <button class="w-full btn-primary py-2.5 text-sm font-medium">
+                  📥 导出全部
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `
+    }
+    
+    function selectParagraph(index) {
+      state.currentParaIndex = index
+      state.currentShotIndex = 0
+      renderStoryboardPage(document.getElementById('page-content'))
+    }
+    
+    function selectShotInStoryboard(index) {
+      state.currentShotIndex = index
+      renderStoryboardPage(document.getElementById('page-content'))
+    }
+    
+    function generateSceneChain() {
+      const betaData = state.pipelineResult?.results?.beta?.data?.content
+      if (!betaData) {
+        showToast('请先运行五导演分析', 'warning')
+        return
+      }
+      
+      showToast('场景链任务已启动', 'info')
+      
+      apiCall('/api/image/scene-chain', 'POST', { sceneData: betaData, numVariants: 3 }).then(result => {
+        if (result.success) {
+          const taskId = result.taskId
+          pollTask(
+            taskId,
+            () => {},
+            (finalResult) => {
+              if (finalResult?.success) {
+                state.sceneChainResult = finalResult
+                renderStoryboardPage(document.getElementById('page-content'))
+                showToast('场景概念图生成完成！', 'success')
+              } else {
+                showToast('生成失败', 'error')
+              }
+            },
+            (error) => {
+              showToast('生成失败: ' + error, 'error')
+            }
+          )
+        }
+      })
+    }
+    
+    function generateStoryboardImages() {
+      const gammaData = state.pipelineResult?.results?.gamma?.data?.content
+      const shots = gammaData?.shots || []
+      
+      showToast('分镜生图任务已启动', 'info')
+      
+      let charRefs = null
+      let sceneRefs = null
+      if (state.characterChainResult?.all_variants) {
+        charRefs = state.characterChainResult.all_variants.slice(0, 2).map(v => v.url)
+      }
+      if (state.sceneChainResult?.all_variants) {
+        sceneRefs = state.sceneChainResult.all_variants.slice(0, 1).map(v => v.url)
+      }
+      
+      apiCall('/api/image/storyboard', 'POST', {
+        shots: shots,
+        characterReferenceUrls: charRefs,
+        sceneReferenceUrls: sceneRefs,
+      }).then(result => {
+        if (result.success) {
+          const taskId = result.taskId
+          pollTask(
+            taskId,
+            (data) => {},
+            (finalResult) => {
+              state.storyboardResult = finalResult
+              renderStoryboardPage(document.getElementById('page-content'))
+              showToast(`分镜图生成完成！共 ${finalResult?.success_count || 0}/${finalResult?.shots?.length || 0} 张`, 'success')
+            },
+            (error) => {
+              showToast('生成失败: ' + error, 'error')
+            }
+          )
+        } else {
+          showToast('启动失败: ' + (result.error || '未知错误'), 'error')
+        }
+      })
+    }
+    
+    function regenerateCurrentShot() {
+      showToast('重新生成当前镜头...', 'info')
+    }
+    
+    // ========= 5. 成本中心 =========
+    function renderCostPage(container) {
+      const total = calculateTotalCost()
+      const pipelineCost = state.pipelineResult?.totalCost || 0
+      const charCost = state.characterChainResult?.total_cost || 0
+      const sceneCost = state.sceneChainResult?.total_cost || 0
+      const sbCost = state.storyboardResult?.total_cost || 0
+      
+      const breakdown = []
+      if (pipelineCost > 0) breakdown.push({ name: '五导演分析', cost: pipelineCost, icon: '🤖' })
+      if (charCost > 0) breakdown.push({ name: '角色一致性链条', cost: charCost, icon: '🎭' })
+      if (sceneCost > 0) breakdown.push({ name: '场景一致性链条', cost: sceneCost, icon: '🏞️' })
+      if (sbCost > 0) breakdown.push({ name: '分镜生图', cost: sbCost, icon: '🎬' })
+      
+      container.innerHTML = `
+        <div class="max-w-5xl mx-auto space-y-6">
+          <!-- 总消耗卡片 -->
+          <div class="card p-6 bg-gradient-to-r from-orange-500/20 to-amber-500/20 border-orange-500/30">
+            <div class="text-sm text-text-tertiary mb-1">项目累计消耗</div>
+            <div class="text-3xl font-bold text-orange-400">${formatCost(total)}</div>
+            <div class="text-sm text-text-tertiary mt-2">
+              五导演LLM调用 + 生图API消耗
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <!-- 消耗明细 -->
+            <div class="card p-5">
+              <h3 class="text-sm font-semibold text-text-primary mb-4">📊 消耗明细</h3>
+              <div class="space-y-2">
+                ${breakdown.length > 0 ? breakdown.map(item => `
+                  <div class="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg">
+                    <div class="flex items-center gap-3">
+                      <span class="text-lg">${item.icon}</span>
+                      <span class="text-sm text-text-secondary">${item.name}</span>
+                    </div>
+                    <span class="font-semibold text-text-primary">${formatCost(item.cost)}</span>
+                  </div>
+                `).join('') : `
+                  <div class="text-center py-8">
+                    <div class="text-2xl mb-2">💰</div>
+                    <p class="text-sm text-text-tertiary">暂无消耗数据</p>
+                  </div>
+                `}
+              </div>
+            </div>
+            
+            <!-- 定价参考 -->
+            <div class="card p-5">
+              <h3 class="text-sm font-semibold text-text-primary mb-4">📋 定价参考</h3>
+              <div class="space-y-4">
+                <div>
+                  <div class="text-xs font-medium text-text-tertiary mb-2 uppercase">LLM 模型</div>
+                  <div class="space-y-1.5 text-sm">
+                    <div class="flex justify-between"><span class="text-text-secondary">千问3.7 Plus</span><span class="text-text-tertiary">¥0.012/0.048 per 1k</span></div>
+                    <div class="flex justify-between"><span class="text-text-secondary">豆包 Seed 2.0 Pro</span><span class="text-text-tertiary">¥0.02/0.06 per 1k</span></div>
+                    <div class="flex justify-between"><span class="text-text-secondary">DeepSeek</span><span class="text-text-tertiary">¥0.002/0.008 per 1k</span></div>
+                    <div class="flex justify-between"><span class="text-text-secondary">Kimi K2.6</span><span class="text-text-tertiary">¥0.015/0.06 per 1k</span></div>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div>
+                  <div class="text-xs font-medium text-text-tertiary mb-2 uppercase">生图模型</div>
+                  <div class="space-y-1.5 text-sm">
+                    <div class="flex justify-between"><span class="text-text-secondary">GPT-Image-2</span><span class="text-text-tertiary">¥0.10 / 张</span></div>
+                    <div class="flex justify-between"><span class="text-text-secondary">NanoBanana 2</span><span class="text-text-tertiary">¥0.10 / 张</span></div>
+                    <div class="flex justify-between"><span class="text-text-secondary">NanoBanana Pro</span><span class="text-text-tertiary">¥0.30 / 张</span></div>
+                    <div class="flex justify-between"><span class="text-text-secondary">即梦 5.0</span><span class="text-text-tertiary">¥0.08 / 张</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 套餐对比 -->
+          <div class="card p-6">
+            <h3 class="text-base font-semibold text-text-primary mb-5 text-center">💎 选择适合你的套餐</h3>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="p-5 rounded-xl bg-bg-tertiary border border-border text-center">
+                <div class="text-xs text-text-tertiary mb-1">入门级</div>
+                <div class="text-xl font-bold text-text-primary mb-4">标准版</div>
+                <ul class="text-xs text-text-secondary space-y-2 mb-5 text-left">
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 2导演联合分析</li>
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 角色一致性链条</li>
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 基础分镜生成</li>
+                  <li class="flex items-center gap-2 text-text-tertiary"><span>✗</span> 风格多样性</li>
+                </ul>
+                <div class="text-lg font-bold text-orange-400">¥0.5<span class="text-xs font-normal text-text-tertiary">/次起</span></div>
+              </div>
+              
+              <div class="p-5 rounded-xl bg-orange-500/10 border-2 border-orange-500/50 text-center relative -mt-2">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span class="tag tag-orange">最受欢迎</span>
+                </div>
+                <div class="text-xs text-orange-400 mb-1">进阶级</div>
+                <div class="text-xl font-bold text-text-primary mb-4">专业版</div>
+                <ul class="text-xs text-text-secondary space-y-2 mb-5 text-left">
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 4导演联合分析</li>
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 角色+场景双链条</li>
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 高质量分镜生成</li>
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 3种风格对比</li>
+                </ul>
+                <div class="text-lg font-bold text-orange-400">¥1.5<span class="text-xs font-normal text-text-tertiary">/次起</span></div>
+              </div>
+              
+              <div class="p-5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-center">
+                <div class="text-xs text-purple-400 mb-1">旗舰级</div>
+                <div class="text-xl font-bold text-text-primary mb-4">旗舰版</div>
+                <ul class="text-xs text-text-secondary space-y-2 mb-5 text-left">
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 5导演全链路分析</li>
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 全角色一致性链条</li>
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 全部分镜+精修</li>
+                  <li class="flex items-center gap-2"><span class="text-green-400">✓</span> 5种风格探索</li>
+                </ul>
+                <div class="text-lg font-bold text-purple-400">¥3.0<span class="text-xs font-normal text-text-tertiary">/次起</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    }
+    
+    function calculateTotalCost() {
+      let total = 0
+      if (state.pipelineResult?.totalCost) total += state.pipelineResult.totalCost
+      if (state.characterChainResult?.total_cost) total += state.characterChainResult.total_cost
+      if (state.sceneChainResult?.total_cost) total += state.sceneChainResult.total_cost
+      if (state.storyboardResult?.total_cost) total += state.storyboardResult.total_cost
+      return total
+    }
+    
+    // ========= 初始化 =========
+    async function initApp() {
+      await loadProjects()
+      showPage('dashboard')
+    }
+    
+    initApp()
+  </script>
 </body>
 </html>

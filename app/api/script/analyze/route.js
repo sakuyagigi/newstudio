@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { analyzeScript } from '../../../lib/api516'
+import { analyzeScript } from '../../../../lib/api516'
 
 // 剧本分析 API - 服务端转发，保护API Key
 export async function POST(request) {

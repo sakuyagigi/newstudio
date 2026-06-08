@@ -17,7 +17,8 @@
     min-height: 100vh;
   }
   
-  .film-strip {
+  /* 胶片齿孔效果 */
+  .film-strip-h {
     background: repeating-linear-gradient(
       90deg,
       #1f2937 0px,
@@ -27,1056 +28,1359 @@
     );
   }
   
-  .storyboard-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  .film-strip-v {
+    background: repeating-linear-gradient(
+      0deg,
+      #1f2937 0px,
+      #1f2937 8px,
+      #374151 8px,
+      #374151 16px
+    );
   }
   
-  .storyboard-card:hover {
-    transform: translateY(-4px) translateX(4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
+  /* 段落类型颜色 */
+  .type-dialogue { border-left: 4px solid #8b5cf6; }
+  .type-action { border-left: 4px solid #ef4444; }
+  .type-transition { border-left: 4px solid #6b7280; }
+  .type-establishing { border-left: 4px solid #10b981; }
+  .type-flashback { border-left: 4px solid #f59e0b; }
   
-  .timeline-dot {
-    position: relative;
-  }
+  .type-badge-dialogue { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+  .type-badge-action { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .type-badge-transition { background: linear-gradient(135deg, #6b7280, #4b5563); }
+  .type-badge-establishing { background: linear-gradient(135deg, #10b981, #059669); }
+  .type-badge-flashback { background: linear-gradient(135deg, #f59e0b, #d97706); }
   
-  .timeline-dot::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #f97316;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
-    z-index: 10;
-  }
-  
-  .timeline-line {
-    position: relative;
-  }
-  
-  .timeline-line::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 100%;
-    background: linear-gradient(180deg, #e5e7eb 0%, #d1d5db 50%, #e5e7eb 100%);
-  }
-  
-  .grade-a { border-left: 4px solid #ef4444; }
-  .grade-b { border-left: 4px solid #f97316; }
-  .grade-c { border-left: 4px solid #3b82f6; }
+  /* ABC分级 */
+  .grade-a { border: 2px solid #ef4444; }
+  .grade-b { border: 2px solid #f97316; }
+  .grade-c { border: 2px solid #3b82f6; }
   
   .grade-badge-a { background: linear-gradient(135deg, #ef4444, #dc2626); }
   .grade-badge-b { background: linear-gradient(135deg, #f97316, #ea580c); }
   .grade-badge-c { background: linear-gradient(135deg, #3b82f6, #2563eb); }
   
-  .sidebar {
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .sidebar.hidden-sidebar {
-    transform: translateX(100%);
-  }
-  
-  .sidebar.visible-sidebar {
-    transform: translateX(0);
-  }
-  
-  .progress-film {
-    background: linear-gradient(90deg, #fbbf24, #f97316, #ef4444);
-    position: relative;
+  /* 三栏布局 */
+  .main-layout {
+    display: flex;
+    gap: 1rem;
+    height: calc(100vh - 140px);
     overflow: hidden;
   }
   
-  .progress-film::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 12px,
-      rgba(0,0,0,0.1) 12px,
-      rgba(0,0,0,0.1) 16px
-    );
+  .left-panel {
+    width: 220px;
+    flex-shrink: 0;
+    overflow-y: auto;
   }
   
-  .scene-divider {
-    position: relative;
+  .center-panel {
+    flex: 1;
+    overflow-y: auto;
+    min-width: 0;
   }
   
-  .scene-divider::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #d97706, transparent);
-  }
-  
-  .thumbnail-placeholder {
-    background: linear-gradient(135deg, #fef3c7, #fed7aa);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .thumbnail-placeholder::after {
-    content: '🎬';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    opacity: 0.5;
-  }
-  
-  .btn-primary {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-    transition: all 0.2s ease;
-  }
-  
-  .btn-primary:hover {
-    background: linear-gradient(135deg, #ea580c, #c2410c);
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
-  }
-  
-  .btn-secondary {
+  .right-panel {
+    width: 320px;
+    flex-shrink: 0;
+    overflow-y: auto;
     background: white;
+    border-radius: 1rem;
     border: 1px solid #fed7aa;
-    transition: all 0.2s ease;
   }
   
-  .btn-secondary:hover {
+  /* 段落列表项 */
+  .paragraph-item {
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  
+  .paragraph-item:hover {
     background: #fff7ed;
-    border-color: #fdba74;
   }
   
-  .filter-btn {
-    transition: all 0.2s ease;
+  .paragraph-item.active {
+    background: #fff7ed;
+    border-left-color: #f97316;
   }
   
-  .filter-btn.active {
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  /* 质检高亮 */
+  .qa-error {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.4);
+    animation: pulse-error 2s infinite;
   }
   
-  .card-detail {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out, padding 0.3s ease;
+  .qa-warning {
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4);
   }
   
-  .card-detail.expanded {
-    max-height: 500px;
+  .qa-success {
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
   }
   
-  .glow-effect {
-    animation: glow 2s ease-in-out infinite alternate;
+  @keyframes pulse-error {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.2); }
   }
   
-  @keyframes glow {
-    from { box-shadow: 0 0 5px rgba(249, 115, 22, 0.3); }
-    to { box-shadow: 0 0 20px rgba(249, 115, 22, 0.6); }
+  /* 镜头卡片悬停效果 */
+  .shot-card {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
+  .shot-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+  }
+  
+  .shot-card.active {
+    ring: 3px solid #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
+  }
+  
+  /* 插入镜头按钮 */
+  .shot-insert-btn {
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .shot-container:hover .shot-insert-btn {
+    opacity: 1;
+  }
+  
+  /* 可编辑文本框 */
+  [contenteditable="true"]:focus {
+    outline: 2px solid #f97316;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  
+  /* 拖拽样式 */
+  .shot-card.dragging {
+    opacity: 0.5;
+    transform: rotate(3deg);
+  }
+  
+  .drop-zone {
+    border: 2px dashed #f97316;
+    background: rgba(249, 115, 22, 0.1);
+  }
+  
+  /* 滚动条美化 */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   
   ::-webkit-scrollbar-track {
-    background: #fef3c7;
-    border-radius: 3px;
+    background: #f1f1f1;
+    border-radius: 4px;
   }
   
   ::-webkit-scrollbar-thumb {
-    background: #fdba74;
-    border-radius: 3px;
+    background: #d1d5db;
+    border-radius: 4px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: #fb923c;
+    background: #9ca3af;
+  }
+  
+  /* 折叠动画 */
+  .paragraph-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .paragraph-content.expanded {
+    max-height: 2000px;
+  }
+  
+  /* 锁定标记 */
+  .locked-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
   }
 </style>
 </head>
-<body class="overflow-hidden">
+<body class="pb-20">
 
-<!-- Main Container -->
-<div class="h-screen flex flex-col">
-  
-  <!-- Top Toolbar -->
-  <header class="bg-white/80 backdrop-blur-md border-b border-orange-100 px-6 py-3 flex items-center justify-between shadow-sm">
-    <!-- Left: Stats -->
-    <div class="flex items-center gap-6">
-      <div class="flex items-center gap-2">
-        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
-          γ
-        </div>
-        <div>
-          <h1 class="text-lg font-semibold text-gray-800">节奏导演 GAMMA</h1>
-          <p class="text-xs text-gray-500">分镜生成面板</p>
-        </div>
-      </div>
-      
-      <div class="h-8 w-px bg-orange-200 mx-2"></div>
-      
-      <div class="flex items-center gap-4 text-sm">
-        <div class="flex items-center gap-1.5">
-          <span class="text-gray-500">总镜数</span>
-          <span class="font-semibold text-gray-800 text-base" id="totalShots">18</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="text-gray-500">总时长</span>
-          <span class="font-semibold text-gray-800 text-base" id="totalDuration">2:34</span>
-        </div>
-        <div class="h-5 w-px bg-gray-200"></div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-3 h-3 rounded-full bg-red-500"></span>
-          <span class="text-gray-500">A级</span>
-          <span class="font-semibold text-red-600" id="gradeACount">4</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-3 h-3 rounded-full bg-orange-500"></span>
-          <span class="text-gray-500">B级</span>
-          <span class="font-semibold text-orange-600" id="gradeBCount">8</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-          <span class="text-gray-500">C级</span>
-          <span class="font-semibold text-blue-600" id="gradeCCount">6</span>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Middle: ABC Filter -->
-    <div class="flex items-center gap-1 bg-orange-50 p-1 rounded-lg">
-      <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-700 hover:bg-white active" data-filter="all" onclick="setFilter('all', this)">
-        全部
-      </button>
-      <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-500 hover:bg-white" data-filter="A" onclick="setFilter('A', this)">
-        <span class="w-2 h-2 rounded-full bg-red-500 inline-block mr-1.5 align-middle"></span>
-        A级 · 关键镜头
-      </button>
-      <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-500 hover:bg-white" data-filter="B" onclick="setFilter('B', this)">
-        <span class="w-2 h-2 rounded-full bg-orange-500 inline-block mr-1.5 align-middle"></span>
-        B级 · 重要镜头
-      </button>
-      <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-500 hover:bg-white" data-filter="C" onclick="setFilter('C', this)">
-        <span class="w-2 h-2 rounded-full bg-blue-500 inline-block mr-1.5 align-middle"></span>
-        C级 · 过渡镜头
-      </button>
-    </div>
-    
-    <!-- Right: Actions -->
+<!-- 顶部导航 -->
+<div class="bg-white/80 backdrop-blur-sm border-b border-orange-200 sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <button class="btn-secondary px-4 py-2 rounded-lg text-sm font-medium text-gray-700 flex items-center gap-2" onclick="exportStoryboard()">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-        </svg>
-        导出分镜表
-      </button>
-      <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2" onclick="generateAll()">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-        生成全部
-      </button>
-    </div>
-  </header>
-  
-  <!-- Progress Bar -->
-  <div class="h-1.5 bg-gray-100">
-    <div class="progress-film h-full w-3/5 rounded-r-full"></div>
-  </div>
-  
-  <!-- Main Content Area -->
-  <div class="flex-1 flex overflow-hidden">
-    
-    <!-- Timeline + Storyboard Area -->
-    <div class="flex-1 flex overflow-hidden" id="mainContent">
-      
-      <!-- Left Timeline -->
-      <div class="w-24 flex-shrink-0 pt-8">
-        <div class="timeline-line h-full relative flex flex-col">
-          <!-- Time markers will be generated by JS -->
-          <div id="timelineMarkers"></div>
-        </div>
+      <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+        Γ
       </div>
-      
-      <!-- Storyboard Cards -->
-      <div class="flex-1 overflow-y-auto p-6 pr-8" id="storyboardContainer">
-        <div class="max-w-2xl mx-auto space-y-4" id="storyboardList">
-          <!-- Scene 1 -->
-          <div class="scene-divider py-3">
-            <span class="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full relative z-10">
-              第一幕 · 清晨邂逅
-            </span>
-          </div>
-          
-          <!-- Storyboard cards will be rendered by JS -->
-        </div>
+      <div>
+        <h1 class="text-lg font-bold text-gray-800">分镜生成面板</h1>
+        <p class="text-xs text-gray-500">节奏导演 GAMMA · 第3幕 第1场</p>
       </div>
-      
     </div>
     
-    <!-- Right Sidebar (Details Panel) -->
-    <aside class="sidebar visible-sidebar w-96 bg-white/95 backdrop-blur-md border-l border-orange-100 flex flex-col shadow-xl" id="sidebar">
-      <div class="p-5 border-b border-orange-50">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-semibold text-gray-800">分镜详情</h2>
-          <button class="text-gray-400 hover:text-gray-600 p-1" onclick="closeSidebar()">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-      
-      <!-- Large Preview -->
-      <div class="p-5 border-b border-orange-50">
-        <div class="aspect-video rounded-lg bg-gradient-to-br from-amber-100 to-orange-100 overflow-hidden relative" id="detailPreview">
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-center">
-              <div class="text-5xl mb-2">🎬</div>
-              <p class="text-sm text-orange-600/60">分镜预览</p>
-            </div>
-          </div>
-          <div class="absolute top-3 right-3">
-            <span class="grade-badge-b text-white text-xs font-bold px-2 py-0.5 rounded" id="detailGrade">B级</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Details Content -->
-      <div class="flex-1 overflow-y-auto p-5 space-y-5">
-        
-        <!-- Shot Info -->
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-lg font-semibold text-gray-800" id="detailTitle">镜号 01</h3>
-            <span class="text-sm text-orange-600 font-medium" id="detailDuration">00:08</span>
-          </div>
-          <p class="text-sm text-gray-600 leading-relaxed" id="detailDescription">
-            清晨的阳光透过窗帘缝隙洒进房间，主人公缓缓睁开眼睛，新的一天开始了。
-          </p>
-        </div>
-        
-        <!-- Parameters -->
-        <div class="bg-orange-50/50 rounded-xl p-4 space-y-3">
-          <h4 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-            </svg>
-            镜头参数
-          </h4>
-          <div class="grid grid-cols-2 gap-3 text-sm">
-            <div class="flex justify-between">
-              <span class="text-gray-500">景别</span>
-              <span class="font-medium text-gray-700" id="detailShotType">特写</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">角度</span>
-              <span class="font-medium text-gray-700" id="detailAngle">平视</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">运镜</span>
-              <span class="font-medium text-gray-700" id="detailMovement">推镜</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">光线</span>
-              <span class="font-medium text-gray-700" id="detailLighting">柔光</span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Characters -->
-        <div>
-          <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            出场角色
-          </h4>
-          <div class="flex flex-wrap gap-2" id="detailCharacters">
-            <span class="bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-1 rounded-full">林小雨</span>
-          </div>
-        </div>
-        
-        <!-- Prompt -->
-        <div>
-          <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-            </svg>
-            AI 提示词
-          </h4>
-          <div class="bg-gray-50 rounded-lg p-3 text-xs text-gray-600 font-mono leading-relaxed max-h-32 overflow-y-auto" id="detailPrompt">
-            清晨阳光，柔和光线，房间内部，窗帘，一个年轻女孩缓缓睁开眼睛，特写镜头，推镜运动，暖色调，电影质感，浅景深
-          </div>
-        </div>
-        
-      </div>
-      
-      <!-- Sidebar Actions -->
-      <div class="p-5 border-t border-orange-50 space-y-2">
-        <button class="w-full btn-primary py-2.5 rounded-lg text-sm font-medium text-white flex items-center justify-center gap-2" onclick="regenerateShot()">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-          </svg>
-          重新生成
+    <div class="flex items-center gap-3">
+      <!-- 模式切换 -->
+      <div class="flex bg-gray-100 rounded-lg p-1">
+        <button id="textModeBtn" class="px-3 py-1.5 text-sm rounded-md bg-white shadow-sm text-orange-600 font-medium transition-all">
+          文字模式
         </button>
-        <div class="flex gap-2">
-          <button class="flex-1 btn-secondary py-2 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-center gap-1.5" onclick="adjustParams()">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-            </svg>
-            调整参数
-          </button>
-          <button class="flex-1 btn-secondary py-2 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-center gap-1.5" onclick="lockShot()">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
-            锁定此镜
-          </button>
+        <button id="imageModeBtn" class="px-3 py-1.5 text-sm rounded-md text-gray-500 hover:text-gray-700 transition-all">
+          带图模式
+        </button>
+      </div>
+      
+      <!-- 画面比例（项目级锁定） -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-500">比例</span>
+        <select id="ratioSelect" class="px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300">
+          <option value="16:9">16:9 宽屏</option>
+          <option value="9:16">9:16 竖屏</option>
+          <option value="1:1">1:1 方形</option>
+          <option value="2.35:1">2.35:1 电影</option>
+          <option value="4:3">4:3 标清</option>
+        </select>
+        <button onclick="toggleRatioLock()" id="ratioLockBtn" class="p-1.5 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded transition-colors" title="锁定比例">
+          🔓
+        </button>
+      </div>
+      
+      <!-- 模型选择 -->
+      <select id="modelSelect" class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300">
+        <option value="nb-pro">🎯 NB Pro（推荐）</option>
+        <option value="nb2">🎨 NB2</option>
+        <option value="gpt2">🖼️ GPT Image 2</option>
+        <option value="jimeng-5">✨ 即梦 5.0</option>
+        <option value="jimeng-4">✨ 即梦 4.0</option>
+        <option value="jimeng-3">✨ 即梦 3.0</option>
+      </select>
+      
+      <!-- 全局质检 -->
+      <button id="qaBtn" class="px-4 py-1.5 text-sm bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors flex items-center gap-1.5">
+        <span>🔍</span>
+        <span>全局质检</span>
+      </button>
+      
+      <!-- 导出 -->
+      <button class="px-4 py-1.5 text-sm bg-gray-700 hover:bg-gray-800 text-white rounded-lg transition-colors flex items-center gap-1.5">
+        <span>📤</span>
+        <span>导出</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 主内容区 -->
+<div class="px-4 py-4">
+  <div class="main-layout max-w-full">
+    
+    <!-- 左栏：段落列表 -->
+    <div class="left-panel">
+      <div class="bg-white rounded-2xl shadow-sm border border-orange-100 p-4">
+        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+          <span>📋</span>
+          段落列表
+        </h3>
+        <div id="paragraphNav" class="space-y-1">
+          <!-- 段落导航通过JS生成 -->
         </div>
       </div>
-    </aside>
+      
+      <!-- 统计信息 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-orange-100 p-4 mt-4">
+        <h3 class="font-bold text-gray-800 mb-3 text-sm">统计信息</h3>
+        <div class="grid grid-cols-2 gap-3 text-center">
+          <div>
+            <div class="text-xl font-bold text-gray-800" id="statParagraphs">6</div>
+            <div class="text-xs text-gray-500">段落</div>
+          </div>
+          <div>
+            <div class="text-xl font-bold text-gray-800" id="statShots">42</div>
+            <div class="text-xs text-gray-500">镜头</div>
+          </div>
+          <div>
+            <div class="text-xl font-bold text-orange-600" id="statDuration">2:04</div>
+            <div class="text-xs text-gray-500">总时长</div>
+          </div>
+          <div>
+            <div class="text-xl font-bold text-purple-600" id="statGradeA">12</div>
+            <div class="text-xs text-gray-500">A类镜头</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 中栏：镜头卡片流 -->
+    <div class="center-panel">
+      <div class="bg-white rounded-2xl shadow-sm border border-orange-100 p-4">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="font-bold text-gray-800" id="currentParagraphTitle">开场空镜</h3>
+            <p class="text-xs text-gray-500 mt-1" id="currentParagraphDesc">咖啡馆外景，清晨阳光，营造故事氛围</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="currentParagraphType" class="px-2 py-1 text-xs text-white rounded-full type-badge-establishing">空镜</span>
+            <button onclick="addShotToCurrent()" class="px-3 py-1.5 text-sm bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors flex items-center gap-1">
+              <span>+</span>
+              添加镜头
+            </button>
+          </div>
+        </div>
+        
+        <div id="shotList" class="space-y-3">
+          <!-- 镜头卡片通过JS生成 -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- 右栏：镜头详情面板 -->
+    <div class="right-panel">
+      <div class="p-4 border-b border-orange-100 sticky top-0 bg-white z-10 rounded-t-2xl">
+        <h3 class="font-bold text-gray-800">镜头详情</h3>
+      </div>
+      <div id="shotDetail" class="p-4 space-y-4">
+        <div class="text-center text-gray-400 py-8">
+          点击左侧镜头查看详情
+        </div>
+      </div>
+    </div>
     
   </div>
 </div>
 
+<!-- 底部操作栏 -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-orange-200 py-3 px-4 z-30">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="text-sm text-gray-500">
+      上次保存：2分钟前 · 自动保存已开启
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">
+        保存草稿
+      </button>
+      <button class="px-6 py-2 text-sm bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-lg font-medium transition-all shadow-lg shadow-orange-200">
+        生成视频
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 全局质检弹窗 -->
+<div id="qaModal" class="fixed inset-0 z-50 hidden items-center justify-center">
+  <div class="absolute inset-0 bg-black/50" onclick="closeQAModal()"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[80vh] overflow-hidden">
+    <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+      <h3 class="font-bold text-gray-800 flex items-center gap-2">
+        <span>🔍</span>
+        全局质检报告
+      </h3>
+      <button onclick="closeQAModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500">
+        ✕
+      </button>
+    </div>
+    <div id="qaContent" class="p-4 overflow-y-auto max-h-[60vh]">
+      <!-- 质检内容通过JS生成 -->
+    </div>
+    <div class="p-4 border-t border-gray-100 flex justify-end">
+      <button onclick="closeQAModal()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-colors">
+        知道了
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Mock Data - 18 storyboards across 3 scenes
-  const storyboards = [
-    // Scene 1: 清晨邂逅 (shots 1-6)
-    {
-      id: 1,
-      scene: 1,
-      shot: '01',
-      title: '清晨苏醒',
-      grade: 'B',
-      duration: 8,
-      timecode: '00:00',
-      shotType: '特写',
-      angle: '平视',
-      movement: '推镜',
-      lighting: '柔光',
-      description: '清晨的阳光透过窗帘缝隙洒进房间，主人公林小雨缓缓睁开眼睛，新的一天开始了。',
-      characters: ['林小雨'],
-      prompt: '清晨阳光，柔和光线，房间内部，窗帘缝隙，一个年轻女孩缓缓睁开眼睛，特写镜头，推镜运动，暖色调，电影质感，浅景深，85mm镜头',
-      thumbnail: '🌅'
-    },
-    {
-      id: 2,
-      scene: 1,
-      shot: '02',
-      title: '起床动作',
-      grade: 'C',
-      duration: 5,
-      timecode: '00:08',
-      shotType: '中景',
-      angle: '俯视',
-      movement: '固定',
-      lighting: '自然光',
-      description: '林小雨坐起身来，伸了个懒腰，头发有些凌乱，脸上带着刚睡醒的懵懂。',
-      characters: ['林小雨'],
-      prompt: '卧室场景，女孩坐在床上伸懒腰，中景镜头，俯视角度，清晨自然光，温馨氛围，生活气息',
-      thumbnail: '🛏️'
-    },
-    {
-      id: 3,
-      scene: 1,
-      shot: '03',
-      title: '咖啡时光',
-      grade: 'B',
-      duration: 7,
-      timecode: '00:13',
-      shotType: '近景',
-      angle: '平视',
-      movement: '慢摇',
-      lighting: '侧光',
-      description: '厨房中，林小雨煮着咖啡，咖啡壶冒出袅袅热气，她望着窗外若有所思。',
-      characters: ['林小雨'],
-      prompt: '厨房场景，咖啡壶冒热气，女孩侧影，近景镜头，慢摇运动，侧光照明，温暖色调，电影感',
-      thumbnail: '☕'
-    },
-    {
-      id: 4,
-      scene: 1,
-      shot: '04',
-      title: '意外相遇',
-      grade: 'A',
-      duration: 12,
-      timecode: '00:20',
-      shotType: '全景',
-      angle: '平视',
-      movement: '横移',
-      lighting: '晨光',
-      description: '街角咖啡店门口，林小雨不小心撞到了一个男生，咖啡洒了两人一身。两人同时道歉，眼神交汇的瞬间，时间仿佛静止。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '街角咖啡店，清晨阳光，男孩女孩相撞，咖啡洒落，全景镜头，横移运动，两人对视的瞬间，浪漫氛围，电影质感，Golden Hour',
-      thumbnail: '💫'
-    },
-    {
-      id: 5,
-      scene: 1,
-      shot: '05',
-      title: '尴尬对视',
-      grade: 'A',
-      duration: 10,
-      timecode: '00:32',
-      shotType: '特写',
-      angle: '平视',
-      movement: '反打',
-      lighting: '逆光',
-      description: '特写两人错愕的表情，随即相视一笑。男生的眼睛很好看，林小雨有些脸红。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '双人特写反打镜头，男孩女孩相视而笑，逆光效果，发丝发光，眼神中有星光，心动瞬间，浅景深，浪漫唯美',
-      thumbnail: '👀'
-    },
-    {
-      id: 6,
-      scene: 1,
-      shot: '06',
-      title: '匆匆告别',
-      grade: 'B',
-      duration: 6,
-      timecode: '00:42',
-      shotType: '中景',
-      angle: '平视',
-      movement: '跟拍',
-      lighting: '自然光',
-      description: '男生着急赶时间，留下联系方式后匆匆离去。林小雨望着他的背影，手中握着写有电话的纸巾。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '街道场景，男孩匆匆离去的背影，女孩站在原地，中景跟拍，清晨街道，自然光，故事感',
-      thumbnail: '🚶'
-    },
-    
-    // Scene 2: 心意渐浓 (shots 7-12)
-    {
-      id: 7,
-      scene: 2,
-      shot: '07',
-      title: '手机信息',
-      grade: 'B',
-      duration: 6,
-      timecode: '00:48',
-      shotType: '特写',
-      angle: '俯视',
-      movement: '固定',
-      lighting: '屏幕光',
-      description: '当天晚上，林小雨收到男生发来的信息，嘴角不自觉地上扬。手机屏幕的光映照在她脸上。',
-      characters: ['林小雨'],
-      prompt: '手机特写，女孩微笑的脸，屏幕光反射，夜晚卧室，温馨暧昧氛围，特写镜头，冷色调与暖色调对比',
-      thumbnail: '📱'
-    },
-    {
-      id: 8,
-      scene: 2,
-      shot: '08',
-      title: '约会准备',
-      grade: 'C',
-      duration: 4,
-      timecode: '00:54',
-      shotType: '近景',
-      angle: '平视',
-      movement: '快切',
-      lighting: '室内光',
-      description: '蒙太奇快切：挑选衣服、化妆、整理发型。林小雨既期待又紧张。',
-      characters: ['林小雨'],
-      prompt: '蒙太奇快切，女孩约会前准备，选衣服，化妆，镜子前整理，轻快节奏，暖色调，生活气息',
-      thumbnail: '👗'
-    },
-    {
-      id: 9,
-      scene: 2,
-      shot: '09',
-      title: '餐厅相见',
-      grade: 'B',
-      duration: 9,
-      timecode: '00:58',
-      shotType: '全景',
-      angle: '平视',
-      movement: '推镜',
-      lighting: '暖光',
-      description: '餐厅内，陈阳已经在等她。看到她来，起身微笑。整个餐厅弥漫着温馨的氛围。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '餐厅内部，暖黄灯光，男孩起身迎接女孩，全景推镜，温馨浪漫氛围，烛光晚餐感，电影质感',
-      thumbnail: '🍽️'
-    },
-    {
-      id: 10,
-      scene: 2,
-      shot: '10',
-      title: '欢声笑语',
-      grade: 'A',
-      duration: 15,
-      timecode: '01:07',
-      shotType: '中景',
-      angle: '平视',
-      movement: '环绕',
-      lighting: '暖光',
-      description: '两人聊得很开心，从工作聊到爱好，从童年聊到梦想。仿佛有说不完的话题，时间过得飞快。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '餐厅约会，两人相谈甚欢，中景环绕镜头，温暖的灯光，自然的笑容，眼神交流，暧昧氛围，360度环绕运动',
-      thumbnail: '😄'
-    },
-    {
-      id: 11,
-      scene: 2,
-      shot: '11',
-      title: '触碰瞬间',
-      grade: 'A',
-      duration: 8,
-      timecode: '01:22',
-      shotType: '特写',
-      angle: '平视',
-      movement: '慢推',
-      lighting: '暖光',
-      description: '陈阳不经意间碰到林小雨的手，两人都愣了一下，然后同时笑了。空气中弥漫着甜蜜的气息。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '手部特写，两只手快要碰到的瞬间，慢推镜头，温暖光线，心动的感觉，细腻情感，浅景深，电影质感',
-      thumbnail: '🤝'
-    },
-    {
-      id: 12,
-      scene: 2,
-      shot: '12',
-      title: '月下散步',
-      grade: 'B',
-      duration: 10,
-      timecode: '01:30',
-      shotType: '全景',
-      angle: '平视',
-      movement: '跟拍',
-      lighting: '月光',
-      description: '饭后两人在河边散步，月光洒在水面上，波光粼粼。两人的影子被拉得很长。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '河边夜景，月光，水面倒影，两人并肩散步的背影，全景跟拍，浪漫宁静氛围，冷色调与暖光对比',
-      thumbnail: '🌙'
-    },
-    
-    // Scene 3: 情定终身 (shots 13-18)
-    {
-      id: 13,
-      scene: 3,
-      shot: '13',
-      title: '纪念日旅行',
-      grade: 'B',
-      duration: 7,
-      timecode: '01:40',
-      shotType: '大全景',
-      angle: '俯视',
-      movement: '航拍',
-      lighting: '日光',
-      description: '一年后，两人来到海边旅行。航拍镜头展现美丽的海岸线和在沙滩上奔跑的两人。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '海边全景，碧蓝海水，金色沙滩，两人在沙滩上奔跑，航拍俯视角度，明亮阳光，快乐自由，电影感',
-      thumbnail: '🏖️'
-    },
-    {
-      id: 14,
-      scene: 3,
-      shot: '14',
-      title: '夕阳剪影',
-      grade: 'A',
-      duration: 12,
-      timecode: '01:47',
-      shotType: '全景',
-      angle: '平视',
-      movement: '固定',
-      lighting: '逆光',
-      description: '夕阳西下，两人坐在海边的岩石上。陈阳从口袋里拿出一个小盒子，林小雨惊讶地捂住嘴。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '海边日落，金色夕阳，两人剪影，男孩拿出戒指盒，女孩惊讶的表情，全景固定镜头，逆光效果，浪漫至极，黄金时刻',
-      thumbnail: '🌇'
-    },
-    {
-      id: 15,
-      scene: 3,
-      shot: '15',
-      title: '我愿意',
-      grade: 'A',
-      duration: 15,
-      timecode: '01:59',
-      shotType: '特写',
-      angle: '平视',
-      movement: '慢推',
-      lighting: '暮光',
-      description: '陈阳单膝跪地，说出那句"你愿意嫁给我吗？"。林小雨泪眼婆娑，用力点头。戒指戴上手指的瞬间，时间静止。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '求婚场景，特写镜头，慢推运动，女孩流泪的眼睛，戒指戴上手指的瞬间，暮光效果，感动幸福，电影质感，浅景深',
-      thumbnail: '💍'
-    },
-    {
-      id: 16,
-      scene: 3,
-      shot: '16',
-      title: '幸福相拥',
-      grade: 'B',
-      duration: 8,
-      timecode: '02:14',
-      shotType: '中景',
-      angle: '平视',
-      movement: '环绕',
-      lighting: '暮光',
-      description: '两人紧紧拥抱在一起，海浪拍打着礁石，见证着这美好的时刻。',
-      characters: ['林小雨', '陈阳'],
-      prompt: '海边拥抱，中景环绕镜头，暮霭时分，温暖光线，幸福的恋人，海浪背景，浪漫唯美，360度环绕',
-      thumbnail: '🤗'
-    },
-    {
-      id: 17,
-      scene: 3,
-      shot: '17',
-      title: '回忆闪回',
-      grade: 'C',
-      duration: 6,
-      timecode: '02:22',
-      shotType: '蒙太奇',
-      angle: '多角度',
-      movement: '快切',
-      lighting: '混合光',
-      description: '快速闪回两人相识相爱的点点滴滴：初遇的咖啡店、第一次约会、海边的日落...',
-      characters: ['林小雨', '陈阳'],
-      prompt: '回忆蒙太奇，快速剪辑，多个场景快切，从初遇到求婚，温暖色调，音乐节奏，情感递进',
-      thumbnail: '🎞️'
-    },
-    {
-      id: 18,
-      scene: 3,
-      shot: '18',
-      title: '未来可期',
-      grade: 'B',
-      duration: 12,
-      timecode: '02:28',
-      shotType: '大全景',
-      angle: '平视',
-      movement: '拉远',
-      lighting: '星光',
-      description: '夜晚，两人手牵手望向满天星空。镜头缓缓拉远，两人的身影越来越小，融入广阔的星空下。字幕："故事，才刚刚开始..."',
-      characters: ['林小雨', '陈阳'],
-      prompt: '星空下的恋人，两人并肩仰望星空，大全景拉远运动，满天繁星，银河清晰，渺小而伟大，浪漫诗意，电影结尾感',
-      thumbnail: '✨'
-    }
-  ];
+// ==================== 数据模型 ====================
+
+// 段落类型映射
+const paragraphTypes = {
+  'dialogue': { name: '对话', color: 'purple' },
+  'action': { name: '动作', color: 'red' },
+  'transition': { name: '转场', color: 'gray' },
+  'establishing': { name: '空镜', color: 'green' },
+  'flashback': { name: '回忆', color: 'amber' }
+};
+
+// 镜头分级
+const grades = {
+  'A': { name: '关键镜头', color: 'red', desc: '必须保留的核心镜头' },
+  'B': { name: '补充镜头', color: 'orange', desc: '丰富节奏的补充镜头' },
+  'C': { name: '空镜/转场', color: 'blue', desc: '过渡与氛围镜头' }
+};
+
+// 示例数据
+let paragraphs = [
+  {
+    id: 'p1',
+    type: 'establishing',
+    name: '开场空镜',
+    duration: '15s',
+    description: '咖啡馆外景，清晨阳光，营造故事氛围',
+    expanded: true,
+    shots: [
+      { id: 's1-1', grade: 'A', shotNum: '01', description: '城市街道清晨全景，阳光洒在路面', duration: '3s', shotType: '全景', movement: '固定', lines: '', locked: false, image: 'https://picsum.photos/seed/shot1-1/400/225' },
+      { id: 's1-2', grade: 'B', shotNum: '02', description: '咖啡馆招牌特写，风铃轻晃', duration: '2s', shotType: '特写', movement: '推', lines: '', locked: false, image: 'https://picsum.photos/seed/shot1-2/400/225' },
+      { id: 's1-3', grade: 'C', shotNum: '03', description: '热气腾腾的咖啡杯，拿铁艺术', duration: '3s', shotType: '特写', movement: '旋转', lines: '', locked: false, image: 'https://picsum.photos/seed/shot1-3/400/225' },
+      { id: 's1-4', grade: 'B', shotNum: '04', description: '男主角推门进入，风铃作响', duration: '4s', shotType: '中景', movement: '跟拍', lines: '', locked: false, image: 'https://picsum.photos/seed/shot1-4/400/225' },
+      { id: 's1-5', grade: 'A', shotNum: '05', description: '男主角环顾四周寻找座位', duration: '3s', shotType: '近景', movement: '固定', lines: '', locked: false, image: 'https://picsum.photos/seed/shot1-5/400/225' },
+    ]
+  },
+  {
+    id: 'p2',
+    type: 'dialogue',
+    name: '初次相遇',
+    duration: '18s',
+    description: '男主角与女主角在咖啡馆初次对话',
+    expanded: true,
+    shots: [
+      { id: 's2-1', grade: 'A', shotNum: '06', description: '男主角坐下，对面是女主角', duration: '3s', shotType: '中景', movement: '固定', lines: '「这里有人坐吗？」', locked: false, image: 'https://picsum.photos/seed/shot2-1/400/225' },
+      { id: 's2-2', grade: 'B', shotNum: '07', description: '女主角抬头微笑，轻轻摇头', duration: '2s', shotType: '近景', movement: '固定', lines: '', locked: false, image: 'https://picsum.photos/seed/shot2-2/400/225' },
+      { id: 's2-3', grade: 'A', shotNum: '08', description: '男主角坐下，放下笔记本电脑', duration: '3s', shotType: '中景', movement: '固定', lines: '「谢谢，我叫林辰」', locked: false, image: 'https://picsum.photos/seed/shot2-3/400/225' },
+      { id: 's2-4', grade: 'B', shotNum: '09', description: '女主角伸出手，两人握手', duration: '2s', shotType: '特写', movement: '固定', lines: '「苏晚」', locked: false, image: 'https://picsum.photos/seed/shot2-4/400/225' },
+      { id: 's2-5', grade: 'A', shotNum: '10', description: '两人对视，空气中有微妙的感觉', duration: '4s', shotType: '正反打', movement: '固定', lines: '', locked: false, image: 'https://picsum.photos/seed/shot2-5/400/225' },
+      { id: 's2-6', grade: 'C', shotNum: '11', description: '窗外阳光透过树叶斑驳晃动', duration: '2s', shotType: '特写', movement: '固定', lines: '', locked: false, image: 'https://picsum.photos/seed/shot2-6/400/225' },
+      { id: 's2-7', grade: 'B', shotNum: '12', description: '咖啡杯轻轻碰撞的声音', duration: '2s', shotType: '特写', movement: '固定', lines: '', locked: false, image: 'https://picsum.photos/seed/shot2-7/400/225' },
+    ]
+  },
+  {
+    id: 'p3',
+    type: 'action',
+    name: '意外事件',
+    duration: '12s',
+    description: '服务员不小心打翻咖啡，引出后续情节',
+    expanded: false,
+    shots: [
+      { id: 's3-1', grade: 'A', shotNum: '13', description: '服务员端着咖啡走来，脚下一滑', duration: '2s', shotType: '全景', movement: '跟拍', lines: '', locked: false },
+      { id: 's3-2', grade: 'A', shotNum: '14', description: '咖啡泼向男主角方向', duration: '1s', shotType: '中景', movement: '快推', lines: '「小心！」', locked: false },
+      { id: 's3-3', grade: 'B', shotNum: '15', description: '男主角敏捷侧身躲开', duration: '2s', shotType: '中景', movement: '慢动作', lines: '', locked: false },
+      { id: 's3-4', grade: 'A', shotNum: '16', description: '咖啡洒在笔记本电脑上', duration: '3s', shotType: '特写', movement: '固定', lines: '「我的电脑！」', locked: false },
+      { id: 's3-5', grade: 'B', shotNum: '17', description: '女主角惊讶地捂住嘴', duration: '2s', shotType: '近景', movement: '固定', lines: '', locked: false },
+    ]
+  },
+  {
+    id: 'p4',
+    type: 'dialogue',
+    name: '尴尬解围',
+    duration: '15s',
+    description: '女主角递纸巾，两人因此熟络起来',
+    expanded: false,
+    shots: [
+      { id: 's4-1', grade: 'A', shotNum: '18', description: '女主角递上纸巾，关切的表情', duration: '3s', shotType: '近景', movement: '固定', lines: '「你没事吧？」', locked: false },
+      { id: 's4-2', grade: 'B', shotNum: '19', description: '男主角接过纸巾，无奈地笑', duration: '3s', shotType: '近景', movement: '固定', lines: '「没事，老毛病了」', locked: false },
+      { id: 's4-3', grade: 'B', shotNum: '20', description: '服务员慌张道歉', duration: '2s', shotType: '中景', movement: '固定', lines: '「对不起对不起！」', locked: false },
+      { id: 's4-4', grade: 'A', shotNum: '21', description: '男主角摆手表示没关系', duration: '2s', shotType: '中景', movement: '固定', lines: '「没事，我自己来就好」', locked: false },
+      { id: 's4-5', grade: 'B', shotNum: '22', description: '女主角主动帮忙擦拭桌子', duration: '3s', shotType: '中景', movement: '固定', lines: '', locked: false },
+    ]
+  },
+  {
+    id: 'p5',
+    type: 'transition',
+    name: '时间转场',
+    duration: '8s',
+    description: '时间流逝，两人关系逐渐拉近',
+    expanded: false,
+    shots: [
+      { id: 's5-1', grade: 'B', shotNum: '23', description: '窗外天色从白天到黄昏', duration: '3s', shotType: '全景', movement: '延时', lines: '', locked: false },
+      { id: 's5-2', grade: 'C', shotNum: '24', description: '咖啡杯从热到冷，热气消散', duration: '2s', shotType: '特写', movement: '固定', lines: '', locked: false },
+      { id: 's5-3', grade: 'B', shotNum: '25', description: '两人聊天的剪影，光影变化', duration: '3s', shotType: '剪影', movement: '固定', lines: '', locked: false },
+    ]
+  },
+  {
+    id: 'p6',
+    type: 'dialogue',
+    name: '深入交谈',
+    duration: '20s',
+    description: '两人聊得投机，发现共同爱好',
+    expanded: false,
+    shots: [
+      { id: 's6-1', grade: 'A', shotNum: '26', description: '两人相视而笑，气氛融洽', duration: '3s', shotType: '中景', movement: '固定', lines: '「原来你也喜欢摄影！」', locked: false },
+      { id: 's6-2', grade: 'B', shotNum: '27', description: '女主角拿出手机展示照片', duration: '3s', shotType: '近景', movement: '推', lines: '', locked: false },
+      { id: 's6-3', grade: 'B', shotNum: '28', description: '男主角认真看照片的表情', duration: '2s', shotType: '近景', movement: '固定', lines: '「拍得真好」', locked: false },
+      { id: 's6-4', grade: 'A', shotNum: '29', description: '两人眼神交汇，有火花', duration: '4s', shotType: '正反打', movement: '固定', lines: '', locked: false },
+      { id: 's6-5', grade: 'C', shotNum: '30', description: '咖啡馆里其他客人模糊的背景', duration: '2s', shotType: '虚焦', movement: '固定', lines: '', locked: false },
+      { id: 's6-6', grade: 'B', shotNum: '31', description: '女主角低头微笑，有些害羞', duration: '3s', shotType: '近景', movement: '固定', lines: '', locked: false },
+      { id: 's6-7', grade: 'A', shotNum: '32', description: '男主角递出一张纸条', duration: '3s', shotType: '特写', movement: '固定', lines: '「这是我的微信」', locked: false },
+    ]
+  }
+];
+
+let currentShotId = null;
+let currentParagraphId = null;
+let currentMode = 'text'; // text or image
+let qaResults = {}; // 质检结果缓存
+
+// ==================== 渲染函数 ====================
+
+// 渲染左侧段落导航
+function renderParagraphNav() {
+  const container = document.getElementById('paragraphNav');
+  container.innerHTML = '';
   
-  let currentFilter = 'all';
-  let selectedShotId = null;
-  let sidebarOpen = true;
-  
-  // Render timeline markers
-  function renderTimeline() {
-    const container = document.getElementById('timelineMarkers');
-    const totalDuration = storyboards.reduce((sum, s) => sum + s.duration, 0);
+  paragraphs.forEach((p, pIndex) => {
+    const typeInfo = paragraphTypes[p.type];
+    const totalDuration = p.shots.reduce((sum, s) => sum + parseFloat(s.duration), 0);
     
-    let currentTime = 0;
-    let markers = [];
+    const paraEl = document.createElement('div');
+    paraEl.className = `paragraph-item ${p.id === currentParagraphId ? 'active' : ''}`;
     
-    storyboards.forEach((shot, index) => {
-      const topPercent = (currentTime / totalDuration) * 100;
-      const isSceneStart = index === 0 || shot.scene !== storyboards[index - 1].scene;
-      
-      markers.push(`
-        <div class="absolute w-full text-xs text-gray-400" style="top: ${topPercent}%">
-          <div class="timeline-dot w-full h-4 flex items-center justify-center">
+    paraEl.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-medium text-gray-800">${p.name}</span>
+            <span class="px-1.5 py-0.5 text-[10px] text-white rounded-full type-badge-${p.type}">${typeInfo.name}</span>
           </div>
-          <div class="text-center mt-1 font-mono">${shot.timecode}</div>
+          <p class="text-xs text-gray-500 mt-0.5">${p.shots.length}镜 · ${totalDuration.toFixed(0)}s</p>
         </div>
-      `);
-      
-      if (isSceneStart && index > 0) {
-        markers.push(`
-          <div class="absolute w-full text-xs" style="top: ${topPercent - 3}%">
-            <div class="text-center">
-              <span class="bg-orange-100 text-orange-600 text-[10px] font-medium px-2 py-0.5 rounded-full">
-                第${{1:'一',2:'二',3:'三'}[shot.scene]}幕
-              </span>
+      </div>
+    `;
+    
+    paraEl.onclick = () => selectParagraph(p.id);
+    container.appendChild(paraEl);
+  });
+}
+
+// 渲染中间镜头列表
+function renderShotList() {
+  const paragraph = paragraphs.find(p => p.id === currentParagraphId);
+  if (!paragraph) return;
+  
+  const typeInfo = paragraphTypes[paragraph.type];
+  
+  // 更新顶部信息
+  document.getElementById('currentParagraphTitle').textContent = paragraph.name;
+  document.getElementById('currentParagraphDesc').textContent = paragraph.description;
+  document.getElementById('currentParagraphType').textContent = typeInfo.name;
+  document.getElementById('currentParagraphType').className = `px-2 py-1 text-xs text-white rounded-full type-badge-${paragraph.type}`;
+  
+  const container = document.getElementById('shotList');
+  container.innerHTML = '';
+  
+  paragraph.shots.forEach((shot, sIndex) => {
+    const qaStatus = qaResults[shot.id] || ''; // error, warning, success
+    
+    const shotEl = document.createElement('div');
+    shotEl.className = `shot-card bg-gray-50 rounded-xl overflow-hidden cursor-pointer grade-${shot.grade.toLowerCase()} 
+      ${currentShotId === shot.id ? 'ring-2 ring-orange-400' : ''}
+      ${qaStatus ? `qa-${qaStatus}` : ''}`;
+    shotEl.dataset.shotId = shot.id;
+    shotEl.dataset.paragraphId = paragraph.id;
+    shotEl.draggable = true;
+    
+    const hasImage = shot.image && currentMode === 'image';
+    
+    shotEl.innerHTML = `
+      <div class="flex gap-3 p-3 ${hasImage ? 'flex-col' : ''}">
+        ${hasImage ? `
+          <!-- 缩略图（带图模式） -->
+          <div class="w-full aspect-video bg-gray-200 rounded-lg overflow-hidden mb-2 relative">
+            <img src="${shot.image}" alt="${shot.description}" class="w-full h-full object-cover">
+            <div class="absolute top-2 left-2 px-1.5 py-0.5 bg-black/60 text-white text-[10px] rounded">
+              ${shot.shotNum}
             </div>
           </div>
-        `);
-      }
-      
-      currentTime += shot.duration;
-    });
+        ` : `
+          <!-- 镜头编号（文字模式） -->
+          <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center relative">
+            <span class="text-sm font-bold text-gray-600">${shot.shotNum}</span>
+            ${shot.locked ? '<div class="absolute -top-1 -right-1 text-xs">🔒</div>' : ''}
+          </div>
+        `}
+        
+        <!-- 镜头信息 -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-1.5 py-0.5 text-[10px] text-white rounded grade-badge-${shot.grade.toLowerCase()}">
+              ${shot.grade}类
+            </span>
+            <span class="text-xs text-gray-500">${shot.shotType}</span>
+            <span class="text-xs text-gray-400">·</span>
+            <span class="text-xs text-gray-500">${shot.duration}</span>
+            <span class="text-xs text-gray-400">·</span>
+            <span class="text-xs text-gray-500">${shot.movement}</span>
+          </div>
+          <p class="text-sm text-gray-700 line-clamp-2 leading-snug">${shot.description}</p>
+          ${shot.lines ? `<p class="text-xs text-purple-600 mt-1 line-clamp-1">💬 ${shot.lines}</p>` : ''}
+        </div>
+        
+        ${!hasImage ? `
+          <!-- 操作按钮（仅文字模式） -->
+          <div class="flex-shrink-0 flex flex-col gap-1">
+            <button onclick="event.stopPropagation(); insertShot('${paragraph.id}', '${shot.id}', 'before')" 
+              class="w-6 h-6 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded text-sm flex items-center justify-center transition-colors" title="在前面插入">
+              ↑
+            </button>
+            <button onclick="event.stopPropagation(); insertShot('${paragraph.id}', '${shot.id}', 'after')" 
+              class="w-6 h-6 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded text-sm flex items-center justify-center transition-colors" title="在后面插入">
+              ↓
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
     
-    container.innerHTML = markers.join('');
-    container.style.height = '100%';
+    shotEl.onclick = () => openShotDetail(paragraph.id, shot.id);
+    container.appendChild(shotEl);
+  });
+  
+  bindDragEvents();
+}
+
+// 选择段落
+function selectParagraph(paragraphId) {
+  currentParagraphId = paragraphId;
+  const paragraph = paragraphs.find(p => p.id === paragraphId);
+  if (paragraph && paragraph.shots.length > 0) {
+    currentShotId = paragraph.shots[0].id;
+  } else {
+    currentShotId = null;
   }
   
-  // Render storyboard cards
-  function renderStoryboards() {
-    const container = document.getElementById('storyboardList');
-    const filtered = currentFilter === 'all' 
-      ? storyboards 
-      : storyboards.filter(s => s.grade === currentFilter);
-    
-    let html = '';
-    let currentScene = 0;
-    
-    // Re-add scene divider at top
-    html += `
-      <div class="scene-divider py-3">
-        <span class="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full relative z-10">
-          第一幕 · 清晨邂逅
+  renderParagraphNav();
+  renderShotList();
+  if (currentShotId) {
+    renderShotDetail(paragraphId, currentShotId);
+  }
+}
+
+// 在当前段落添加镜头
+function addShotToCurrent() {
+  if (!currentParagraphId) return;
+  addShot(currentParagraphId);
+}
+
+function renderShotDetail(paragraphId, shotId) {
+  const paragraph = paragraphs.find(p => p.id === paragraphId);
+  const shot = paragraph.shots.find(s => s.id === shotId);
+  
+  if (!shot) return;
+  
+  const container = document.getElementById('shotDetail');
+  const gradeInfo = grades[shot.grade];
+  
+  container.innerHTML = `
+    <!-- 镜头编号 -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl font-bold text-gray-800">${shot.shotNum}</span>
+        <span class="px-2 py-0.5 text-xs text-white rounded-full grade-badge-${shot.grade.toLowerCase()}">
+          ${shot.grade}类 · ${gradeInfo.name}
         </span>
       </div>
-    `;
-    currentScene = 1;
+      <button onclick="deleteShot('${paragraphId}', '${shotId}')" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="删除镜头">
+        🗑️
+      </button>
+    </div>
     
-    filtered.forEach((shot, index) => {
-      // Add scene divider if scene changes
-      if (shot.scene !== currentScene) {
-        const sceneNames = { 2: '第二幕 · 心意渐浓', 3: '第三幕 · 情定终身' };
-        html += `
-          <div class="scene-divider py-3 mt-4">
-            <span class="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full relative z-10">
-              ${sceneNames[shot.scene]}
-            </span>
-          </div>
-        `;
-        currentScene = shot.scene;
-      }
+    <!-- 分级选择 -->
+    <div class="space-y-2">
+      <label class="text-sm font-medium text-gray-700">镜头分级</label>
+      <div class="flex gap-2">
+        ${['A', 'B', 'C'].map(g => `
+          <button onclick="updateShotGrade('${paragraphId}', '${shotId}', '${g}')" 
+            class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all ${shot.grade === g ? `grade-badge-${g.toLowerCase()} text-white` : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
+            ${g}类 · ${grades[g].name}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+    
+    <!-- 镜头描述 -->
+    <div class="space-y-2">
+      <label class="text-sm font-medium text-gray-700">镜头描述</label>
+      <div contenteditable="true" 
+        onblur="updateShotField('${paragraphId}', '${shotId}', 'description', this.innerText)"
+        class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 min-h-[80px] focus:bg-white focus:border-orange-300 transition-colors">
+        ${shot.description}
+      </div>
+    </div>
+    
+    <!-- 台词 -->
+    <div class="space-y-2">
+      <label class="text-sm font-medium text-gray-700">台词</label>
+      <div contenteditable="true" 
+        onblur="updateShotField('${paragraphId}', '${shotId}', 'lines', this.innerText)"
+        class="w-full p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-gray-700 min-h-[60px] focus:bg-white focus:border-purple-300 transition-colors placeholder-purple-300">
+        ${shot.lines || '点击输入台词...'}
+      </div>
+    </div>
+    
+    <!-- 镜头参数 -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-500">景别</label>
+        <select onchange="updateShotField('${paragraphId}', '${shotId}', 'shotType', this.value)"
+          class="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:bg-white focus:border-orange-300">
+          <option value="全景" ${shot.shotType === '全景' ? 'selected' : ''}>全景</option>
+          <option value="中景" ${shot.shotType === '中景' ? 'selected' : ''}>中景</option>
+          <option value="近景" ${shot.shotType === '近景' ? 'selected' : ''}>近景</option>
+          <option value="特写" ${shot.shotType === '特写' ? 'selected' : ''}>特写</option>
+          <option value="大特写" ${shot.shotType === '大特写' ? 'selected' : ''}>大特写</option>
+          <option value="正反打" ${shot.shotType === '正反打' ? 'selected' : ''}>正反打</option>
+          <option value="剪影" ${shot.shotType === '剪影' ? 'selected' : ''}>剪影</option>
+          <option value="虚焦" ${shot.shotType === '虚焦' ? 'selected' : ''}>虚焦</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-500">运镜</label>
+        <select onchange="updateShotField('${paragraphId}', '${shotId}', 'movement', this.value)"
+          class="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:bg-white focus:border-orange-300">
+          <option value="固定" ${shot.movement === '固定' ? 'selected' : ''}>固定</option>
+          <option value="推" ${shot.movement === '推' ? 'selected' : ''}>推镜头</option>
+          <option value="拉" ${shot.movement === '拉' ? 'selected' : ''}>拉镜头</option>
+          <option value="摇" ${shot.movement === '摇' ? 'selected' : ''}>摇镜头</option>
+          <option value="移" ${shot.movement === '移' ? 'selected' : ''}>移镜头</option>
+          <option value="跟拍" ${shot.movement === '跟拍' ? 'selected' : ''}>跟拍</option>
+          <option value="旋转" ${shot.movement === '旋转' ? 'selected' : ''}>旋转</option>
+          <option value="慢动作" ${shot.movement === '慢动作' ? 'selected' : ''}>慢动作</option>
+          <option value="延时" ${shot.movement === '延时' ? 'selected' : ''}>延时</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-500">时长</label>
+        <select onchange="updateShotField('${paragraphId}', '${shotId}', 'duration', this.value)"
+          class="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:bg-white focus:border-orange-300">
+          <option value="1s" ${shot.duration === '1s' ? 'selected' : ''}>1 秒</option>
+          <option value="2s" ${shot.duration === '2s' ? 'selected' : ''}>2 秒</option>
+          <option value="3s" ${shot.duration === '3s' ? 'selected' : ''}>3 秒</option>
+          <option value="4s" ${shot.duration === '4s' ? 'selected' : ''}>4 秒</option>
+          <option value="5s" ${shot.duration === '5s' ? 'selected' : ''}>5 秒</option>
+          <option value="6s" ${shot.duration === '6s' ? 'selected' : ''}>6 秒</option>
+          <option value="8s" ${shot.duration === '8s' ? 'selected' : ''}>8 秒</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-500">生成模型</label>
+        <select class="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 focus:bg-white focus:border-orange-300">
+          <option>默认（NB Pro）</option>
+          <option>NB2</option>
+          <option>GPT Image 2</option>
+          <option>即梦 5.0</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- 参考图 / 历史生成 -->
+    <div class="space-y-2 pt-2 border-t border-gray-100">
+      <div class="flex items-center justify-between">
+        <label class="text-sm font-medium text-gray-700">参考图</label>
+        <div class="flex gap-1">
+          <button onclick="switchRefTab('upload')" class="ref-tab-btn text-xs px-2 py-1 rounded bg-orange-100 text-orange-700" data-tab="upload">上传</button>
+          <button onclick="switchRefTab('history')" class="ref-tab-btn text-xs px-2 py-1 rounded text-gray-500 hover:bg-gray-100" data-tab="history">历史</button>
+        </div>
+      </div>
       
-      const gradeClass = { 'A': 'grade-a', 'B': 'grade-b', 'C': 'grade-c' }[shot.grade];
-      const gradeBadge = { 'A': 'grade-badge-a', 'B': 'grade-badge-b', 'C': 'grade-badge-c' }[shot.grade];
-      const gradeText = { 'A': 'A级 · 关键', 'B': 'B级 · 重要', 'C': 'C级 · 过渡' }[shot.grade];
-      
-      html += `
-        <div class="storyboard-card ${gradeClass} bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" 
-             data-id="${shot.id}" data-grade="${shot.grade}" onclick="selectShot(${shot.id}, this)">
-          <div class="flex">
-            <!-- Thumbnail -->
-            <div class="w-28 h-20 thumbnail-placeholder flex-shrink-0 flex items-center justify-center text-3xl">
-              ${shot.thumbnail}
-            </div>
-            
-            <!-- Info -->
-            <div class="flex-1 p-3">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-semibold text-gray-800">镜号 ${shot.shot}</span>
-                    <span class="${gradeBadge} text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${shot.grade}级</span>
-                  </div>
-                  <p class="text-sm text-gray-600 mt-0.5">${shot.title}</p>
-                </div>
-                <span class="text-xs font-mono text-orange-600 font-medium">${shot.timecode}</span>
-              </div>
-              
-              <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
-                <span>${shot.shotType}</span>
-                <span>·</span>
-                <span>${shot.movement}</span>
-                <span>·</span>
-                <span>${shot.duration}s</span>
-              </div>
-            </div>
+      <!-- 上传参考图 -->
+      <div id="refUpload" class="ref-panel">
+        <div class="grid grid-cols-3 gap-2">
+          <div class="aspect-video border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center text-gray-400 hover:border-orange-400 hover:text-orange-500 cursor-pointer transition-colors">
+            <span class="text-lg">+</span>
+            <span class="text-[10px]">上传</span>
           </div>
-          
-          <!-- Expanded Detail -->
-          <div class="card-detail px-3 pb-3" id="detail-${shot.id}">
-            <div class="pt-3 border-t border-gray-100">
-              <p class="text-xs text-gray-600 leading-relaxed">${shot.description}</p>
-              <div class="flex items-center gap-2 mt-2">
-                ${shot.characters.map(c => `<span class="bg-amber-100 text-amber-700 text-[10px] font-medium px-2 py-0.5 rounded-full">${c}</span>`).join('')}
-              </div>
-              <div class="flex gap-2 mt-3">
-                <button class="text-xs bg-orange-50 text-orange-600 px-3 py-1.5 rounded-md hover:bg-orange-100 transition" onclick="event.stopPropagation(); regenerateShotById(${shot.id})">
-                  重新生成
-                </button>
-                <button class="text-xs bg-gray-50 text-gray-600 px-3 py-1.5 rounded-md hover:bg-gray-100 transition" onclick="event.stopPropagation(); lockShotById(${shot.id})">
-                  锁定
-                </button>
-              </div>
-            </div>
+          <div class="aspect-video rounded-lg overflow-hidden border-2 border-transparent hover:border-orange-400 cursor-pointer relative ref-img-card selected">
+            <img src="${shot.image || 'https://picsum.photos/seed/ref-' + shot.id + '/200/120'}" class="w-full h-full object-cover">
+            <div class="absolute top-1 right-1 w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center text-white text-[10px]">✓</div>
           </div>
         </div>
-      `;
-    });
+      </div>
+      
+      <!-- 历史生成 -->
+      <div id="refHistory" class="ref-panel hidden">
+        <div class="grid grid-cols-3 gap-2">
+          ${[1,2,3].map(i => `
+            <div class="aspect-video rounded-lg overflow-hidden border-2 border-transparent hover:border-orange-400 cursor-pointer relative ref-img-card">
+              <img src="https://picsum.photos/seed/hist-${shot.id}-${i}/200/120" class="w-full h-full object-cover">
+              <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[9px] text-center py-0.5">v${i}.0</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <p class="text-[10px] text-gray-400">选参考图后自动匹配模型参数，保持画面一致性</p>
+    </div>
     
-    container.innerHTML = html;
+    <!-- 操作按钮 -->
+    <div class="space-y-2 pt-2">
+      <button class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-lg text-sm font-medium transition-all shadow-lg shadow-orange-200 flex items-center justify-center gap-2">
+        <span>🎨</span>
+        生成镜头画面
+      </button>
+      
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="toggleShotLock('${paragraphId}', '${shotId}')" 
+          class="py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1">
+          <span>${shot.locked ? '🔓' : '🔒'}</span>
+          ${shot.locked ? '解除锁定' : '锁定镜头'}
+        </button>
+        <button class="py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1">
+          <span>🔄</span>
+          重新生成
+        </button>
+      </div>
+    </div>
     
-    // Update stats
+    <!-- 空间锚定位置（简化版） -->
+    <div class="space-y-2 pt-2 border-t border-gray-100">
+      <label class="text-sm font-medium text-gray-700">空间位置</label>
+      <div class="h-32 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 text-sm">
+        🗺️ 空间锚定视图（开发中）
+      </div>
+    </div>
+    
+    <!-- 动作链检查 -->
+    <div class="space-y-2">
+      <label class="text-sm font-medium text-gray-700">动作链检查</label>
+      <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+        <div class="flex items-center gap-2 text-green-700 text-sm">
+          <span>✅</span>
+          <span>动作连贯，与前后镜头衔接自然</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ==================== 交互函数 ====================
+
+function openShotDetail(paragraphId, shotId) {
+  currentShotId = shotId;
+  renderShotDetail(paragraphId, shotId);
+  
+  // 高亮当前镜头
+  document.querySelectorAll('.shot-card').forEach(card => {
+    card.classList.remove('ring-2', 'ring-orange-400');
+    if (card.dataset.shotId === shotId) {
+      card.classList.add('ring-2', 'ring-orange-400');
+    }
+  });
+}
+
+function updateShotGrade(paragraphId, shotId, newGrade) {
+  const paragraph = paragraphs.find(p => p.id === paragraphId);
+  const shot = paragraph.shots.find(s => s.id === shotId);
+  if (shot) {
+    shot.grade = newGrade;
+    renderParagraphNav();
+    renderShotList();
+    renderShotDetail(paragraphId, shotId);
     updateStats();
   }
-  
-  // Update statistics
-  function updateStats() {
-    const total = storyboards.length;
-    const gradeA = storyboards.filter(s => s.grade === 'A').length;
-    const gradeB = storyboards.filter(s => s.grade === 'B').length;
-    const gradeC = storyboards.filter(s => s.grade === 'C').length;
-    const totalSec = storyboards.reduce((sum, s) => sum + s.duration, 0);
-    const mins = Math.floor(totalSec / 60);
-    const secs = totalSec % 60;
-    
-    document.getElementById('totalShots').textContent = total;
-    document.getElementById('totalDuration').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-    document.getElementById('gradeACount').textContent = gradeA;
-    document.getElementById('gradeBCount').textContent = gradeB;
-    document.getElementById('gradeCCount').textContent = gradeC;
-  }
-  
-  // Set filter
-  function setFilter(filter, btn) {
-    currentFilter = filter;
-    
-    // Update button states
-    document.querySelectorAll('.filter-btn').forEach(b => {
-      b.classList.remove('active', 'bg-white', 'text-gray-800');
-      b.classList.add('text-gray-500');
-    });
-    btn.classList.add('active', 'bg-white', 'text-gray-800');
-    btn.classList.remove('text-gray-500');
-    
-    renderStoryboards();
-  }
-  
-  // Select a shot
-  function selectShot(id, cardEl) {
-    selectedShotId = id;
-    const shot = storyboards.find(s => s.id === id);
-    
-    if (!shot) return;
-    
-    // Open sidebar if closed
-    if (!sidebarOpen) {
-      openSidebar();
-    }
-    
-    // Update sidebar
-    updateSidebar(shot);
-    
-    // Toggle card detail
-    document.querySelectorAll('.card-detail').forEach(el => {
-      el.classList.remove('expanded');
-    });
-    const detailEl = document.getElementById(`detail-${id}`);
-    if (detailEl) {
-      detailEl.classList.add('expanded');
-    }
-    
-    // Highlight selected card
-    document.querySelectorAll('.storyboard-card').forEach(el => {
-      el.classList.remove('ring-2', 'ring-orange-300');
-    });
-    cardEl.classList.add('ring-2', 'ring-orange-300');
-  }
-  
-  // Update sidebar content
-  function updateSidebar(shot) {
-    const gradeBadge = { 'A': 'grade-badge-a', 'B': 'grade-badge-b', 'C': 'grade-badge-c' }[shot.grade];
-    
-    document.getElementById('detailTitle').textContent = `镜号 ${shot.shot} · ${shot.title}`;
-    document.getElementById('detailDuration').textContent = `00:${shot.duration.toString().padStart(2, '0')}`;
-    document.getElementById('detailDescription').textContent = shot.description;
-    document.getElementById('detailShotType').textContent = shot.shotType;
-    document.getElementById('detailAngle').textContent = shot.angle;
-    document.getElementById('detailMovement').textContent = shot.movement;
-    document.getElementById('detailLighting').textContent = shot.lighting;
-    document.getElementById('detailPrompt').textContent = shot.prompt;
-    document.getElementById('detailGrade').textContent = `${shot.grade}级`;
-    document.getElementById('detailGrade').className = `text-white text-xs font-bold px-2 py-0.5 rounded ${gradeBadge}`;
-    
-    // Update preview
-    const preview = document.getElementById('detailPreview');
-    preview.innerHTML = `
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="text-6xl">${shot.thumbnail}</div>
-      </div>
-      <div class="absolute top-3 right-3">
-        <span class="${gradeBadge} text-white text-xs font-bold px-2 py-0.5 rounded">${shot.grade}级</span>
-      </div>
-    `;
-    
-    // Update characters
-    const charsContainer = document.getElementById('detailCharacters');
-    charsContainer.innerHTML = shot.characters.map(c => 
-      `<span class="bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-1 rounded-full">${c}</span>`
-    ).join('');
-  }
-  
-  // Sidebar controls
-  function closeSidebar() {
-    sidebarOpen = false;
-    document.getElementById('sidebar').classList.add('hidden-sidebar');
-    document.getElementById('sidebar').classList.remove('visible-sidebar');
-  }
-  
-  function openSidebar() {
-    sidebarOpen = true;
-    document.getElementById('sidebar').classList.remove('hidden-sidebar');
-    document.getElementById('sidebar').classList.add('visible-sidebar');
-  }
-  
-  // Action functions
-  function generateAll() {
-    alert('开始生成全部分镜...\n(模拟功能 - 实际项目中会调用AI生成接口)');
-  }
-  
-  function exportStoryboard() {
-    alert('正在导出分镜表...\n(模拟功能 - 实际项目中会生成CSV/Excel文件)');
-  }
-  
-  function regenerateShot() {
-    if (selectedShotId) {
-      alert(`正在重新生成镜号 ${storyboards.find(s => s.id === selectedShotId)?.shot}...`);
-    } else {
-      alert('请先选择一个分镜');
-    }
-  }
-  
-  function regenerateShotById(id) {
-    const shot = storyboards.find(s => s.id === id);
-    alert(`正在重新生成镜号 ${shot?.shot}...`);
-  }
-  
-  function adjustParams() {
-    if (selectedShotId) {
-      alert('打开参数调整面板...');
-    } else {
-      alert('请先选择一个分镜');
-    }
-  }
-  
-  function lockShot() {
-    if (selectedShotId) {
-      const shot = storyboards.find(s => s.id === selectedShotId);
-      alert(`已锁定镜号 ${shot?.shot}`);
-    } else {
-      alert('请先选择一个分镜');
-    }
-  }
-  
-  function lockShotById(id) {
-    const shot = storyboards.find(s => s.id === id);
-    alert(`已锁定镜号 ${shot?.shot}`);
-  }
-  
-  // Initialize
-  document.addEventListener('DOMContentLoaded', function() {
-    renderTimeline();
-    renderStoryboards();
-    
-    // Select first shot by default
-    setTimeout(() => {
-      const firstCard = document.querySelector('.storyboard-card');
-      if (firstCard) {
-        selectShot(1, firstCard);
-      }
-    }, 100);
-  });
-</script>
+}
 
+function updateShotField(paragraphId, shotId, field, value) {
+  const paragraph = paragraphs.find(p => p.id === paragraphId);
+  const shot = paragraph.shots.find(s => s.id === shotId);
+  if (shot) {
+    shot[field] = value;
+    renderParagraphNav();
+    renderShotList();
+    updateStats();
+  }
+}
+
+function addShot(paragraphId) {
+  const paragraph = paragraphs.find(p => p.id === paragraphId);
+  if (paragraph) {
+    const newShot = {
+      id: `s-${Date.now()}`,
+      grade: 'B',
+      shotNum: String(paragraph.shots.length + 1).padStart(2, '0'),
+      description: '新镜头描述',
+      duration: '3s',
+      shotType: '中景',
+      movement: '固定',
+      lines: '',
+      locked: false
+    };
+    paragraph.shots.push(newShot);
+    
+    currentShotId = newShot.id;
+    renderParagraphNav();
+    renderShotList();
+    renderShotDetail(paragraphId, newShot.id);
+    updateStats();
+  }
+}
+
+function insertShot(paragraphId, targetShotId, position) {
+  const paragraph = paragraphs.find(p => p.id === paragraphId);
+  const targetIndex = paragraph.shots.findIndex(s => s.id === targetShotId);
+  
+  if (targetIndex === -1) return;
+  
+  const insertIndex = position === 'before' ? targetIndex : targetIndex + 1;
+  
+  const newShot = {
+    id: `s-${Date.now()}`,
+    grade: 'B',
+    shotNum: '00',
+    description: '插入的新镜头',
+    duration: '2s',
+    shotType: '中景',
+    movement: '固定',
+    lines: '',
+    locked: false
+  };
+  
+  paragraph.shots.splice(insertIndex, 0, newShot);
+  
+  // 重新编号
+  paragraph.shots.forEach((s, i) => {
+    s.shotNum = String(i + 1).padStart(2, '0');
+  });
+  
+  currentShotId = newShot.id;
+  renderParagraphNav();
+  renderShotList();
+  renderShotDetail(paragraphId, newShot.id);
+  updateStats();
+}
+
+function deleteShot(paragraphId, shotId) {
+  if (!confirm('确定要删除这个镜头吗？')) return;
+  
+  const paragraph = paragraphs.find(p => p.id === paragraphId);
+  const shotIndex = paragraph.shots.findIndex(s => s.id === shotId);
+  
+  if (shotIndex > -1) {
+    paragraph.shots.splice(shotIndex, 1);
+    
+    // 重新编号
+    paragraph.shots.forEach((s, i) => {
+      s.shotNum = String(i + 1).padStart(2, '0');
+    });
+    
+    // 选中相邻镜头
+    if (paragraph.shots.length > 0) {
+      const newIndex = Math.min(shotIndex, paragraph.shots.length - 1);
+      currentShotId = paragraph.shots[newIndex].id;
+      renderShotDetail(paragraphId, currentShotId);
+    } else {
+      currentShotId = null;
+      document.getElementById('shotDetail').innerHTML = `
+        <div class="text-center text-gray-400 py-8">
+          点击左侧镜头查看详情
+        </div>
+      `;
+    }
+    
+    renderParagraphNav();
+    renderShotList();
+    updateStats();
+  }
+}
+
+function toggleShotLock(paragraphId, shotId) {
+  const paragraph = paragraphs.find(p => p.id === paragraphId);
+  const shot = paragraph.shots.find(s => s.id === shotId);
+  if (shot) {
+    shot.locked = !shot.locked;
+    renderShotList();
+    renderShotDetail(paragraphId, shotId);
+  }
+}
+
+// 更新统计信息
+function updateStats() {
+  const totalParagraphs = paragraphs.length;
+  const totalShots = paragraphs.reduce((sum, p) => sum + p.shots.length, 0);
+  const totalSeconds = paragraphs.reduce((sum, p) => {
+    return sum + p.shots.reduce((s, shot) => s + parseFloat(shot.duration), 0);
+  }, 0);
+  const gradeACount = paragraphs.reduce((sum, p) => sum + p.shots.filter(s => s.grade === 'A').length, 0);
+  
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = Math.floor(totalSeconds % 60);
+  
+  document.getElementById('statParagraphs').textContent = totalParagraphs;
+  document.getElementById('statShots').textContent = totalShots;
+  document.getElementById('statDuration').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+  document.getElementById('statGradeA').textContent = gradeACount;
+}
+
+// ==================== 拖拽功能 ====================
+
+let draggedShot = null;
+let dragSourceParagraph = null;
+
+function bindDragEvents() {
+  document.querySelectorAll('.shot-card').forEach(card => {
+    card.addEventListener('dragstart', handleDragStart);
+    card.addEventListener('dragend', handleDragEnd);
+    card.addEventListener('dragover', handleDragOver);
+    card.addEventListener('drop', handleDrop);
+    card.addEventListener('dragleave', handleDragLeave);
+  });
+}
+
+function handleDragStart(e) {
+  draggedShot = e.target.dataset.shotId;
+  dragSourceParagraph = e.target.dataset.paragraphId;
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.shot-card').forEach(card => {
+    card.classList.remove('drop-zone');
+  });
+  draggedShot = null;
+  dragSourceParagraph = null;
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  
+  if (e.target.closest('.shot-card')?.dataset.shotId !== draggedShot) {
+    e.target.closest('.shot-card')?.classList.add('drop-zone');
+  }
+}
+
+function handleDragLeave(e) {
+  e.target.closest('.shot-card')?.classList.remove('drop-zone');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  
+  const targetCard = e.target.closest('.shot-card');
+  if (!targetCard || targetCard.dataset.shotId === draggedShot) return;
+  
+  const targetParagraphId = targetCard.dataset.paragraphId;
+  const targetShotId = targetCard.dataset.shotId;
+  
+  // 找到源镜头和目标位置
+  const sourcePara = paragraphs.find(p => p.id === dragSourceParagraph);
+  const targetPara = paragraphs.find(p => p.id === targetParagraphId);
+  
+  const sourceIndex = sourcePara.shots.findIndex(s => s.id === draggedShot);
+  const targetIndex = targetPara.shots.findIndex(s => s.id === targetShotId);
+  
+  if (sourceIndex === -1 || targetIndex === -1) return;
+  
+  // 移除源镜头
+  const [movedShot] = sourcePara.shots.splice(sourceIndex, 1);
+  
+  // 插入到目标位置
+  if (dragSourceParagraph === targetParagraphId && sourceIndex < targetIndex) {
+    // 同一段落内，源在目标前面，目标索引要减1
+    targetPara.shots.splice(targetIndex - 1, 0, movedShot);
+  } else {
+    targetPara.shots.splice(targetIndex, 0, movedShot);
+  }
+  
+  // 重新编号
+  paragraphs.forEach(p => {
+    p.shots.forEach((s, i) => {
+      s.shotNum = String(i + 1).padStart(2, '0');
+    });
+  });
+  
+  // 如果目标段落不是当前段落，切换过去
+  if (currentParagraphId !== targetParagraphId) {
+    selectParagraph(targetParagraphId);
+  } else {
+    renderParagraphNav();
+    renderShotList();
+    if (currentShotId === draggedShot) {
+      renderShotDetail(targetParagraphId, draggedShot);
+    }
+  }
+  
+  updateStats();
+}
+
+// ==================== 模式切换 ====================
+
+document.getElementById('textModeBtn').addEventListener('click', () => {
+  currentMode = 'text';
+  document.getElementById('textModeBtn').classList.add('bg-white', 'shadow-sm', 'text-orange-600');
+  document.getElementById('textModeBtn').classList.remove('text-gray-500');
+  document.getElementById('imageModeBtn').classList.remove('bg-white', 'shadow-sm', 'text-orange-600');
+  document.getElementById('imageModeBtn').classList.add('text-gray-500');
+  renderShotList();
+});
+
+document.getElementById('imageModeBtn').addEventListener('click', () => {
+  currentMode = 'image';
+  document.getElementById('imageModeBtn').classList.add('bg-white', 'shadow-sm', 'text-orange-600');
+  document.getElementById('imageModeBtn').classList.remove('text-gray-500');
+  document.getElementById('textModeBtn').classList.remove('bg-white', 'shadow-sm', 'text-orange-600');
+  document.getElementById('textModeBtn').classList.add('text-gray-500');
+  renderShotList();
+});
+
+// ==================== 比例锁定 ====================
+
+let ratioLocked = false;
+
+function toggleRatioLock() {
+  ratioLocked = !ratioLocked;
+  const btn = document.getElementById('ratioLockBtn');
+  const select = document.getElementById('ratioSelect');
+  
+  if (ratioLocked) {
+    btn.textContent = '🔒';
+    btn.classList.add('text-orange-500', 'bg-orange-50');
+    btn.classList.remove('text-gray-400');
+    select.disabled = true;
+    select.classList.add('bg-gray-50', 'text-gray-400');
+  } else {
+    btn.textContent = '🔓';
+    btn.classList.remove('text-orange-500', 'bg-orange-50');
+    btn.classList.add('text-gray-400');
+    select.disabled = false;
+    select.classList.remove('bg-gray-50', 'text-gray-400');
+  }
+}
+
+// ==================== 参考图Tab切换 ====================
+
+function switchRefTab(tab) {
+  const uploadTab = document.querySelector('.ref-tab-btn[data-tab="upload"]');
+  const historyTab = document.querySelector('.ref-tab-btn[data-tab="history"]');
+  const uploadPanel = document.getElementById('refUpload');
+  const historyPanel = document.getElementById('refHistory');
+  
+  if (tab === 'upload') {
+    uploadTab.classList.add('bg-orange-100', 'text-orange-700');
+    uploadTab.classList.remove('text-gray-500');
+    historyTab.classList.remove('bg-orange-100', 'text-orange-700');
+    historyTab.classList.add('text-gray-500');
+    uploadPanel.classList.remove('hidden');
+    historyPanel.classList.add('hidden');
+  } else {
+    historyTab.classList.add('bg-orange-100', 'text-orange-700');
+    historyTab.classList.remove('text-gray-500');
+    uploadTab.classList.remove('bg-orange-100', 'text-orange-700');
+    uploadTab.classList.add('text-gray-500');
+    historyPanel.classList.remove('hidden');
+    uploadPanel.classList.add('hidden');
+  }
+}
+
+// ==================== 全局质检 ====================
+
+document.getElementById('qaBtn').addEventListener('click', runQA);
+
+function runQA() {
+  const issues = [];
+  const newQaResults = {};
+  
+  // 遍历所有镜头进行质检
+  paragraphs.forEach(p => {
+    p.shots.forEach((shot, index) => {
+      let status = 'success';
+      let shotIssues = [];
+      
+      // 检查1：时长合理性（太短或太长）
+      const duration = parseFloat(shot.duration);
+      if (duration < 1) {
+        status = 'warning';
+        shotIssues.push('镜头时长过短，可能影响观感');
+      } else if (duration > 8) {
+        status = 'warning';
+        shotIssues.push('镜头时长过长，考虑拆分');
+      }
+      
+      // 检查2：台词与时长匹配
+      if (shot.lines && shot.lines.length > 20 && duration < 3) {
+        status = 'error';
+        shotIssues.push('台词过长，时长不足以完成');
+      }
+      
+      // 检查3：正反打轴线（简化检查第2段落）
+      if (p.id === 'p2' && shot.shotType === '正反打' && index % 3 === 0) {
+        status = 'warning';
+        shotIssues.push('可能存在越轴风险，建议确认空间关系');
+      }
+      
+      // 检查4：A类镜头是否有足够时长
+      if (shot.grade === 'A' && duration < 2) {
+        status = 'warning';
+        shotIssues.push('关键镜头时长偏短，建议适当延长');
+      }
+      
+      // 记录结果
+      if (status !== 'success') {
+        newQaResults[shot.id] = status;
+      }
+    });
+  });
+  
+  // 计算统计
+  const totalShots = paragraphs.reduce((sum, p) => sum + p.shots.length, 0);
+  const errorCount = Object.values(newQaResults).filter(s => s === 'error').length;
+  const warningCount = Object.values(newQaResults).filter(s => s === 'warning').length;
+  const successCount = totalShots - errorCount - warningCount;
+  
+  // 全局检查项
+  // 检查1：整体节奏
+  const avgDuration = paragraphs.reduce((sum, p) => {
+    return sum + p.shots.reduce((s, shot) => s + parseFloat(shot.duration), 0);
+  }, 0) / totalShots;
+  
+  if (avgDuration < 2) {
+    issues.push({
+      type: 'warning',
+      title: '节奏分析',
+      desc: `平均镜头时长${avgDuration.toFixed(1)}秒，节奏偏快，注意观众信息接收`
+    });
+  } else {
+    issues.push({
+      type: 'success',
+      title: '节奏分析',
+      desc: `平均镜头时长${avgDuration.toFixed(1)}秒，节奏适中`
+    });
+  }
+  
+  // 检查2：分级合理性
+  const gradeACount = paragraphs.reduce((sum, p) => sum + p.shots.filter(s => s.grade === 'A').length, 0);
+  const gradeARatio = gradeACount / totalShots;
+  
+  if (gradeARatio > 0.4) {
+    issues.push({
+      type: 'warning',
+      title: '分级合理性',
+      desc: `A类镜头占比${(gradeARatio*100).toFixed(0)}%，略高，建议适当精简核心镜头`
+    });
+  } else if (gradeARatio < 0.2) {
+    issues.push({
+      type: 'warning',
+      title: '分级合理性',
+      desc: `A类镜头占比${(gradeARatio*100).toFixed(0)}%，偏低，核心镜头不够突出`
+    });
+  } else {
+    issues.push({
+      type: 'success',
+      title: '分级合理性',
+      desc: `A类镜头占比${(gradeARatio*100).toFixed(0)}%，分布合理`
+    });
+  }
+  
+  // 检查3：问题镜头统计
+  if (errorCount > 0) {
+    issues.push({
+      type: 'error',
+      title: '严重问题',
+      desc: `发现 ${errorCount} 个严重问题镜头，请查看红色高亮标记`
+    });
+  }
+  if (warningCount > 0) {
+    issues.push({
+      type: 'warning',
+      title: '警告提醒',
+      desc: `发现 ${warningCount} 个需要注意的镜头，请查看黄色高亮标记`
+    });
+  }
+  if (errorCount === 0 && warningCount === 0) {
+    issues.push({
+      type: 'success',
+      title: '全部通过',
+      desc: '所有镜头质检通过，没有发现明显问题'
+    });
+  }
+  
+  // 更新全局结果
+  qaResults = newQaResults;
+  
+  // 重新渲染列表，显示高亮
+  renderShotList();
+  
+  // 渲染质检报告
+  const qaContent = document.getElementById('qaContent');
+  qaContent.innerHTML = `
+    <div class="space-y-3">
+      <div class="grid grid-cols-3 gap-2 mb-4">
+        <div class="text-center p-3 bg-green-50 rounded-lg">
+          <div class="text-xl font-bold text-green-600">${successCount}</div>
+          <div class="text-xs text-green-500">正常</div>
+        </div>
+        <div class="text-center p-3 bg-amber-50 rounded-lg">
+          <div class="text-xl font-bold text-amber-600">${warningCount}</div>
+          <div class="text-xs text-amber-500">警告</div>
+        </div>
+        <div class="text-center p-3 bg-red-50 rounded-lg">
+          <div class="text-xl font-bold text-red-600">${errorCount}</div>
+          <div class="text-xs text-red-500">严重</div>
+        </div>
+      </div>
+      
+      ${issues.map(issue => `
+        <div class="p-3 rounded-lg ${
+          issue.type === 'success' ? 'bg-green-50 border border-green-200' :
+          issue.type === 'warning' ? 'bg-amber-50 border border-amber-200' :
+          issue.type === 'error' ? 'bg-red-50 border border-red-200' :
+          'bg-blue-50 border border-blue-200'
+        }">
+          <div class="flex items-center gap-2 font-medium text-sm ${
+            issue.type === 'success' ? 'text-green-700' :
+            issue.type === 'warning' ? 'text-amber-700' :
+            issue.type === 'error' ? 'text-red-700' :
+            'text-blue-700'
+          }">
+            <span>${
+              issue.type === 'success' ? '✅' : 
+              issue.type === 'warning' ? '⚠️' :
+              issue.type === 'error' ? '🚨' : 'ℹ️'
+            }</span>
+            ${issue.title}
+          </div>
+          <p class="text-xs mt-1 ${
+            issue.type === 'success' ? 'text-green-600' :
+            issue.type === 'warning' ? 'text-amber-600' :
+            issue.type === 'error' ? 'text-red-600' :
+            'text-blue-600'
+          }">${issue.desc}</p>
+        </div>
+      `).join('')}
+    </div>
+    
+    <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+      <div class="text-xs text-gray-500 text-center">
+        GAMMA导演质检系统 v1.0 · 仅作参考，最终以人工确认为准
+      </div>
+    </div>
+  `;
+  
+  // 显示弹窗
+  document.getElementById('qaModal').classList.remove('hidden');
+  document.getElementById('qaModal').classList.add('flex');
+}
+
+function closeQAModal() {
+  document.getElementById('qaModal').classList.add('hidden');
+  document.getElementById('qaModal').classList.remove('flex');
+}
+
+// ==================== 初始化 ====================
+
+// 选中第一个段落
+if (paragraphs.length > 0) {
+  selectParagraph(paragraphs[0].id);
+}
+
+// 点击遮罩关闭质检弹窗
+document.getElementById('qaModal').addEventListener('click', (e) => {
+  if (e.target.id === 'qaModal') {
+    closeQAModal();
+  }
+});
+</script>
 </body>
 </html>

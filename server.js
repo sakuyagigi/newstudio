@@ -1,150 +1,44 @@
-#!/usr/bin/env node
-// 简单的API代理服务器 - 保护API Key，前端永不接触密钥
-// 无需npm安装，直接运行：node server.js
+import express from 'express'
+import cors from 'cors'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const http = require('http');
-const https = require('https');
-const fs = require('fs');
-const path = require('path');
-const { URL } = require('url');
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-// 配置 - 生产环境请使用环境变量
-const CONFIG = {
-  port: process.env.PORT || 3000,
-  apiBaseUrl: process.env.API_BASE_URL || 'https://api.516platform.com',
-  apiKey: process.env.STRAPP_API_KEY || '',
-};
+const app = express()
+const PORT = process.env.PORT || 3000
 
-// MIME类型
-const MIME_TYPES = {
-  '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
-  '.js': 'application/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon',
-};
+// 中间件
+app.use(cors())
+app.use(express.json({ limit: '10mb' }))
+app.use(express.static(path.join(__dirname, 'public')))
 
-// 安全头
-const SECURITY_HEADERS = {
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'X-XSS-Protection': '1; mode=block',
-  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-};
+// 健康检查
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
 
-function serveStaticFile(filePath, res) {
-  const ext = path.extname(filePath);
-  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-  
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Not Found');
-      return;
-    }
-    res.writeHead(200, { 
-      'Content-Type': contentType,
-      ...SECURITY_HEADERS,
-    });
-    res.end(data);
-  });
-}
+// 导入API路由
+import directorsRouter from './routes/directors.js'
+import imageRouter from './routes/image.js'
+import mediaRouter from './routes/media.js'
+import monitorRouter from './routes/monitor.js'
 
-function proxyAPIRequest(apiPath, req, res) {
-  const apiUrl = new URL(apiPath, CONFIG.apiBaseUrl);
-  
-  const options = {
-    hostname: apiUrl.hostname,
-    port: apiUrl.port || 443,
-    path: apiUrl.pathname + apiUrl.search,
-    method: req.method,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${CONFIG.apiKey}`,
-      ...req.headers,
-      host: apiUrl.hostname,
-    },
-  };
-  
-  // 移除不安全的头
-  delete options.headers.cookie;
-  delete options.headers.authorization;
-  
-  const proxyReq = https.request(options, (proxyRes) => {
-    res.writeHead(proxyRes.statusCode, {
-      'Content-Type': 'application/json',
-      ...SECURITY_HEADERS,
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    });
-    proxyRes.pipe(res);
-  });
-  
-  proxyReq.on('error', (e) => {
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'API请求失败', message: e.message }));
-  });
-  
-  if (req.method === 'POST' || req.method === 'PUT') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-      proxyReq.write(body);
-      proxyReq.end();
-    });
-  } else {
-    proxyReq.end();
-  }
-}
+// API路由
+app.use('/api/directors', directorsRouter)
+app.use('/api/image', imageRouter)
+app.use('/api/media', mediaRouter)
+app.use('/api/monitor', monitorRouter)
 
-const server = http.createServer((req, res) => {
-  // 处理OPTIONS预检请求
-  if (req.method === 'OPTIONS') {
-    res.writeHead(200, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    });
-    res.end();
-    return;
-  }
-  
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const pathname = url.pathname;
-  
-  // API路由
-  if (pathname.startsWith('/api/')) {
-    if (!CONFIG.apiKey) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'API Key 未配置，请设置 STRAPP_API_KEY 环境变量' }));
-      return;
-    }
-    const apiPath = pathname.replace('/api/', '');
-    proxyAPIRequest(apiPath, req, res);
-    return;
-  }
-  
-  // 静态文件路由
-  let filePath;
-  if (pathname === '/' || pathname === '/index.html') {
-    filePath = path.join(__dirname, 'public', 'index.html');
-  } else if (pathname.startsWith('/public/') || pathname.startsWith('/assets/')) {
-    filePath = path.join(__dirname, pathname);
-  } else {
-    // SPA路由 - 都返回index.html
-    filePath = path.join(__dirname, 'public', 'index.html');
-  }
-  
-  serveStaticFile(filePath, res);
-});
+// SPA前端路由
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
 
-server.listen(CONFIG.port, () => {
-  console.log(`🚀 墨枢光影导演台已启动`);
-  console.log(`📍 地址: http://localhost:${CONFIG.port}`);
-  console.log(`🔒 API Key 安全模式: ${CONFIG.apiKey ? '已配置' : '未配置'}`);
-  console.log(`   所有外部API调用通过服务端转发，前端永不接触密钥`);
-});
+// 启动服务器
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 墨枢光影导演台已启动`)
+  console.log(`📍 本地访问: http://localhost:${PORT}`)
+  console.log(`📅 启动时间: ${new Date().toLocaleString('zh-CN')}`)
+})

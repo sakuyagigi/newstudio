@@ -9,8 +9,9 @@
 }
 
 body {
-  background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 50%, #ffedd5 100%);
+  background: #fafafa;
   min-height: 100vh;
+  color: #383838;
 }
 
 /* 自定义滚动条 */
@@ -20,22 +21,22 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f5f5f5;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #fed7aa;
+  background: #d4d4d4;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #fdba74;
+  background: #a3a3a3;
 }
 
-/* 渐变文字 */
+/* 渐变文字 - 品牌金 */
 .gradient-text {
-  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  background: linear-gradient(135deg, #d4a574 0%, #c98a4f 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -47,34 +48,39 @@ body {
 }
 
 .card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -12px rgba(251, 146, 60, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
 /* 进度条渐变 */
 .progress-gradient {
-  background: linear-gradient(90deg, #f59e0b 0%, #f97316 100%);
+  background: linear-gradient(90deg, #d4a574 0%, #c98a4f 100%);
+}
+
+/* 品牌渐变背景 */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, #d4a574 0%, #c98a4f 100%);
 }
 
 /* 状态标签 */
 .status-working {
-  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
-  color: #c2410c;
+  background: #fef7ed;
+  color: #c98a4f;
 }
 
 .status-completed {
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-  color: #047857;
+  background: #f0fdf4;
+  color: #16a34a;
 }
 
 .status-pending {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-  color: #6b7280;
+  background: #f5f5f5;
+  color: #737373;
 }
 
 .status-issue {
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-  color: #b91c1c;
+  background: #fef2f2;
+  color: #dc2626;
 }
 
 /* 呼吸动画 */
@@ -83,6 +89,12 @@ body {
 }
 
 @keyframes breathe {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
-  50% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 165, 116, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(212, 165, 116, 0); }
+}
+
+/* 分割线 */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e5e5e5, transparent);
 }

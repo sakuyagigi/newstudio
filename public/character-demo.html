@@ -1,776 +1,1243 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>角色定妆面板 - 导演KAPPA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        amber: {
-                            50: '#FFFBEB',
-                            100: '#FEF3C7',
-                            200: '#FDE68A',
-                            300: '#FCD34D',
-                            400: '#FBBF24',
-                            500: '#F59E0B',
-                            600: '#D97706',
-                            700: '#B45309',
-                            800: '#92400E',
-                            900: '#78350F',
-                        },
-                        ink: {
-                            50: '#F8F6F3',
-                            100: '#E8E4DE',
-                            200: '#D4CDC3',
-                            300: '#B8AEA0',
-                            400: '#9A8E7D',
-                            500: '#7D7160',
-                            600: '#645A4D',
-                            700: '#50483E',
-                            800: '#3D3730',
-                            900: '#2A2621',
-                        }
-                    },
-                    boxShadow: {
-                        'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
-                        'card': '0 8px 30px rgba(0, 0, 0, 0.12)',
-                        'glow': '0 0 20px rgba(245, 158, 11, 0.3)',
-                    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>角色定妆台 - 角色导演 KAPPA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                amber: {
+                    50: '#FFFBEB', 100: '#FEF3C7', 200: '#FDE68A',
+                    300: '#FCD34D', 400: '#FBBF24', 500: '#F59E0B',
+                    600: '#D97706', 700: '#B45309', 800: '#92400E', 900: '#78350F',
+                },
+                ink: {
+                    50: '#F8F6F3', 100: '#E8E4DE', 200: '#D4CDC3',
+                    300: '#B8AEA0', 400: '#9A8E7D', 500: '#7D7160',
+                    600: '#645A4D', 700: '#50483E', 800: '#3D3730', 900: '#2A2621',
                 }
+            },
+            boxShadow: {
+                'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
+                'card': '0 8px 30px rgba(0, 0, 0, 0.12)',
+                'glow': '0 0 20px rgba(245, 158, 11, 0.3)',
             }
         }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .scrollbar-thin {
-                scrollbar-width: thin;
-                scrollbar-color: #D4CDC3 transparent;
-            }
-            .scrollbar-thin::-webkit-scrollbar {
-                width: 6px;
-                height: 6px;
-            }
-            .scrollbar-thin::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            .scrollbar-thin::-webkit-scrollbar-thumb {
-                background-color: #D4CDC3;
-                border-radius: 3px;
-            }
-            .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-                background-color: #B8AEA0;
-            }
-            .text-gradient-amber {
-                background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-            .bg-gradient-amber {
-                background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-            }
-            .card-hover {
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            .card-hover:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-            }
-            .version-card-hover {
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            .version-card-hover:hover {
-                transform: scale(1.05);
-                z-index: 10;
-            }
-            .locked-overlay {
-                position: relative;
-            }
-            .locked-overlay::after {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background: rgba(120, 113, 108, 0.6);
-                backdrop-filter: blur(2px);
-                border-radius: inherit;
-            }
-            .modal-backdrop {
-                background: rgba(0, 0, 0, 0.7);
-                backdrop-filter: blur(4px);
-            }
-        }
-    </style>
+    }
+}
+</script>
+<style type="text/tailwindcss">
+@layer utilities {
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: #D4CDC3 transparent;
+    }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background-color: #D4CDC3;
+        border-radius: 3px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover { background-color: #B8AEA0; }
+    
+    .text-gradient-amber {
+        background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .bg-gradient-amber {
+        background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+    }
+    
+    .canvas-container { position: relative; cursor: crosshair; }
+    
+    .annotation-marker {
+        position: absolute;
+        width: 24px; height: 24px;
+        background: rgba(239, 68, 68, 0.8);
+        border: 2px solid white;
+        border-radius: 50%;
+        color: white; font-size: 12px; font-weight: bold;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        transition: all 0.2s;
+    }
+    .annotation-marker:hover {
+        transform: translate(-50%, -50%) scale(1.2);
+        background: rgba(239, 68, 68, 1);
+    }
+    
+    .ref-card {
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    .ref-card:hover {
+        border-color: #f59e0b;
+        transform: translateY(-2px);
+    }
+    .ref-card.selected {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+    }
+    
+    .tab-active {
+        background: white;
+        color: #2A2621;
+        border-color: #E8E4DE;
+        border-bottom-color: white;
+    }
+}
+</style>
 </head>
 <body class="bg-ink-50 min-h-screen font-sans text-ink-800">
-    <!-- 顶部导航 -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-ink-100 sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-amber flex items-center justify-center text-white font-bold text-lg">
-                    K
+
+<!-- 顶部导航 -->
+<header class="bg-white/80 backdrop-blur-md border-b border-ink-100 sticky top-0 z-30 h-16">
+    <div class="max-w-[1600px] mx-auto px-4 h-full flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-amber flex items-center justify-center text-white font-bold text-lg">K</div>
+            <div>
+                <h1 class="text-lg font-bold text-ink-900">角色定妆台</h1>
+                <p class="text-xs text-ink-500">角色导演 KAPPA · 墨枢光影实验室</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="text-sm text-ink-500">项目：<span class="text-ink-700 font-medium">《长安幻夜》</span></span>
+            <button class="px-3 py-2 rounded-lg bg-ink-100 text-ink-600 text-sm hover:bg-ink-200 transition-colors">
+                <i class="fa fa-cog mr-1"></i> 设置
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- 三栏主布局 -->
+<div class="max-w-[1600px] mx-auto p-4 flex gap-4" style="height: calc(100vh - 64px);">
+    
+    <!-- 左栏：角色列表 (240px) -->
+    <aside class="w-60 flex-shrink-0 flex flex-col gap-3 overflow-hidden">
+        <button class="w-full py-3 rounded-xl border-2 border-dashed border-amber-300 text-amber-600 font-medium hover:bg-amber-50 hover:border-amber-400 transition-all flex items-center justify-center gap-2 text-sm">
+            <i class="fa fa-plus"></i> 添加角色
+        </button>
+
+        <div class="flex-1 overflow-y-auto scrollbar-thin space-y-2" id="characterList">
+            <!-- JS渲染 -->
+        </div>
+
+        <div class="bg-white rounded-xl p-3 shadow-soft border border-ink-100">
+            <div class="grid grid-cols-3 gap-1 text-center">
+                <div class="p-2 rounded-lg bg-amber-50">
+                    <div class="text-lg font-bold text-amber-600" id="statProtagonist">0</div>
+                    <div class="text-xs text-amber-700">主角</div>
                 </div>
-                <div>
-                    <h1 class="text-lg font-bold text-ink-900">角色定妆面板</h1>
-                    <p class="text-xs text-ink-500">导演 KAPPA · 墨枢光影工作室</p>
+                <div class="p-2 rounded-lg bg-ink-50">
+                    <div class="text-lg font-bold text-ink-600" id="statSupporting">0</div>
+                    <div class="text-xs text-ink-500">配角</div>
+                </div>
+                <div class="p-2 rounded-lg bg-red-50">
+                    <div class="text-lg font-bold text-red-600" id="statAntagonist">0</div>
+                    <div class="text-xs text-red-700">反派</div>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <span class="text-sm text-ink-500">项目：<span class="text-ink-700 font-medium">《长安幻夜》</span></span>
-                <button class="px-4 py-2 rounded-lg bg-ink-100 text-ink-600 text-sm hover:bg-ink-200 transition-colors">
-                    <i class="fa fa-cog mr-1"></i> 设置
+        </div>
+    </aside>
+
+    <!-- 中栏：定妆主画布 (flex-1) -->
+    <main class="flex-1 flex flex-col gap-3 min-w-0 overflow-hidden">
+        <!-- 工具栏 -->
+        <div class="bg-white rounded-xl p-3 shadow-soft border border-ink-100 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-medium text-ink-700" id="currentCharName">苏沐月</span>
+                <span class="text-xs text-ink-400">·</span>
+                <span class="text-sm text-ink-500" id="currentVersion">v1.0</span>
+                <span class="text-xs text-ink-400">·</span>
+                <span class="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full" id="currentModel">NB Pro</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="flex bg-ink-100 rounded-lg p-1">
+                    <button class="px-3 py-1.5 rounded-md text-sm bg-white shadow-sm text-ink-700" onclick="setViewMode('single')">
+                        <i class="fa fa-square-o mr-1"></i> 单图
+                    </button>
+                    <button class="px-3 py-1.5 rounded-md text-sm text-ink-500 hover:text-ink-700" onclick="setViewMode('compare')">
+                        <i class="fa fa-columns mr-1"></i> 对比
+                    </button>
+                    <button class="px-3 py-1.5 rounded-md text-sm text-ink-500 hover:text-ink-700" onclick="setViewMode('grid')">
+                        <i class="fa fa-th mr-1"></i> 网格
+                    </button>
+                </div>
+                <button class="px-3 py-1.5 rounded-lg bg-ink-100 text-ink-600 text-sm hover:bg-ink-200 transition-colors" onclick="toggleAnnotations()">
+                    <i class="fa fa-commenting-o mr-1"></i> 标注
+                </button>
+                <button class="px-3 py-1.5 rounded-lg bg-ink-100 text-ink-600 text-sm hover:bg-ink-200 transition-colors">
+                    <i class="fa fa-download mr-1"></i> 导出
                 </button>
             </div>
         </div>
-    </header>
 
-    <main class="max-w-7xl mx-auto p-6">
-        <div class="flex gap-6 h-[calc(100vh-140px)]">
+        <!-- 主画布区域 -->
+        <div class="flex-1 bg-white rounded-xl shadow-soft border border-ink-100 overflow-hidden relative" id="canvasWrapper">
+            <div class="canvas-container w-full h-full flex items-center justify-center bg-ink-50">
+                <div class="relative" id="imageContainer">
+                    <img id="mainImage" src="https://picsum.photos/seed/sumuyue-v1/600/800" 
+                         alt="定妆照" class="max-w-full max-h-[calc(100%-80px)] object-contain rounded-lg shadow-lg">
+                    <div id="annotationLayer"></div>
+                </div>
+            </div>
             
-            <!-- 左侧：角色列表 (25%) -->
-            <aside class="w-1/4 flex flex-col gap-4 min-w-72">
-                <!-- 添加角色按钮 -->
-                <button class="w-full py-3 rounded-xl border-2 border-dashed border-amber-300 text-amber-600 font-medium hover:bg-amber-50 hover:border-amber-400 transition-all flex items-center justify-center gap-2">
-                    <i class="fa fa-plus"></i>
-                    添加角色
+            <!-- 底部版本缩略图 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4">
+                <div class="flex gap-2 overflow-x-auto scrollbar-thin pb-2 justify-center" id="versionThumbs">
+                    <!-- JS渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 分析面板 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex gap-1 bg-ink-50 rounded-lg p-0.5">
+                    <button class="px-3 py-1.5 rounded-md text-xs font-medium bg-white shadow-sm text-ink-700" onclick="switchAnalysisTab('directors')" id="tabDirectors">
+                        五导演会审
+                    </button>
+                    <button class="px-3 py-1.5 rounded-md text-xs font-medium text-ink-500 hover:text-ink-700" onclick="switchAnalysisTab('breakdown')" id="tabBreakdown">
+                        细节拆解
+                    </button>
+                </div>
+                <button class="text-xs text-amber-600 hover:text-amber-700" onclick="runDirectorAnalysis()">
+                    <i class="fa fa-refresh mr-1"></i> 重新分析
                 </button>
-
-                <!-- 角色列表 -->
-                <div class="flex-1 overflow-y-auto scrollbar-thin space-y-3" id="characterList">
-                    <!-- 角色卡片由JS渲染 -->
+            </div>
+            
+            <!-- 五导演分析内容 -->
+            <div id="analysisDirectors" class="analysis-content">
+                <div class="grid grid-cols-5 gap-3" id="directorAnalysis">
+                    <!-- JS渲染 -->
                 </div>
-
-                <!-- 底部统计 -->
-                <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
-                    <h3 class="text-sm font-semibold text-ink-700 mb-3">角色统计</h3>
-                    <div class="grid grid-cols-3 gap-2 text-center">
-                        <div class="p-2 rounded-lg bg-amber-50">
-                            <div class="text-xl font-bold text-amber-600" id="statProtagonist">0</div>
-                            <div class="text-xs text-amber-700">主角</div>
+            </div>
+            
+            <!-- 细节拆解内容 -->
+            <div id="analysisBreakdown" class="analysis-content hidden">
+                <div class="grid grid-cols-4 gap-3">
+                    <!-- 服装 -->
+                    <div class="breakdown-item p-3 bg-ink-50 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                                <i class="fa fa-female text-purple-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-ink-700">服装</span>
                         </div>
-                        <div class="p-2 rounded-lg bg-ink-50">
-                            <div class="text-xl font-bold text-ink-600" id="statSupporting">0</div>
-                            <div class="text-xs text-ink-500">配角</div>
-                        </div>
-                        <div class="p-2 rounded-lg bg-red-50">
-                            <div class="text-xl font-bold text-red-600" id="statAntagonist">0</div>
-                            <div class="text-xs text-red-700">反派</div>
-                        </div>
+                        <ul class="space-y-1 text-xs text-ink-600">
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>白色交领劲装</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>银线绣云纹</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>收腰设计</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>窄袖便于行动</span>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="mt-3 pt-3 border-t border-ink-100 flex justify-between text-sm">
-                        <span class="text-ink-500">总计</span>
-                        <span class="font-semibold text-ink-700" id="statTotal">0 个角色</span>
+                    
+                    <!-- 配饰 -->
+                    <div class="breakdown-item p-3 bg-ink-50 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                                <i class="fa fa-diamond text-amber-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-ink-700">配饰</span>
+                        </div>
+                        <ul class="space-y-1 text-xs text-ink-600">
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>银白发带</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>银色护腕</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>玉佩腰坠</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-exclamation-triangle text-yellow-500 mt-0.5 text-[10px]"></i>
+                                <span>剑柄细节待优化</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 妆容 -->
+                    <div class="breakdown-item p-3 bg-ink-50 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-pink-100 flex items-center justify-center">
+                                <i class="fa fa-paint-brush text-pink-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-ink-700">妆容</span>
+                        </div>
+                        <ul class="space-y-1 text-xs text-ink-600">
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>清透底妆</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>淡粉色眼影</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>自然柳叶眉</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>豆沙色唇妆</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 道具 -->
+                    <div class="breakdown-item p-3 bg-ink-50 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                <i class="fa fa-shield text-blue-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-ink-700">道具</span>
+                        </div>
+                        <ul class="space-y-1 text-xs text-ink-600">
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-check-circle text-green-500 mt-0.5 text-[10px]"></i>
+                                <span>长剑（佩剑）</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-exclamation-triangle text-yellow-500 mt-0.5 text-[10px]"></i>
+                                <span>剑鞘纹饰模糊</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-times-circle text-red-400 mt-0.5 text-[10px]"></i>
+                                <span>缺少暗器囊</span>
+                            </li>
+                            <li class="flex items-start gap-1.5">
+                                <i class="fa fa-times-circle text-red-400 mt-0.5 text-[10px]"></i>
+                                <span>发簪样式不符设定</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </aside>
-
-            <!-- 右侧：角色详情 (75%) -->
-            <section class="flex-1 flex flex-col gap-6 overflow-y-auto scrollbar-thin" id="characterDetail">
-                <!-- 详情由JS渲染 -->
-            </section>
+                
+                <!-- 整体评价 -->
+                <div class="mt-4 p-3 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa fa-lightbulb-o text-amber-500"></i>
+                        <span class="text-sm font-medium text-ink-800">AI 优化建议</span>
+                    </div>
+                    <p class="text-xs text-ink-600 leading-relaxed">
+                        整体还原度约 85%，核心面部特征保持良好。建议优化：1）剑柄和剑鞘的细节需要更清晰的纹饰；
+                        2）补充夜行衣套装的暗器囊道具；3）发簪样式与设定有出入，建议调整为银质梅花簪。
+                    </p>
+                </div>
+            </div>
         </div>
     </main>
 
-    <!-- 大图查看弹窗 -->
-    <div id="imageModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
-        <div class="relative max-w-4xl max-h-[90vh] mx-4">
-            <button onclick="closeModal()" class="absolute -top-12 right-0 text-white text-2xl hover:text-amber-400 transition-colors">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="bg-white rounded-2xl shadow-card overflow-hidden">
-                <img id="modalImage" src="" alt="定妆照大图" class="max-w-full max-h-[80vh] object-contain">
-                <div class="p-4 bg-white border-t border-ink-100">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 id="modalTitle" class="font-semibold text-ink-800"></h3>
-                            <p id="modalMeta" class="text-sm text-ink-500"></p>
+    <!-- 右栏：参数控制面板 (300px) -->
+    <aside class="w-[300px] flex-shrink-0 flex flex-col gap-3 overflow-y-auto scrollbar-thin">
+        
+        <!-- 参考图 / 历史生成 Tab -->
+        <div class="bg-white rounded-xl shadow-soft border border-ink-100 overflow-hidden">
+            <div class="flex border-b border-ink-100">
+                <button class="flex-1 py-2.5 text-sm font-medium tab-active" onclick="switchRefTab('reference')" id="tabReference">
+                    <i class="fa fa-picture-o mr-1.5 text-amber-500"></i>参考图
+                </button>
+                <button class="flex-1 py-2.5 text-sm font-medium text-ink-500 hover:text-ink-700" onclick="switchRefTab('history')" id="tabHistory">
+                    <i class="fa fa-history mr-1.5"></i>历史生成
+                </button>
+            </div>
+            <div class="p-3" id="refPanelReference">
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="ref-card aspect-[2/3] rounded-lg border-2 border-dashed border-ink-200 flex flex-col items-center justify-center text-ink-400 hover:border-amber-400 hover:text-amber-500">
+                        <i class="fa fa-cloud-upload text-xl mb-1"></i>
+                        <span class="text-xs">上传</span>
+                    </div>
+                    <div class="ref-card aspect-[2/3] rounded-lg border-2 border-ink-200 overflow-hidden relative" onclick="selectReference(this)">
+                        <img src="https://picsum.photos/seed/ref1/200/300" class="w-full h-full object-cover">
+                        <div class="absolute top-1 right-1 w-4 h-4 rounded-full bg-white/80 flex items-center justify-center">
+                            <i class="fa fa-check text-[10px] text-ink-400"></i>
                         </div>
-                        <div class="flex gap-2">
-                            <button class="px-4 py-2 rounded-lg border border-ink-200 text-ink-600 text-sm hover:bg-ink-50 transition-colors">
-                                <i class="fa fa-download mr-1"></i> 下载
-                            </button>
-                            <button class="px-4 py-2 rounded-lg bg-gradient-amber text-white text-sm hover:opacity-90 transition-opacity">
-                                <i class="fa fa-magic mr-1"></i> 基于此版本优化
-                            </button>
+                    </div>
+                    <div class="ref-card aspect-[2/3] rounded-lg border-2 border-ink-200 overflow-hidden relative" onclick="selectReference(this)">
+                        <img src="https://picsum.photos/seed/ref2/200/300" class="w-full h-full object-cover">
+                        <div class="absolute top-1 right-1 w-4 h-4 rounded-full bg-white/80 flex items-center justify-center">
+                            <i class="fa fa-check text-[10px] text-ink-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-xs text-ink-400 mt-2">选参考图后自动匹配模型参数，保持人物一致性</p>
+            </div>
+            <div class="p-3 hidden" id="refPanelHistory">
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="ref-card aspect-[2/3] rounded-lg border-2 border-ink-200 overflow-hidden relative" onclick="selectReference(this)">
+                        <img src="https://picsum.photos/seed/hist1/200/300" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] text-center py-0.5">v1.0</div>
+                    </div>
+                    <div class="ref-card aspect-[2/3] rounded-lg border-2 border-ink-200 overflow-hidden relative" onclick="selectReference(this)">
+                        <img src="https://picsum.photos/seed/hist2/200/300" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] text-center py-0.5">v0.9</div>
+                    </div>
+                    <div class="ref-card aspect-[2/3] rounded-lg border-2 border-ink-200 overflow-hidden relative" onclick="selectReference(this)">
+                        <img src="https://picsum.photos/seed/hist3/200/300" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] text-center py-0.5">v0.8</div>
+                    </div>
+                </div>
+                <p class="text-xs text-ink-400 mt-2">点击历史图可直接作为参考图重绘</p>
+            </div>
+        </div>
+
+        <!-- 模型选择 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <h3 class="text-sm font-semibold text-ink-700 mb-3">
+                <i class="fa fa-cube text-amber-500 mr-2"></i>
+                生成模型
+                <span class="text-xs text-ink-400 font-normal ml-2" id="modelHint">自动匹配最佳参数</span>
+            </h3>
+            <div class="space-y-2">
+                <label class="flex items-center p-2.5 rounded-lg border border-amber-300 bg-amber-50 cursor-pointer" onclick="selectModel('nbpro')">
+                    <input type="radio" name="model" value="nbpro" checked class="mr-2 accent-amber-500">
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-ink-800">NB Pro</div>
+                        <div class="text-xs text-ink-500">真人写实 · 最高精度 · 2:3最佳</div>
+                    </div>
+                    <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">推荐</span>
+                </label>
+                <label class="flex items-center p-2.5 rounded-lg border border-ink-200 cursor-pointer hover:border-amber-200 hover:bg-amber-50/50 transition-colors" onclick="selectModel('nb2')">
+                    <input type="radio" name="model" value="nb2" class="mr-2 accent-amber-500">
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-ink-800">NB2</div>
+                        <div class="text-xs text-ink-500">平衡质量与速度 · 1:1最佳</div>
+                    </div>
+                </label>
+                <label class="flex items-center p-2.5 rounded-lg border border-ink-200 cursor-pointer hover:border-amber-200 hover:bg-amber-50/50 transition-colors" onclick="selectModel('gpt')">
+                    <input type="radio" name="model" value="gpt" class="mr-2 accent-amber-500">
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-ink-800">GPT Image 2</div>
+                        <div class="text-xs text-ink-500">创意风格化 · 1:1最佳</div>
+                    </div>
+                </label>
+                <label class="flex items-center p-2.5 rounded-lg border border-ink-200 cursor-pointer hover:border-amber-200 hover:bg-amber-50/50 transition-colors" onclick="selectModel('jimeng')">
+                    <input type="radio" name="model" value="jimeng" class="mr-2 accent-amber-500">
+                    <div class="flex-1">
+                        <div class="text-sm font-medium text-ink-800">即梦 5.0</div>
+                        <div class="text-xs text-ink-500">二次元/国风 · 3:4最佳</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- 比例选择 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <h3 class="text-sm font-semibold text-ink-700 mb-3">
+                <i class="fa fa-crop text-amber-500 mr-2"></i>
+                画面比例
+                <span class="text-xs text-ink-400 font-normal ml-2" id="ratioHint">推荐 2:3</span>
+            </h3>
+            <div class="grid grid-cols-4 gap-2">
+                <button class="aspect-square rounded-lg border-2 border-amber-400 bg-amber-50 text-amber-700 text-xs font-medium flex flex-col items-center justify-center ratio-btn" data-ratio="2:3" onclick="setRatio('2:3')">
+                    <span class="text-base font-bold">2:3</span>
+                    <span class="text-[10px]">竖版</span>
+                </button>
+                <button class="aspect-square rounded-lg border border-ink-200 text-ink-600 text-xs font-medium flex flex-col items-center justify-center hover:border-amber-300 hover:bg-amber-50/50 ratio-btn" data-ratio="1:1" onclick="setRatio('1:1')">
+                    <span class="text-base font-bold">1:1</span>
+                    <span class="text-[10px]">方形</span>
+                </button>
+                <button class="aspect-square rounded-lg border border-ink-200 text-ink-600 text-xs font-medium flex flex-col items-center justify-center hover:border-amber-300 hover:bg-amber-50/50 ratio-btn" data-ratio="3:4" onclick="setRatio('3:4')">
+                    <span class="text-base font-bold">3:4</span>
+                    <span class="text-[10px]">中竖</span>
+                </button>
+                <button class="aspect-square rounded-lg border border-ink-200 text-ink-600 text-xs font-medium flex flex-col items-center justify-center hover:border-amber-300 hover:bg-amber-50/50 ratio-btn" data-ratio="16:9" onclick="setRatio('16:9')">
+                    <span class="text-base font-bold">16:9</span>
+                    <span class="text-[10px]">横版</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 情绪选择 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <h3 class="text-sm font-semibold text-ink-700 mb-3">
+                <i class="fa fa-smile-o text-amber-500 mr-2"></i>
+                情绪状态
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+                <button class="px-2.5 py-1.5 rounded-full text-xs bg-amber-100 text-amber-700 font-medium border border-amber-300 emotion-btn">清冷</button>
+                <button class="px-2.5 py-1.5 rounded-full text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 emotion-btn">微笑</button>
+                <button class="px-2.5 py-1.5 rounded-full text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 emotion-btn">严肃</button>
+                <button class="px-2.5 py-1.5 rounded-full text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 emotion-btn">愤怒</button>
+                <button class="px-2.5 py-1.5 rounded-full text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 emotion-btn">悲伤</button>
+                <button class="px-2.5 py-1.5 rounded-full text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 emotion-btn">惊讶</button>
+                <button class="px-2.5 py-1.5 rounded-full text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 emotion-btn">沉思</button>
+                <button class="px-2.5 py-1.5 rounded-full text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 emotion-btn">温柔</button>
+            </div>
+        </div>
+
+        <!-- 角度选择 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <h3 class="text-sm font-semibold text-ink-700 mb-3">
+                <i class="fa fa-eye text-amber-500 mr-2"></i>
+                拍摄角度
+            </h3>
+            <div class="grid grid-cols-3 gap-2">
+                <button class="py-2 rounded-lg text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 angle-btn">
+                    <i class="fa fa-arrow-up block mb-1"></i>俯视
+                </button>
+                <button class="py-2 rounded-lg text-xs bg-amber-100 text-amber-700 border border-amber-300 font-medium angle-btn">
+                    <i class="fa fa-dot-circle-o block mb-1"></i>平视
+                </button>
+                <button class="py-2 rounded-lg text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 angle-btn">
+                    <i class="fa fa-arrow-down block mb-1"></i>仰视
+                </button>
+                <button class="py-2 rounded-lg text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 angle-btn">
+                    <i class="fa fa-mail-forward block mb-1"></i>正面
+                </button>
+                <button class="py-2 rounded-lg text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 angle-btn">
+                    <i class="fa fa-compress block mb-1"></i>侧面
+                </button>
+                <button class="py-2 rounded-lg text-xs bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 hover:bg-amber-50 angle-btn">
+                    <i class="fa fa-mail-reply block mb-1"></i>背影
+                </button>
+            </div>
+        </div>
+
+        <!-- 图上修改入口 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <h3 class="text-sm font-semibold text-ink-700 mb-3">
+                <i class="fa fa-paint-brush text-amber-500 mr-2"></i>
+                图上修改
+            </h3>
+            <div class="space-y-2">
+                <button class="w-full py-2 rounded-lg border border-ink-200 text-sm text-ink-600 hover:border-amber-300 hover:bg-amber-50 transition-colors flex items-center justify-center gap-2" onclick="startAnnotation()">
+                    <i class="fa fa-map-marker text-red-500"></i> 添加标注修改
+                </button>
+                <button class="w-full py-2 rounded-lg border border-ink-200 text-sm text-ink-600 hover:border-amber-300 hover:bg-amber-50 transition-colors flex items-center justify-center gap-2">
+                    <i class="fa fa-eraser text-ink-500"></i> 局部重绘
+                </button>
+                <button class="w-full py-2 rounded-lg border border-ink-200 text-sm text-ink-600 hover:border-amber-300 hover:bg-amber-50 transition-colors flex items-center justify-center gap-2">
+                    <i class="fa fa-magic text-purple-500"></i> AI 智能优化
+                </button>
+            </div>
+        </div>
+
+        <!-- 服化道套装 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-ink-700">
+                    <i class="fa fa-shopping-bag text-amber-500 mr-2"></i>
+                    服化道套装
+                </h3>
+                <button class="text-xs text-ink-400 hover:text-amber-600" onclick="addOutfitSet()">
+                    <i class="fa fa-plus"></i> 新建
+                </button>
+            </div>
+            <div class="space-y-2">
+                <div class="outfit-set p-2.5 rounded-lg border-2 border-amber-300 bg-amber-50 cursor-pointer" onclick="selectOutfit(this)">
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-lg bg-white overflow-hidden flex-shrink-0">
+                            <img src="https://picsum.photos/seed/outfit1/80/80" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-ink-800">常服 · 月白劲装</p>
+                            <p class="text-[10px] text-ink-500 truncate">白色劲装 + 银白发带 + 银色护腕</p>
+                        </div>
+                        <div class="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0">
+                            <i class="fa fa-check text-white text-[10px]"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="outfit-set p-2.5 rounded-lg border border-ink-200 cursor-pointer hover:border-amber-300 hover:bg-amber-50/50 transition-colors" onclick="selectOutfit(this)">
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-lg bg-ink-100 overflow-hidden flex-shrink-0">
+                            <img src="https://picsum.photos/seed/outfit2/80/80" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-ink-800">礼服 · 宫装襦裙</p>
+                            <p class="text-[10px] text-ink-500 truncate">水蓝宫装 + 金步摇 + 玉珮</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="outfit-set p-2.5 rounded-lg border border-ink-200 cursor-pointer hover:border-amber-300 hover:bg-amber-50/50 transition-colors" onclick="selectOutfit(this)">
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-lg bg-ink-100 overflow-hidden flex-shrink-0">
+                            <img src="https://picsum.photos/seed/outfit3/80/80" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-ink-800">夜行衣 · 玄黑</p>
+                            <p class="text-[10px] text-ink-500 truncate">黑色劲装 + 面罩 + 暗器囊</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 视觉 DNA 锚点系统 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-ink-700">
+                    <i class="fa fa-dna text-amber-500 mr-2"></i>
+                    视觉 DNA 锚点
+                </h3>
+                <span class="text-[10px] text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                    <i class="fa fa-lock mr-1"></i>已锁定4项
+                </span>
+            </div>
+            <p class="text-[11px] text-ink-400 mb-3">人物核心特征保持不变，服化道可灵活调整</p>
+            
+            <div class="space-y-3">
+                <!-- 面部特征 -->
+                <div class="dna-item p-2.5 rounded-lg bg-ink-50 border border-ink-100">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-medium text-ink-700">面部特征</span>
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" checked class="accent-amber-500 w-3.5 h-3.5" onchange="toggleDnaLock(this, 'face')">
+                            <span class="text-[10px] text-ink-500">锁定</span>
+                        </label>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">鹅蛋脸</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">桃花眼</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">高鼻梁</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">樱桃小口</span>
+                    </div>
+                </div>
+                
+                <!-- 身材比例 -->
+                <div class="dna-item p-2.5 rounded-lg bg-ink-50 border border-ink-100">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-medium text-ink-700">身材比例</span>
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" checked class="accent-amber-500 w-3.5 h-3.5" onchange="toggleDnaLock(this, 'body')">
+                            <span class="text-[10px] text-ink-500">锁定</span>
+                        </label>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">168cm</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">纤细修长</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">九头身</span>
+                    </div>
+                </div>
+                
+                <!-- 发型发色 -->
+                <div class="dna-item p-2.5 rounded-lg bg-ink-50 border border-ink-100">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-medium text-ink-700">发型发色</span>
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" checked class="accent-amber-500 w-3.5 h-3.5" onchange="toggleDnaLock(this, 'hair')">
+                            <span class="text-[10px] text-ink-500">锁定</span>
+                        </label>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">乌黑长发</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">高马尾</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">银白发带</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">齐刘海</span>
+                    </div>
+                </div>
+                
+                <!-- 肤色质感 -->
+                <div class="dna-item p-2.5 rounded-lg bg-ink-50 border border-ink-100">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-medium text-ink-700">肤色质感</span>
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" checked class="accent-amber-500 w-3.5 h-3.5" onchange="toggleDnaLock(this, 'skin')">
+                            <span class="text-[10px] text-ink-500">锁定</span>
+                        </label>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">冷白皮</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">细腻肤质</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">无暇妆容</span>
+                    </div>
+                </div>
+                
+                <!-- 整体画风 -->
+                <div class="dna-item p-2.5 rounded-lg bg-amber-50/50 border border-amber-200">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-medium text-ink-700">整体画风</span>
+                        <label class="flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" class="accent-amber-500 w-3.5 h-3.5" onchange="toggleDnaLock(this, 'style')">
+                            <span class="text-[10px] text-ink-500">锁定</span>
+                        </label>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">写实古风</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">胶片质感</span>
+                        <span class="px-2 py-0.5 bg-white text-ink-600 text-[11px] rounded-full border border-ink-200">柔和光影</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="w-full mt-3 py-2 text-xs text-amber-600 border border-amber-200 rounded-lg hover:bg-amber-50 transition-colors">
+                <i class="fa fa-edit mr-1"></i> 编辑 DNA 标签
+            </button>
+        </div>
+
+        <!-- 年龄/状态微调 -->
+        <div class="bg-white rounded-xl p-4 shadow-soft border border-ink-100">
+            <h3 class="text-sm font-semibold text-ink-700 mb-3">
+                <i class="fa fa-sliders text-amber-500 mr-2"></i>
+                年龄与状态
+            </h3>
+            <div class="space-y-3">
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs text-ink-600">年龄感</span>
+                        <span class="text-xs text-ink-500" id="ageValue">20岁</span>
+                    </div>
+                    <input type="range" min="16" max="40" value="20" class="w-full accent-amber-500" oninput="updateAge(this.value)">
+                    <div class="flex justify-between text-[10px] text-ink-400 mt-0.5">
+                        <span>16</span>
+                        <span>25</span>
+                        <span>35</span>
+                        <span>40</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs text-ink-600">体态状态</span>
+                        <span class="text-xs text-ink-500" id="bodyState">标准</span>
+                    </div>
+                    <div class="flex gap-1.5">
+                        <button class="flex-1 py-1.5 text-[11px] rounded-md bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 state-btn" onclick="setBodyState('瘦弱')">瘦弱</button>
+                        <button class="flex-1 py-1.5 text-[11px] rounded-md bg-amber-100 text-amber-700 border border-amber-300 font-medium state-btn" onclick="setBodyState('标准')">标准</button>
+                        <button class="flex-1 py-1.5 text-[11px] rounded-md bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 state-btn" onclick="setBodyState('健美')">健美</button>
+                        <button class="flex-1 py-1.5 text-[11px] rounded-md bg-ink-50 text-ink-600 border border-ink-200 hover:border-amber-300 state-btn" onclick="setBodyState('丰盈')">丰盈</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs text-ink-600">疲劳状态</span>
+                        <span class="text-xs text-ink-500" id="tiredValue">精神饱满</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="10" class="w-full accent-amber-500" oninput="updateTired(this.value)">
+                </div>
+            </div>
+        </div>
+
+        <!-- 生成按钮 -->
+        <button class="w-full py-3 rounded-xl bg-gradient-amber text-white font-medium shadow-lg hover:shadow-xl transition-shadow sticky bottom-0">
+            <i class="fa fa-magic mr-2"></i>
+            生成定妆照
+        </button>
+    </aside>
+</div>
+
+<!-- 标注弹窗 -->
+<div id="annotationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-xl w-96 mx-4">
+        <div class="p-4 border-b border-ink-100">
+            <h3 class="font-semibold text-ink-800">添加修改标注</h3>
+            <p class="text-sm text-ink-500 mt-1">在图上点击位置添加标注，描述修改要求</p>
+        </div>
+        <div class="p-4 space-y-3">
+            <div>
+                <label class="text-sm text-ink-600 mb-1 block">修改位置</label>
+                <select class="w-full px-3 py-2 rounded-lg border border-ink-200 text-sm">
+                    <option>面部 - 眼睛</option>
+                    <option>面部 - 嘴巴</option>
+                    <option>发型</option>
+                    <option>服装 - 上衣</option>
+                    <option>配饰</option>
+                    <option>整体风格</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-sm text-ink-600 mb-1 block">修改描述</label>
+                <textarea class="w-full px-3 py-2 rounded-lg border border-ink-200 text-sm h-24 resize-none" placeholder="描述你想修改的内容..."></textarea>
+            </div>
+        </div>
+        <div class="p-4 border-t border-ink-100 flex justify-end gap-2">
+            <button class="px-4 py-2 rounded-lg border border-ink-200 text-ink-600 text-sm hover:bg-ink-50" onclick="closeAnnotationModal()">取消</button>
+            <button class="px-4 py-2 rounded-lg bg-gradient-amber text-white text-sm">确认添加</button>
+        </div>
     </div>
+</div>
 
-    <script>
-        // ==================== Mock 数据 ====================
-        const characters = [
-            {
-                id: 1,
-                name: '苏沐月',
-                avatar: 'https://picsum.photos/seed/sumuyue/200/200',
-                type: 'protagonist',
-                typeLabel: '主角',
-                locked: false,
-                age: 22,
-                gender: '女',
-                personality: '外表清冷孤傲，内心温柔善良，身负血海深仇却依然保持赤子之心。剑法高超，行事果敢，对待朋友至诚至真。',
-                versions: [
-                    {
-                        id: 'v1',
-                        version: 'v1.0',
-                        thumbnail: 'https://picsum.photos/seed/sumuyue-v1/300/400',
-                        fullImage: 'https://picsum.photos/seed/sumuyue-v1/800/1000',
-                        createdAt: '2024-01-15 14:30',
-                        model: '墨枢光影 v3.5',
-                        status: 'current',
-                        statusLabel: '当前版本'
-                    },
-                    {
-                        id: 'v2',
-                        version: 'v1.2',
-                        thumbnail: 'https://picsum.photos/seed/sumuyue-v2/300/400',
-                        fullImage: 'https://picsum.photos/seed/sumuyue-v2/800/1000',
-                        createdAt: '2024-01-18 09:15',
-                        model: '墨枢光影 v3.5',
-                        status: 'draft',
-                        statusLabel: '草稿'
-                    },
-                    {
-                        id: 'v3',
-                        version: 'v0.8',
-                        thumbnail: 'https://picsum.photos/seed/sumuyue-v3/300/400',
-                        fullImage: 'https://picsum.photos/seed/sumuyue-v3/800/1000',
-                        createdAt: '2024-01-10 16:45',
-                        model: '墨枢光影 v3.0',
-                        status: 'archived',
-                        statusLabel: '已归档'
-                    },
-                    {
-                        id: 'v4',
-                        version: 'v2.0',
-                        thumbnail: 'https://picsum.photos/seed/sumuyue-v4/300/400',
-                        fullImage: 'https://picsum.photos/seed/sumuyue-v4/800/1000',
-                        createdAt: '2024-01-20 11:20',
-                        model: '墨枢光影 v4.0',
-                        status: 'pending',
-                        statusLabel: '待审核'
-                    }
-                ],
-                visualDNA: {
-                    hairstyle: ['高马尾', '银白色发带', '齐刘海'],
-                    clothing: ['白色劲装', '银色护腕', '青色披风'],
-                    color: ['月白', '银灰', '淡青'],
-                    temperament: ['清冷', '出尘', '剑气'],
-                    era: ['盛唐', '仙侠', '古风']
-                },
-                forbidden: ['浓妆', '暴露服饰', '粉色系', '呆萌表情']
-            },
-            {
-                id: 2,
-                name: '萧玦',
-                avatar: 'https://picsum.photos/seed/xiaojue/200/200',
-                type: 'protagonist',
-                typeLabel: '主角',
-                locked: false,
-                age: 25,
-                gender: '男',
-                personality: '锦衣卫指挥使，冷峻寡言，心思缜密，外冷内热。对朝廷忠心耿耿，对苏沐月暗生情愫却始终克制。',
-                versions: [
-                    {
-                        id: 'v1',
-                        version: 'v1.5',
-                        thumbnail: 'https://picsum.photos/seed/xiaojue-v1/300/400',
-                        fullImage: 'https://picsum.photos/seed/xiaojue-v1/800/1000',
-                        createdAt: '2024-01-16 10:00',
-                        model: '墨枢光影 v3.5',
-                        status: 'current',
-                        statusLabel: '当前版本'
-                    },
-                    {
-                        id: 'v2',
-                        version: 'v1.0',
-                        thumbnail: 'https://picsum.photos/seed/xiaojue-v2/300/400',
-                        fullImage: 'https://picsum.photos/seed/xiaojue-v2/800/1000',
-                        createdAt: '2024-01-12 15:30',
-                        model: '墨枢光影 v3.0',
-                        status: 'archived',
-                        statusLabel: '已归档'
-                    },
-                    {
-                        id: 'v3',
-                        version: 'v2.1',
-                        thumbnail: 'https://picsum.photos/seed/xiaojue-v3/300/400',
-                        fullImage: 'https://picsum.photos/seed/xiaojue-v3/800/1000',
-                        createdAt: '2024-01-22 08:45',
-                        model: '墨枢光影 v4.0',
-                        status: 'pending',
-                        statusLabel: '待审核'
-                    }
-                ],
-                visualDNA: {
-                    hairstyle: ['束发', '玉冠', '剑眉'],
-                    clothing: ['飞鱼服', '绣春刀', '玄色斗篷'],
-                    color: ['玄黑', '暗红', '金色纹饰'],
-                    temperament: ['冷峻', '威严', '英气'],
-                    era: ['明代', '锦衣卫', '武侠']
-                },
-                forbidden: ['长发披肩', '笑容轻浮', '色彩花哨', '瘦弱身形']
-            },
-            {
-                id: 3,
-                name: '夜罗刹',
-                avatar: 'https://picsum.photos/seed/yeluosha/200/200',
-                type: 'antagonist',
-                typeLabel: '反派',
-                locked: false,
-                age: 30,
-                gender: '男',
-                personality: '神秘组织首领，行踪诡秘，手段狠辣。戴着青铜面具，从不以真面目示人。与主角有千丝万缕的联系。',
-                versions: [
-                    {
-                        id: 'v1',
-                        version: 'v1.0',
-                        thumbnail: 'https://picsum.photos/seed/yeluosha-v1/300/400',
-                        fullImage: 'https://picsum.photos/seed/yeluosha-v1/800/1000',
-                        createdAt: '2024-01-14 13:20',
-                        model: '墨枢光影 v3.5',
-                        status: 'current',
-                        statusLabel: '当前版本'
-                    },
-                    {
-                        id: 'v2',
-                        version: 'v0.5',
-                        thumbnail: 'https://picsum.photos/seed/yeluosha-v2/300/400',
-                        fullImage: 'https://picsum.photos/seed/yeluosha-v2/800/1000',
-                        createdAt: '2024-01-08 17:00',
-                        model: '墨枢光影 v3.0',
-                        status: 'archived',
-                        statusLabel: '已归档'
-                    }
-                ],
-                visualDNA: {
-                    hairstyle: ['长发', '青铜面具', '散发'],
-                    clothing: ['黑袍', '暗金纹路', '高领斗篷'],
-                    color: ['幽黑', '暗金', '血色'],
-                    temperament: ['诡秘', '威压', '邪魅'],
-                    era: ['古风', '暗黑', '仙侠']
-                },
-                forbidden: ['素颜露脸', '明亮色彩', '正义气质', '轻便服饰']
-            },
-            {
-                id: 4,
-                name: '阿阮',
-                avatar: 'https://picsum.photos/seed/aruan/200/200',
-                type: 'supporting',
-                typeLabel: '配角',
-                locked: true,
-                age: 18,
-                gender: '女',
-                personality: '苏沐月的小师妹，活泼开朗，天真烂漫。精通医术，经常在关键时刻帮助主角团化解危机。',
-                versions: [
-                    {
-                        id: 'v1',
-                        version: 'v1.2',
-                        thumbnail: 'https://picsum.photos/seed/aruan-v1/300/400',
-                        fullImage: 'https://picsum.photos/seed/aruan-v1/800/1000',
-                        createdAt: '2024-01-17 11:30',
-                        model: '墨枢光影 v3.5',
-                        status: 'current',
-                        statusLabel: '当前版本'
-                    },
-                    {
-                        id: 'v2',
-                        version: 'v1.0',
-                        thumbnail: 'https://picsum.photos/seed/aruan-v2/300/400',
-                        fullImage: 'https://picsum.photos/seed/aruan-v2/800/1000',
-                        createdAt: '2024-01-11 14:15',
-                        model: '墨枢光影 v3.0',
-                        status: 'archived',
-                        statusLabel: '已归档'
-                    },
-                    {
-                        id: 'v3',
-                        version: 'v2.0',
-                        thumbnail: 'https://picsum.photos/seed/aruan-v3/300/400',
-                        fullImage: 'https://picsum.photos/seed/aruan-v3/800/1000',
-                        createdAt: '2024-01-21 16:00',
-                        model: '墨枢光影 v4.0',
-                        status: 'draft',
-                        statusLabel: '草稿'
-                    }
-                ],
-                visualDNA: {
-                    hairstyle: ['双丫髻', '粉色发饰', '齐刘海'],
-                    clothing: ['粉绿襦裙', '小绣鞋', '药囊'],
-                    color: ['粉红', '嫩绿', '鹅黄'],
-                    temperament: ['灵动', '可爱', '纯真'],
-                    era: ['盛唐', '古风', '仙侠']
-                },
-                forbidden: ['成熟造型', '深色系', '严肃表情', '暴露服饰']
-            }
-        ];
+<script>
+// ==================== Mock 数据 ====================
+const characters = [
+    {
+        id: 1, name: '苏沐月', avatar: 'https://picsum.photos/seed/sumuyue/200/200',
+        type: 'protagonist', typeLabel: '主角', locked: false,
+        versions: [
+            { id: 'v1', version: 'v1.0', image: 'https://picsum.photos/seed/sumuyue-v1/600/800', model: 'NB Pro', status: 'current' },
+            { id: 'v2', version: 'v1.2', image: 'https://picsum.photos/seed/sumuyue-v2/600/800', model: 'NB Pro', status: 'draft' },
+            { id: 'v3', version: 'v2.0', image: 'https://picsum.photos/seed/sumuyue-v3/600/800', model: 'NB2', status: 'pending' },
+        ]
+    },
+    {
+        id: 2, name: '萧玦', avatar: 'https://picsum.photos/seed/xiaojue/200/200',
+        type: 'protagonist', typeLabel: '主角', locked: false,
+        versions: [
+            { id: 'v1', version: 'v1.5', image: 'https://picsum.photos/seed/xiaojue-v1/600/800', model: 'NB Pro', status: 'current' },
+            { id: 'v2', version: 'v1.0', image: 'https://picsum.photos/seed/xiaojue-v2/600/800', model: 'NB2', status: 'archived' },
+        ]
+    },
+    {
+        id: 3, name: '夜罗刹', avatar: 'https://picsum.photos/seed/yeluosha/200/200',
+        type: 'antagonist', typeLabel: '反派', locked: false,
+        versions: [
+            { id: 'v1', version: 'v1.0', image: 'https://picsum.photos/seed/yeluosha-v1/600/800', model: 'NB Pro', status: 'current' },
+        ]
+    },
+    {
+        id: 4, name: '阿阮', avatar: 'https://picsum.photos/seed/aruan/200/200',
+        type: 'supporting', typeLabel: '配角', locked: true,
+        versions: [
+            { id: 'v1', version: 'v1.2', image: 'https://picsum.photos/seed/aruan-v1/600/800', model: 'NB2', status: 'current' },
+            { id: 'v2', version: 'v2.0', image: 'https://picsum.photos/seed/aruan-v2/600/800', model: '即梦 5.0', status: 'draft' },
+        ]
+    }
+];
 
-        let selectedCharacterId = 1;
+// 模型最佳参数配置
+const modelConfigs = {
+    nbpro: { name: 'NB Pro', bestRatio: '2:3', maxResolution: '2048x3072', style: '真人写实' },
+    nb2: { name: 'NB2', bestRatio: '1:1', maxResolution: '1536x1536', style: '平衡通用' },
+    gpt: { name: 'GPT Image 2', bestRatio: '1:1', maxResolution: '1792x1792', style: '创意风格' },
+    jimeng: { name: '即梦 5.0', bestRatio: '3:4', maxResolution: '1536x2048', style: '二次元/国风' },
+};
 
-        // ==================== 渲染函数 ====================
-        
-        function getTypeColor(type) {
-            switch(type) {
-                case 'protagonist': return 'bg-amber-100 text-amber-700';
-                case 'supporting': return 'bg-ink-100 text-ink-600';
-                case 'antagonist': return 'bg-red-100 text-red-600';
-                default: return 'bg-ink-100 text-ink-600';
-            }
-        }
+// 五导演分析数据
+const directorAnalysis = {
+    alpha: { name: 'ALPHA', role: '叙事导演', score: 92, comment: '角色辨识度高，人设贴合度优秀', color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-200' },
+    beta: { name: 'BETA', role: '视觉导演', score: 88, comment: '色彩体系统一，质感符合胶片标准', color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' },
+    gamma: { name: 'GAMMA', role: '节奏导演', score: 85, comment: '面部特征清晰，适合多角度分镜', color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-200' },
+    kappa: { name: 'KAPPA', role: '角色导演', score: 95, comment: '视觉DNA锚定完整，一致性强', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200' },
+    epsilon: { name: 'EPSILON', role: 'AI制片', score: 90, comment: '生成效率达标，成本控制良好', color: 'text-rose-600', bg: 'bg-rose-50', border: 'border-rose-200' },
+};
 
-        function getStatusStyle(status) {
-            switch(status) {
-                case 'current': return 'bg-amber-500 text-white';
-                case 'draft': return 'bg-ink-100 text-ink-600';
-                case 'pending': return 'bg-blue-100 text-blue-600';
-                case 'archived': return 'bg-ink-200 text-ink-500';
-                default: return 'bg-ink-100 text-ink-600';
-            }
-        }
+let annotations = [
+    { id: 1, x: 35, y: 25, text: '眼睛可以再细长一点，更清冷', position: '面部-眼睛' },
+    { id: 2, x: 50, y: 60, text: '护腕的银色再亮一些', position: '配饰-护腕' },
+];
 
-        function renderCharacterList() {
-            const listEl = document.getElementById('characterList');
-            listEl.innerHTML = characters.map(char => `
-                <div 
-                    class="bg-white rounded-xl p-4 shadow-soft border-2 cursor-pointer card-hover ${
-                        selectedCharacterId === char.id 
-                            ? 'border-amber-500 shadow-glow' 
-                            : 'border-transparent hover:border-ink-200'
-                    } ${char.locked ? 'locked-overlay' : ''}"
-                    onclick="selectCharacter(${char.id})"
-                >
-                    <div class="flex items-center gap-3">
-                        <div class="relative">
-                            <img src="${char.avatar}" alt="${char.name}" 
-                                 class="w-14 h-14 rounded-xl object-cover">
-                            ${char.locked ? `
-                                <div class="absolute inset-0 flex items-center justify-center bg-black/40 rounded-xl z-10">
-                                    <i class="fa fa-lock text-white text-lg"></i>
-                                </div>
-                            ` : ''}
+let selectedCharacterId = 1;
+let selectedVersionId = 'v1';
+let currentModel = 'nbpro';
+let showAnnotations = true;
+
+// ==================== 渲染函数 ====================
+
+function getTypeColor(type) {
+    switch(type) {
+        case 'protagonist': return 'bg-amber-100 text-amber-700';
+        case 'supporting': return 'bg-ink-100 text-ink-600';
+        case 'antagonist': return 'bg-red-100 text-red-600';
+        default: return 'bg-ink-100 text-ink-600';
+    }
+}
+
+function renderCharacterList() {
+    const listEl = document.getElementById('characterList');
+    listEl.innerHTML = characters.map(char => `
+        <div 
+            class="bg-white rounded-xl p-3 shadow-soft border-2 cursor-pointer transition-all ${
+                selectedCharacterId === char.id 
+                    ? 'border-amber-500 shadow-glow' 
+                    : 'border-transparent hover:border-ink-200'
+            } ${char.locked ? 'opacity-70' : ''}"
+            onclick="selectCharacter(${char.id})"
+        >
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <img src="${char.avatar}" alt="${char.name}" 
+                         class="w-12 h-12 rounded-xl object-cover">
+                    ${char.locked ? `
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/40 rounded-xl">
+                            <i class="fa fa-lock text-white text-sm"></i>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-semibold text-ink-800 truncate">${char.name}</h3>
-                                <span class="px-2 py-0.5 rounded-full text-xs font-medium ${getTypeColor(char.type)}">
-                                    ${char.typeLabel}
-                                </span>
-                            </div>
-                            <p class="text-sm text-ink-500 mt-1">
-                                ${char.versions.length} 个版本 · 最新 ${char.versions[0].version}
-                            </p>
-                        </div>
+                    ` : ''}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-medium text-ink-800 truncate text-sm">${char.name}</h3>
+                        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-medium ${getTypeColor(char.type)}">
+                            ${char.typeLabel}
+                        </span>
+                    </div>
+                    <p class="text-xs text-ink-500 mt-0.5">
+                        ${char.versions.length} 版 · ${char.versions[0].model}
+                    </p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    updateStats();
+}
+
+function updateStats() {
+    document.getElementById('statProtagonist').textContent = characters.filter(c => c.type === 'protagonist').length;
+    document.getElementById('statSupporting').textContent = characters.filter(c => c.type === 'supporting').length;
+    document.getElementById('statAntagonist').textContent = characters.filter(c => c.type === 'antagonist').length;
+}
+
+function renderMainCanvas() {
+    const char = characters.find(c => c.id === selectedCharacterId);
+    const version = char.versions.find(v => v.id === selectedVersionId);
+    
+    document.getElementById('currentCharName').textContent = char.name;
+    document.getElementById('currentVersion').textContent = version.version;
+    document.getElementById('currentModel').textContent = version.model;
+    document.getElementById('mainImage').src = version.image;
+    
+    renderAnnotations();
+}
+
+function renderVersionThumbs() {
+    const char = characters.find(c => c.id === selectedCharacterId);
+    const thumbsEl = document.getElementById('versionThumbs');
+    
+    thumbsEl.innerHTML = char.versions.map(v => `
+        <div 
+            class="flex-shrink-0 w-14 h-18 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                v.id === selectedVersionId ? 'border-amber-400 ring-2 ring-amber-300' : 'border-transparent opacity-70 hover:opacity-100'
+            }"
+            onclick="selectVersion('${v.id}')"
+        >
+            <img src="${v.image}" alt="${v.version}" class="w-full h-full object-cover">
+        </div>
+    `).join('') + `
+        <div class="flex-shrink-0 w-14 h-18 rounded-lg border-2 border-dashed border-white/50 flex items-center justify-center text-white/70 cursor-pointer hover:border-white hover:text-white transition-colors">
+            <i class="fa fa-plus text-base"></i>
+        </div>
+    `;
+}
+
+function renderAnnotations() {
+    const layer = document.getElementById('annotationLayer');
+    if (!showAnnotations) { layer.innerHTML = ''; return; }
+    
+    layer.innerHTML = annotations.map((a, i) => `
+        <div class="annotation-marker" style="left: ${a.x}%; top: ${a.y}%;" 
+             title="${a.text}" onclick="showAnnotationDetail(${a.id})">
+            ${i + 1}
+        </div>
+    `).join('');
+}
+
+function renderDirectorAnalysis() {
+    const container = document.getElementById('directorAnalysis');
+    container.innerHTML = Object.entries(directorAnalysis).map(([key, d]) => `
+        <div class="director-card p-3 rounded-xl border border-ink-200 cursor-pointer ${d.bg} ${d.border}">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold ${d.color}">${d.name}</span>
+                <span class="text-xs text-ink-500">${d.role}</span>
+            </div>
+            <div class="text-2xl font-bold ${d.color} mb-1">${d.score}<span class="text-sm">分</span></div>
+            <p class="text-xs text-ink-600 leading-relaxed">${d.comment}</p>
+        </div>
+    `).join('');
+}
+
+// ==================== 交互函数 ====================
+
+function selectCharacter(id) {
+    selectedCharacterId = id;
+    const char = characters.find(c => c.id === id);
+    selectedVersionId = char.versions[0].id;
+    
+    renderCharacterList();
+    renderMainCanvas();
+    renderVersionThumbs();
+}
+
+function selectVersion(id) {
+    selectedVersionId = id;
+    renderMainCanvas();
+    renderVersionThumbs();
+}
+
+function toggleAnnotations() {
+    showAnnotations = !showAnnotations;
+    renderAnnotations();
+}
+
+function startAnnotation() {
+    document.getElementById('annotationModal').classList.remove('hidden');
+    document.getElementById('annotationModal').classList.add('flex');
+}
+
+function closeAnnotationModal() {
+    document.getElementById('annotationModal').classList.add('hidden');
+    document.getElementById('annotationModal').classList.remove('flex');
+}
+
+function switchRefTab(tab) {
+    const refTab = document.getElementById('tabReference');
+    const histTab = document.getElementById('tabHistory');
+    const refPanel = document.getElementById('refPanelReference');
+    const histPanel = document.getElementById('refPanelHistory');
+    
+    if (tab === 'reference') {
+        refTab.classList.add('tab-active');
+        histTab.classList.remove('tab-active');
+        histTab.classList.add('text-ink-500');
+        refPanel.classList.remove('hidden');
+        histPanel.classList.add('hidden');
+    } else {
+        histTab.classList.add('tab-active');
+        refTab.classList.remove('tab-active');
+        refTab.classList.add('text-ink-500');
+        histPanel.classList.remove('hidden');
+        refPanel.classList.add('hidden');
+    }
+}
+
+function selectReference(el) {
+    // 清除其他选中
+    document.querySelectorAll('.ref-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+function selectModel(model) {
+    currentModel = model;
+    const config = modelConfigs[model];
+    
+    // 更新提示文字
+    document.getElementById('modelHint').textContent = `最佳 ${config.bestRatio} · ${config.maxResolution}`;
+    document.getElementById('ratioHint').textContent = `推荐 ${config.bestRatio}`;
+    
+    // 自动高亮推荐比例
+    document.querySelectorAll('.ratio-btn').forEach(btn => {
+        if (btn.dataset.ratio === config.bestRatio) {
+            btn.classList.add('border-amber-400', 'bg-amber-50', 'text-amber-700');
+            btn.classList.remove('border-ink-200', 'text-ink-600');
+        } else {
+            btn.classList.remove('border-amber-400', 'bg-amber-50', 'text-amber-700');
+            btn.classList.add('border-ink-200', 'text-ink-600');
+        }
+    });
+}
+
+function setRatio(ratio) {
+    // 手动选择比例
+    document.querySelectorAll('.ratio-btn').forEach(btn => {
+        if (btn.dataset.ratio === ratio) {
+            btn.classList.add('border-amber-400', 'bg-amber-50', 'text-amber-700');
+            btn.classList.remove('border-ink-200', 'text-ink-600');
+        } else {
+            btn.classList.remove('border-amber-400', 'bg-amber-50', 'text-amber-700');
+            btn.classList.add('border-ink-200', 'text-ink-600');
+        }
+    });
+}
+
+function setViewMode(mode) {
+    console.log('切换视图模式:', mode);
+}
+
+function runDirectorAnalysis() {
+    alert('五导演重新分析中...');
+}
+
+function showAnnotationDetail(id) {
+    const ann = annotations.find(a => a.id === id);
+    if (ann) {
+        alert(`标注 #${id}\n位置: ${ann.position}\n修改: ${ann.text}`);
+    }
+}
+
+// ==================== 新增功能 ====================
+
+// 分析面板Tab切换
+function switchAnalysisTab(tab) {
+    const directorsTab = document.getElementById('tabDirectors');
+    const breakdownTab = document.getElementById('tabBreakdown');
+    const directorsContent = document.getElementById('analysisDirectors');
+    const breakdownContent = document.getElementById('analysisBreakdown');
+    
+    if (tab === 'directors') {
+        directorsTab.classList.add('bg-white', 'shadow-sm', 'text-ink-700');
+        directorsTab.classList.remove('text-ink-500');
+        breakdownTab.classList.remove('bg-white', 'shadow-sm', 'text-ink-700');
+        breakdownTab.classList.add('text-ink-500');
+        directorsContent.classList.remove('hidden');
+        breakdownContent.classList.add('hidden');
+    } else {
+        breakdownTab.classList.add('bg-white', 'shadow-sm', 'text-ink-700');
+        breakdownTab.classList.remove('text-ink-500');
+        directorsTab.classList.remove('bg-white', 'shadow-sm', 'text-ink-700');
+        directorsTab.classList.add('text-ink-500');
+        breakdownContent.classList.remove('hidden');
+        directorsContent.classList.add('hidden');
+    }
+}
+
+// 服化道套装选择
+function selectOutfit(el) {
+    document.querySelectorAll('.outfit-set').forEach(set => {
+        set.classList.remove('border-amber-300', 'bg-amber-50', 'border-2');
+        set.classList.add('border', 'border-ink-200');
+        const check = set.querySelector('.fa-check');
+        if (check) check.parentElement.remove();
+    });
+    
+    el.classList.add('border-2', 'border-amber-300', 'bg-amber-50');
+    el.classList.remove('border', 'border-ink-200');
+    
+    // 添加勾选图标
+    const contentDiv = el.querySelector('.flex.items-center');
+    if (contentDiv && !contentDiv.querySelector('.fa-check')) {
+        const checkDiv = document.createElement('div');
+        checkDiv.className = 'w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0';
+        checkDiv.innerHTML = '<i class="fa fa-check text-white text-[10px]"></i>';
+        contentDiv.appendChild(checkDiv);
+    }
+    
+    // 模拟切换效果
+    const outfitName = el.querySelector('p:first-child').textContent;
+    console.log('切换套装:', outfitName);
+}
+
+// 新增套装
+function addOutfitSet() {
+    alert('创建新的服化道套装\n可以从当前版本保存，或从模板创建');
+}
+
+// DNA锚点锁定/解锁
+function toggleDnaLock(checkbox, dnaType) {
+    const dnaItem = checkbox.closest('.dna-item');
+    const lockedCount = document.querySelectorAll('.dna-item input[type="checkbox"]:checked').length;
+    
+    if (checkbox.checked) {
+        dnaItem.classList.add('bg-ink-50', 'border-ink-100');
+        dnaItem.classList.remove('bg-amber-50/50', 'border-amber-200');
+    } else {
+        dnaItem.classList.remove('bg-ink-50', 'border-ink-100');
+        dnaItem.classList.add('bg-amber-50/50', 'border-amber-200');
+    }
+    
+    // 更新锁定计数
+    const lockBadge = document.querySelector('.text-green-600.bg-green-50');
+    if (lockBadge) {
+        lockBadge.innerHTML = `<i class="fa fa-lock mr-1"></i>已锁定${lockedCount}项`;
+    }
+}
+
+// 年龄调整
+function updateAge(value) {
+    document.getElementById('ageValue').textContent = value + '岁';
+}
+
+// 体态状态切换
+function setBodyState(state) {
+    document.getElementById('bodyState').textContent = state;
+    document.querySelectorAll('.state-btn').forEach(btn => {
+        btn.classList.remove('bg-amber-100', 'text-amber-700', 'border-amber-300', 'font-medium');
+        btn.classList.add('bg-ink-50', 'text-ink-600', 'border-ink-200');
+    });
+    event.target.classList.remove('bg-ink-50', 'text-ink-600', 'border-ink-200');
+    event.target.classList.add('bg-amber-100', 'text-amber-700', 'border-amber-300', 'font-medium');
+}
+
+// 疲劳状态调整
+function updateTired(value) {
+    let text = '精神饱满';
+    if (value > 80) text = '极度疲惫';
+    else if (value > 60) text = '明显疲惫';
+    else if (value > 40) text = '略显疲惫';
+    else if (value > 20) text = '状态一般';
+    
+    document.getElementById('tiredValue').textContent = text;
+}
+
+// 视图模式切换
+let currentViewMode = 'single';
+
+function setViewMode(mode) {
+    currentViewMode = mode;
+    const canvasWrapper = document.getElementById('canvasWrapper');
+    const imageContainer = document.getElementById('imageContainer');
+    
+    // 更新工具栏按钮状态
+    const buttons = document.querySelectorAll('.bg-ink-50.rounded-lg button');
+    buttons.forEach(btn => {
+        btn.classList.remove('bg-white', 'shadow-sm', 'text-ink-700');
+        btn.classList.add('text-ink-500');
+    });
+    
+    // 找到当前点击的按钮并高亮
+    event.target.closest('button').classList.add('bg-white', 'shadow-sm', 'text-ink-700');
+    event.target.closest('button').classList.remove('text-ink-500');
+    
+    const char = characters.find(c => c.id === selectedCharacterId);
+    
+    if (mode === 'single') {
+        // 单图模式
+        const version = char.versions.find(v => v.id === selectedVersionId);
+        imageContainer.innerHTML = `
+            <img id="mainImage" src="${version.image}" 
+                 alt="定妆照" class="max-w-full max-h-[calc(100%-80px)] object-contain rounded-lg shadow-lg">
+            <div id="annotationLayer"></div>
+        `;
+    } else if (mode === 'compare') {
+        // 对比模式 - 左右滑动
+        const v1 = char.versions[0];
+        const v2 = char.versions[1] || char.versions[0];
+        imageContainer.innerHTML = `
+            <div class="flex gap-4 items-center justify-center" style="height: 100%;">
+                <div class="text-center">
+                    <img src="${v1.image}" class="max-h-[60vh] object-contain rounded-lg shadow-lg">
+                    <p class="text-xs text-ink-500 mt-2">${v1.version} · ${v1.model}</p>
+                </div>
+                <div class="text-2xl text-ink-300">VS</div>
+                <div class="text-center">
+                    <img src="${v2.image}" class="max-h-[60vh] object-contain rounded-lg shadow-lg">
+                    <p class="text-xs text-ink-500 mt-2">${v2.version} · ${v2.model}</p>
+                </div>
+            </div>
+        `;
+    } else if (mode === 'grid') {
+        // 网格模式
+        imageContainer.innerHTML = `
+            <div class="grid grid-cols-3 gap-3 p-4" style="height: 100%;">
+                ${char.versions.map(v => `
+                    <div class="text-center cursor-pointer hover:opacity-80 transition-opacity" onclick="selectVersion('${v.id}'); setViewMode('single');">
+                        <img src="${v.image}" class="w-full h-40 object-cover rounded-lg shadow-md">
+                        <p class="text-xs text-ink-500 mt-1">${v.version}</p>
+                        <p class="text-[10px] text-ink-400">${v.model}</p>
+                    </div>
+                `).join('')}
+                <div class="flex items-center justify-center border-2 border-dashed border-ink-200 rounded-lg text-ink-400 hover:border-amber-400 hover:text-amber-500 cursor-pointer transition-colors">
+                    <div class="text-center">
+                        <i class="fa fa-plus text-2xl mb-1"></i>
+                        <p class="text-xs">生成新版本</p>
                     </div>
                 </div>
-            `).join('');
+            </div>
+        `;
+    }
+    
+    renderAnnotations();
+}
 
-            // 更新统计
-            updateStats();
-        }
+// ==================== 初始化 ====================
+renderCharacterList();
+renderMainCanvas();
+renderVersionThumbs();
+renderDirectorAnalysis();
+</script>
 
-        function updateStats() {
-            const protagonist = characters.filter(c => c.type === 'protagonist').length;
-            const supporting = characters.filter(c => c.type === 'supporting').length;
-            const antagonist = characters.filter(c => c.type === 'antagonist').length;
-            
-            document.getElementById('statProtagonist').textContent = protagonist;
-            document.getElementById('statSupporting').textContent = supporting;
-            document.getElementById('statAntagonist').textContent = antagonist;
-            document.getElementById('statTotal').textContent = characters.length + ' 个角色';
-        }
-
-        function renderCharacterDetail() {
-            const char = characters.find(c => c.id === selectedCharacterId);
-            if (!char) return;
-
-            const detailEl = document.getElementById('characterDetail');
-            
-            detailEl.innerHTML = `
-                <!-- 顶部基本信息 -->
-                <div class="bg-white rounded-2xl shadow-soft p-6">
-                    <div class="flex gap-6">
-                        <div class="relative">
-                            <img src="${char.avatar}" alt="${char.name}" 
-                                 class="w-28 h-28 rounded-2xl object-cover shadow-card">
-                            ${char.locked ? `
-                                <div class="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-lg flex items-center justify-center shadow">
-                                    <i class="fa fa-lock text-amber-600"></i>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <div class="flex items-center gap-3">
-                                        <h2 class="text-2xl font-bold text-ink-900">${char.name}</h2>
-                                        <span class="px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(char.type)}">
-                                            ${char.typeLabel}
-                                        </span>
-                                    </div>
-                                    <div class="flex items-center gap-6 mt-2 text-ink-500">
-                                        <span><i class="fa fa-calendar-o mr-1"></i> ${char.age} 岁</span>
-                                        <span><i class="fa fa-venus-mars mr-1"></i> ${char.gender}</span>
-                                        <span><i class="fa fa-picture-o mr-1"></i> ${char.versions.length} 个定妆版本</span>
-                                    </div>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button class="px-4 py-2 rounded-lg border border-ink-200 text-ink-600 text-sm hover:bg-ink-50 transition-colors">
-                                        <i class="fa fa-edit mr-1"></i> 编辑信息
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <h4 class="text-sm font-medium text-ink-700 mb-2">性格描述</h4>
-                                <p class="text-ink-600 leading-relaxed">${char.personality}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 定妆版本时间线 -->
-                <div class="bg-white rounded-2xl shadow-soft p-6">
-                    <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-semibold text-ink-800">
-                            <i class="fa fa-clock-o text-amber-500 mr-2"></i>
-                            定妆版本时间线
-                        </h3>
-                        <span class="text-sm text-ink-500">共 ${char.versions.length} 个版本</span>
-                    </div>
-                    <div class="flex gap-4 overflow-x-auto scrollbar-thin pb-4">
-                        ${char.versions.map(version => `
-                            <div 
-                                class="flex-shrink-0 w-48 cursor-pointer version-card-hover ${
-                                    version.status === 'current' ? 'ring-2 ring-amber-500 rounded-xl' : ''
-                                }"
-                                onclick="openModal('${version.fullImage}', '${char.name} - ${version.version}', '${version.model} · ${version.createdAt}')"
-                            >
-                                <div class="relative rounded-xl overflow-hidden shadow-soft">
-                                    <img src="${version.thumbnail}" alt="${version.version}" 
-                                         class="w-full h-64 object-cover">
-                                    ${version.status === 'current' ? `
-                                        <div class="absolute top-3 left-3 px-2 py-1 rounded-md bg-gradient-amber text-white text-xs font-medium shadow">
-                                            <i class="fa fa-star mr-1"></i> 当前
-                                        </div>
-                                    ` : ''}
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                                        <div class="text-white font-medium">${version.version}</div>
-                                        <div class="text-white/70 text-xs">${version.model}</div>
-                                    </div>
-                                </div>
-                                <div class="mt-2 flex justify-between items-center">
-                                    <span class="text-xs text-ink-500">${version.createdAt}</span>
-                                    <span class="px-2 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(version.status)}">
-                                        ${version.statusLabel}
-                                    </span>
-                                </div>
-                            </div>
-                        `).join('')}
-                        
-                        <!-- 添加版本卡片 -->
-                        <div class="flex-shrink-0 w-48 flex items-center justify-center">
-                            <div class="w-full h-64 rounded-xl border-2 border-dashed border-ink-200 flex flex-col items-center justify-center text-ink-400 hover:border-amber-400 hover:text-amber-500 cursor-pointer transition-colors">
-                                <i class="fa fa-plus text-2xl mb-2"></i>
-                                <span class="text-sm">生成新版本</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 视觉DNA & 铁律禁令 -->
-                <div class="grid grid-cols-2 gap-6">
-                    <!-- 视觉DNA -->
-                    <div class="bg-white rounded-2xl shadow-soft p-6">
-                        <h3 class="text-lg font-semibold text-ink-800 mb-4">
-                            <i class="fa fa-dna text-amber-500 mr-2"></i>
-                            视觉 DNA
-                        </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <h4 class="text-sm font-medium text-ink-600 mb-2 flex items-center">
-                                    <span class="w-2 h-2 rounded-full bg-amber-400 mr-2"></span>
-                                    发型
-                                </h4>
-                                <div class="flex flex-wrap gap-2">
-                                    ${char.visualDNA.hairstyle.map(tag => `
-                                        <span class="px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 text-sm border border-amber-100">
-                                            ${tag}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-ink-600 mb-2 flex items-center">
-                                    <span class="w-2 h-2 rounded-full bg-orange-400 mr-2"></span>
-                                    服装
-                                </h4>
-                                <div class="flex flex-wrap gap-2">
-                                    ${char.visualDNA.clothing.map(tag => `
-                                        <span class="px-3 py-1.5 rounded-lg bg-orange-50 text-orange-700 text-sm border border-orange-100">
-                                            ${tag}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-ink-600 mb-2 flex items-center">
-                                    <span class="w-2 h-2 rounded-full bg-yellow-400 mr-2"></span>
-                                    配色
-                                </h4>
-                                <div class="flex flex-wrap gap-2">
-                                    ${char.visualDNA.color.map(tag => `
-                                        <span class="px-3 py-1.5 rounded-lg bg-yellow-50 text-yellow-700 text-sm border border-yellow-100">
-                                            ${tag}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-ink-600 mb-2 flex items-center">
-                                    <span class="w-2 h-2 rounded-full bg-red-400 mr-2"></span>
-                                    气质
-                                </h4>
-                                <div class="flex flex-wrap gap-2">
-                                    ${char.visualDNA.temperament.map(tag => `
-                                        <span class="px-3 py-1.5 rounded-lg bg-red-50 text-red-700 text-sm border border-red-100">
-                                            ${tag}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-ink-600 mb-2 flex items-center">
-                                    <span class="w-2 h-2 rounded-full bg-purple-400 mr-2"></span>
-                                    年代感
-                                </h4>
-                                <div class="flex flex-wrap gap-2">
-                                    ${char.visualDNA.era.map(tag => `
-                                        <span class="px-3 py-1.5 rounded-lg bg-purple-50 text-purple-700 text-sm border border-purple-100">
-                                            ${tag}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 铁律禁令 -->
-                    <div class="bg-white rounded-2xl shadow-soft p-6">
-                        <h3 class="text-lg font-semibold text-ink-800 mb-4">
-                            <i class="fa fa-ban text-red-500 mr-2"></i>
-                            铁律禁令
-                        </h3>
-                        <p class="text-sm text-ink-500 mb-4">以下特征禁止在该角色形象中出现</p>
-                        <div class="flex flex-wrap gap-3">
-                            ${char.forbidden.map(item => `
-                                <span class="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-sm border border-red-200 flex items-center gap-2">
-                                    <i class="fa fa-times-circle text-red-400"></i>
-                                    ${item}
-                                </span>
-                            `).join('')}
-                        </div>
-                        
-                        <div class="mt-6 pt-6 border-t border-ink-100">
-                            <h4 class="text-sm font-medium text-ink-700 mb-3">禁令说明</h4>
-                            <ul class="text-sm text-ink-500 space-y-2">
-                                <li class="flex items-start gap-2">
-                                    <i class="fa fa-info-circle text-amber-500 mt-0.5"></i>
-                                    <span>所有生成的定妆照将自动检测以上禁止特征</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa fa-info-circle text-amber-500 mt-0.5"></i>
-                                    <span>违反禁令的版本将被标记并提示重新生成</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa fa-info-circle text-amber-500 mt-0.5"></i>
-                                    <span>锁定角色后，禁令规则不可修改</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 操作区 -->
-                <div class="bg-white rounded-2xl shadow-soft p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-lg font-semibold text-ink-800">操作面板</h3>
-                            <p class="text-sm text-ink-500 mt-1">管理角色定妆，生成新的版本</p>
-                        </div>
-                        <div class="flex gap-3">
-                            <button class="px-5 py-2.5 rounded-xl border border-ink-200 text-ink-600 font-medium hover:bg-ink-50 transition-colors flex items-center gap-2">
-                                <i class="fa fa-upload"></i>
-                                上传参考图
-                            </button>
-                            <button class="px-5 py-2.5 rounded-xl border border-ink-200 text-ink-600 font-medium hover:bg-ink-50 transition-colors flex items-center gap-2">
-                                <i class="fa ${char.locked ? 'fa-unlock' : 'fa-lock'}"></i>
-                                ${char.locked ? '解锁角色' : '锁定角色'}
-                            </button>
-                            <button class="px-6 py-2.5 rounded-xl bg-gradient-amber text-white font-medium hover:opacity-90 transition-opacity shadow-lg shadow-amber-200 flex items-center gap-2">
-                                <i class="fa fa-magic"></i>
-                                生成新定妆
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ==================== 交互函数 ====================
-        
-        function selectCharacter(id) {
-            selectedCharacterId = id;
-            renderCharacterList();
-            renderCharacterDetail();
-        }
-
-        function openModal(imageSrc, title, meta) {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalMeta = document.getElementById('modalMeta');
-            
-            modalImage.src = imageSrc;
-            modalTitle.textContent = title;
-            modalMeta.textContent = meta;
-            
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = '';
-        }
-
-        // 点击背景关闭弹窗
-        document.getElementById('imageModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // ESC 键关闭弹窗
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        // ==================== 初始化 ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            renderCharacterList();
-            renderCharacterDetail();
-        });
-    </script>
 </body>
 </html>
