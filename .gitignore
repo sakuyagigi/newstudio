@@ -59,4 +59,14 @@ data/
 *.bak
 *.bak2
 *.old
+*.working
+*.dark-bak
 index-old.html
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
