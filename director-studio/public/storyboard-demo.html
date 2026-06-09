@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分镜生成面板 - 节奏导演 GAMMA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+  
+  * {
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #fef7ed 0%, #fff7ed 50%, #ffedd5 100%);
+    min-height: 100vh;
+  }
+  
+  .film-strip {
+    background: repeating-linear-gradient(
+      90deg,
+      #1f2937 0px,
+      #1f2937 8px,
+      #374151 8px,
+      #374151 16px
+    );
+  }
+  
+  .storyboard-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .storyboard-card:hover {
+    transform: translateY(-4px) translateX(4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .timeline-dot {
+    position: relative;
+  }
+  
+  .timeline-dot::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #f97316;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
+    z-index: 10;
+  }
+  
+  .timeline-line {
+    position: relative;
+  }
+  
+  .timeline-line::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, #e5e7eb 0%, #d1d5db 50%, #e5e7eb 100%);
+  }
+  
+  .grade-a { border-left: 4px solid #ef4444; }
+  .grade-b { border-left: 4px solid #f97316; }
+  .grade-c { border-left: 4px solid #3b82f6; }
+  
+  .grade-badge-a { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .grade-badge-b { background: linear-gradient(135deg, #f97316, #ea580c); }
+  .grade-badge-c { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+  
+  .sidebar {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sidebar.hidden-sidebar {
+    transform: translateX(100%);
+  }
+  
+  .sidebar.visible-sidebar {
+    transform: translateX(0);
+  }
+  
+  .progress-film {
+    background: linear-gradient(90deg, #fbbf24, #f97316, #ef4444);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .progress-film::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 12px,
+      rgba(0,0,0,0.1) 12px,
+      rgba(0,0,0,0.1) 16px
+    );
+  }
+  
+  .scene-divider {
+    position: relative;
+  }
+  
+  .scene-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d97706, transparent);
+  }
+  
+  .thumbnail-placeholder {
+    background: linear-gradient(135deg, #fef3c7, #fed7aa);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .thumbnail-placeholder::after {
+    content: '🎬';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    opacity: 0.5;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    transition: all 0.2s ease;
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #ea580c, #c2410c);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+  }
+  
+  .btn-secondary {
+    background: white;
+    border: 1px solid #fed7aa;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    background: #fff7ed;
+    border-color: #fdba74;
+  }
+  
+  .filter-btn {
+    transition: all 0.2s ease;
+  }
+  
+  .filter-btn.active {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .card-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.3s ease;
+  }
+  
+  .card-detail.expanded {
+    max-height: 500px;
+  }
+  
+  .glow-effect {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes glow {
+    from { box-shadow: 0 0 5px rgba(249, 115, 22, 0.3); }
+    to { box-shadow: 0 0 20px rgba(249, 115, 22, 0.6); }
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #fef3c7;
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #fdba74;
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #fb923c;
+  }
+</style>
+</head>
+<body class="overflow-hidden">
+
+<!-- Main Container -->
+<div class="h-screen flex flex-col">
+  
+  <!-- Top Toolbar -->
+  <header class="bg-white/80 backdrop-blur-md border-b border-orange-100 px-6 py-3 flex items-center justify-between shadow-sm">
+    <!-- Left: Stats -->
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
+          γ
+        </div>
+        <div>
+          <h1 class="text-lg font-semibold text-gray-800">节奏导演 GAMMA</h1>
+          <p class="text-xs text-gray-500">分镜生成面板</p>
+        </div>
+      </div>
+      
+      <div class="h-8 w-px bg-orange-200 mx-2"></div>
+      
+      <div class="flex items-center gap-4 text-sm">
+        <div class="flex items-center gap-1.5">
+          <span class="text-gray-500">总镜数</span>
+          <span class="font-semibold text-gray-800 text-base" id="totalShots">18</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-gray-500">总时长</span>
+          <span class="font-semibold text-gray-800 text-base" id="totalDuration">2:34</span>
+        </div>
+        <div class="h-5 w-px bg-gray-200"></div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-red-500"></span>
+          <span class="text-gray-500">A级</span>
+          <span class="font-semibold text-red-600" id="gradeACount">4</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+          <span class="text-gray-500">B级</span>
+          <span class="font-semibold text-orange-600" id="gradeBCount">8</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+          <span class="text-gray-500">C级</span>
+          <span class="font-semibold text-blue-600" id="gradeCCount">6</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Middle: ABC Filter -->
+    <div class="flex items-center gap-1 bg-orange-50 p-1 rounded-lg">
+      <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-700 hover:bg-white active" data-filter="all" onclick="setFilter('all', this)">
+        全部
+      </button>
+      <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-500 hover:bg-white" data-filter="A" onclick="setFilter('A', this)">
+        <span class="w-2 h-2 rounded-full bg-red-500 inline-block mr-1.5 align-middle"></span>
+        A级 · 关键镜头
+      </button>
+      <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-500 hover:bg-white" data-filter="B" onclick="setFilter('B', this)">
+        <span class="w-2 h-2 rounded-full bg-orange-500 inline-block mr-1.5 align-middle"></span>
+        B级 · 重要镜头
+      </button>
+      <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-500 hover:bg-white" data-filter="C" onclick="setFilter('C', this)">
+        <span class="w-2 h-2 rounded-full bg-blue-500 inline-block mr-1.5 align-middle"></span>
+        C级 · 过渡镜头
+      </button>
+    </div>
+    
+    <!-- Right: Actions -->
+    <div class="flex items-center gap-3">
+      <button class="btn-secondary px-4 py-2 rounded-lg text-sm font-medium text-gray-700 flex items-center gap-2" onclick="exportStoryboard()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        导出分镜表
+      </button>
+      <button class="btn-primary px-5 py-2 rounded-lg text-sm font-medium text-white flex items-center gap-2" onclick="generateAll()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        生成全部
+      </button>
+    </div>
+  </header>
+  
+  <!-- Progress Bar -->
+  <div class="h-1.5 bg-gray-100">
+    <div class="progress-film h-full w-3/5 rounded-r-full"></div>
+  </div>
+  
+  <!-- Main Content Area -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- Timeline + Storyboard Area -->
+    <div class="flex-1 flex overflow-hidden" id="mainContent">
+      
+      <!-- Left Timeline -->
+      <div class="w-24 flex-shrink-0 pt-8">
+        <div class="timeline-line h-full relative flex flex-col">
+          <!-- Time markers will be generated by JS -->
+          <div id="timelineMarkers"></div>
+        </div>
+      </div>
+      
+      <!-- Storyboard Cards -->
+      <div class="flex-1 overflow-y-auto p-6 pr-8" id="storyboardContainer">
+        <div class="max-w-2xl mx-auto space-y-4" id="storyboardList">
+          <!-- Scene 1 -->
+          <div class="scene-divider py-3">
+            <span class="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full relative z-10">
+              第一幕 · 清晨邂逅
+            </span>
+          </div>
+          
+          <!-- Storyboard cards will be rendered by JS -->
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Right Sidebar (Details Panel) -->
+    <aside class="sidebar visible-sidebar w-96 bg-white/95 backdrop-blur-md border-l border-orange-100 flex flex-col shadow-xl" id="sidebar">
+      <div class="p-5 border-b border-orange-50">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-semibold text-gray-800">分镜详情</h2>
+          <button class="text-gray-400 hover:text-gray-600 p-1" onclick="closeSidebar()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Large Preview -->
+      <div class="p-5 border-b border-orange-50">
+        <div class="aspect-video rounded-lg bg-gradient-to-br from-amber-100 to-orange-100 overflow-hidden relative" id="detailPreview">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-5xl mb-2">🎬</div>
+              <p class="text-sm text-orange-600/60">分镜预览</p>
+            </div>
+          </div>
+          <div class="absolute top-3 right-3">
+            <span class="grade-badge-b text-white text-xs font-bold px-2 py-0.5 rounded" id="detailGrade">B级</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Details Content -->
+      <div class="flex-1 overflow-y-auto p-5 space-y-5">
+        
+        <!-- Shot Info -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-semibold text-gray-800" id="detailTitle">镜号 01</h3>
+            <span class="text-sm text-orange-600 font-medium" id="detailDuration">00:08</span>
+          </div>
+          <p class="text-sm text-gray-600 leading-relaxed" id="detailDescription">
+            清晨的阳光透过窗帘缝隙洒进房间，主人公缓缓睁开眼睛，新的一天开始了。
+          </p>
+        </div>
+        
+        <!-- Parameters -->
+        <div class="bg-orange-50/50 rounded-xl p-4 space-y-3">
+          <h4 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+            镜头参数
+          </h4>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-500">景别</span>
+              <span class="font-medium text-gray-700" id="detailShotType">特写</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">角度</span>
+              <span class="font-medium text-gray-700" id="detailAngle">平视</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">运镜</span>
+              <span class="font-medium text-gray-700" id="detailMovement">推镜</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">光线</span>
+              <span class="font-medium text-gray-700" id="detailLighting">柔光</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Characters -->
+        <div>
+          <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            出场角色
+          </h4>
+          <div class="flex flex-wrap gap-2" id="detailCharacters">
+            <span class="bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-1 rounded-full">林小雨</span>
+          </div>
+        </div>
+        
+        <!-- Prompt -->
+        <div>
+          <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+            AI 提示词
+          </h4>
+          <div class="bg-gray-50 rounded-lg p-3 text-xs text-gray-600 font-mono leading-relaxed max-h-32 overflow-y-auto" id="detailPrompt">
+            清晨阳光，柔和光线，房间内部，窗帘，一个年轻女孩缓缓睁开眼睛，特写镜头，推镜运动，暖色调，电影质感，浅景深
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Sidebar Actions -->
+      <div class="p-5 border-t border-orange-50 space-y-2">
+        <button class="w-full btn-primary py-2.5 rounded-lg text-sm font-medium text-white flex items-center justify-center gap-2" onclick="regenerateShot()">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          重新生成
+        </button>
+        <div class="flex gap-2">
+          <button class="flex-1 btn-secondary py-2 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-center gap-1.5" onclick="adjustParams()">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+            调整参数
+          </button>
+          <button class="flex-1 btn-secondary py-2 rounded-lg text-sm font-medium text-gray-700 flex items-center justify-center gap-1.5" onclick="lockShot()">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            锁定此镜
+          </button>
+        </div>
+      </div>
+    </aside>
+    
+  </div>
+</div>
+
+<script>
+  // Mock Data - 18 storyboards across 3 scenes
+  const storyboards = [
+    // Scene 1: 清晨邂逅 (shots 1-6)
+    {
+      id: 1,
+      scene: 1,
+      shot: '01',
+      title: '清晨苏醒',
+      grade: 'B',
+      duration: 8,
+      timecode: '00:00',
+      shotType: '特写',
+      angle: '平视',
+      movement: '推镜',
+      lighting: '柔光',
+      description: '清晨的阳光透过窗帘缝隙洒进房间，主人公林小雨缓缓睁开眼睛，新的一天开始了。',
+      characters: ['林小雨'],
+      prompt: '清晨阳光，柔和光线，房间内部，窗帘缝隙，一个年轻女孩缓缓睁开眼睛，特写镜头，推镜运动，暖色调，电影质感，浅景深，85mm镜头',
+      thumbnail: '🌅'
+    },
+    {
+      id: 2,
+      scene: 1,
+      shot: '02',
+      title: '起床动作',
+      grade: 'C',
+      duration: 5,
+      timecode: '00:08',
+      shotType: '中景',
+      angle: '俯视',
+      movement: '固定',
+      lighting: '自然光',
+      description: '林小雨坐起身来，伸了个懒腰，头发有些凌乱，脸上带着刚睡醒的懵懂。',
+      characters: ['林小雨'],
+      prompt: '卧室场景，女孩坐在床上伸懒腰，中景镜头，俯视角度，清晨自然光，温馨氛围，生活气息',
+      thumbnail: '🛏️'
+    },
+    {
+      id: 3,
+      scene: 1,
+      shot: '03',
+      title: '咖啡时光',
+      grade: 'B',
+      duration: 7,
+      timecode: '00:13',
+      shotType: '近景',
+      angle: '平视',
+      movement: '慢摇',
+      lighting: '侧光',
+      description: '厨房中，林小雨煮着咖啡，咖啡壶冒出袅袅热气，她望着窗外若有所思。',
+      characters: ['林小雨'],
+      prompt: '厨房场景，咖啡壶冒热气，女孩侧影，近景镜头，慢摇运动，侧光照明，温暖色调，电影感',
+      thumbnail: '☕'
+    },
+    {
+      id: 4,
+      scene: 1,
+      shot: '04',
+      title: '意外相遇',
+      grade: 'A',
+      duration: 12,
+      timecode: '00:20',
+      shotType: '全景',
+      angle: '平视',
+      movement: '横移',
+      lighting: '晨光',
+      description: '街角咖啡店门口，林小雨不小心撞到了一个男生，咖啡洒了两人一身。两人同时道歉，眼神交汇的瞬间，时间仿佛静止。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '街角咖啡店，清晨阳光，男孩女孩相撞，咖啡洒落，全景镜头，横移运动，两人对视的瞬间，浪漫氛围，电影质感，Golden Hour',
+      thumbnail: '💫'
+    },
+    {
+      id: 5,
+      scene: 1,
+      shot: '05',
+      title: '尴尬对视',
+      grade: 'A',
+      duration: 10,
+      timecode: '00:32',
+      shotType: '特写',
+      angle: '平视',
+      movement: '反打',
+      lighting: '逆光',
+      description: '特写两人错愕的表情，随即相视一笑。男生的眼睛很好看，林小雨有些脸红。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '双人特写反打镜头，男孩女孩相视而笑，逆光效果，发丝发光，眼神中有星光，心动瞬间，浅景深，浪漫唯美',
+      thumbnail: '👀'
+    },
+    {
+      id: 6,
+      scene: 1,
+      shot: '06',
+      title: '匆匆告别',
+      grade: 'B',
+      duration: 6,
+      timecode: '00:42',
+      shotType: '中景',
+      angle: '平视',
+      movement: '跟拍',
+      lighting: '自然光',
+      description: '男生着急赶时间，留下联系方式后匆匆离去。林小雨望着他的背影，手中握着写有电话的纸巾。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '街道场景，男孩匆匆离去的背影，女孩站在原地，中景跟拍，清晨街道，自然光，故事感',
+      thumbnail: '🚶'
+    },
+    
+    // Scene 2: 心意渐浓 (shots 7-12)
+    {
+      id: 7,
+      scene: 2,
+      shot: '07',
+      title: '手机信息',
+      grade: 'B',
+      duration: 6,
+      timecode: '00:48',
+      shotType: '特写',
+      angle: '俯视',
+      movement: '固定',
+      lighting: '屏幕光',
+      description: '当天晚上，林小雨收到男生发来的信息，嘴角不自觉地上扬。手机屏幕的光映照在她脸上。',
+      characters: ['林小雨'],
+      prompt: '手机特写，女孩微笑的脸，屏幕光反射，夜晚卧室，温馨暧昧氛围，特写镜头，冷色调与暖色调对比',
+      thumbnail: '📱'
+    },
+    {
+      id: 8,
+      scene: 2,
+      shot: '08',
+      title: '约会准备',
+      grade: 'C',
+      duration: 4,
+      timecode: '00:54',
+      shotType: '近景',
+      angle: '平视',
+      movement: '快切',
+      lighting: '室内光',
+      description: '蒙太奇快切：挑选衣服、化妆、整理发型。林小雨既期待又紧张。',
+      characters: ['林小雨'],
+      prompt: '蒙太奇快切，女孩约会前准备，选衣服，化妆，镜子前整理，轻快节奏，暖色调，生活气息',
+      thumbnail: '👗'
+    },
+    {
+      id: 9,
+      scene: 2,
+      shot: '09',
+      title: '餐厅相见',
+      grade: 'B',
+      duration: 9,
+      timecode: '00:58',
+      shotType: '全景',
+      angle: '平视',
+      movement: '推镜',
+      lighting: '暖光',
+      description: '餐厅内，陈阳已经在等她。看到她来，起身微笑。整个餐厅弥漫着温馨的氛围。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '餐厅内部，暖黄灯光，男孩起身迎接女孩，全景推镜，温馨浪漫氛围，烛光晚餐感，电影质感',
+      thumbnail: '🍽️'
+    },
+    {
+      id: 10,
+      scene: 2,
+      shot: '10',
+      title: '欢声笑语',
+      grade: 'A',
+      duration: 15,
+      timecode: '01:07',
+      shotType: '中景',
+      angle: '平视',
+      movement: '环绕',
+      lighting: '暖光',
+      description: '两人聊得很开心，从工作聊到爱好，从童年聊到梦想。仿佛有说不完的话题，时间过得飞快。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '餐厅约会，两人相谈甚欢，中景环绕镜头，温暖的灯光，自然的笑容，眼神交流，暧昧氛围，360度环绕运动',
+      thumbnail: '😄'
+    },
+    {
+      id: 11,
+      scene: 2,
+      shot: '11',
+      title: '触碰瞬间',
+      grade: 'A',
+      duration: 8,
+      timecode: '01:22',
+      shotType: '特写',
+      angle: '平视',
+      movement: '慢推',
+      lighting: '暖光',
+      description: '陈阳不经意间碰到林小雨的手，两人都愣了一下，然后同时笑了。空气中弥漫着甜蜜的气息。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '手部特写，两只手快要碰到的瞬间，慢推镜头，温暖光线，心动的感觉，细腻情感，浅景深，电影质感',
+      thumbnail: '🤝'
+    },
+    {
+      id: 12,
+      scene: 2,
+      shot: '12',
+      title: '月下散步',
+      grade: 'B',
+      duration: 10,
+      timecode: '01:30',
+      shotType: '全景',
+      angle: '平视',
+      movement: '跟拍',
+      lighting: '月光',
+      description: '饭后两人在河边散步，月光洒在水面上，波光粼粼。两人的影子被拉得很长。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '河边夜景，月光，水面倒影，两人并肩散步的背影，全景跟拍，浪漫宁静氛围，冷色调与暖光对比',
+      thumbnail: '🌙'
+    },
+    
+    // Scene 3: 情定终身 (shots 13-18)
+    {
+      id: 13,
+      scene: 3,
+      shot: '13',
+      title: '纪念日旅行',
+      grade: 'B',
+      duration: 7,
+      timecode: '01:40',
+      shotType: '大全景',
+      angle: '俯视',
+      movement: '航拍',
+      lighting: '日光',
+      description: '一年后，两人来到海边旅行。航拍镜头展现美丽的海岸线和在沙滩上奔跑的两人。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '海边全景，碧蓝海水，金色沙滩，两人在沙滩上奔跑，航拍俯视角度，明亮阳光，快乐自由，电影感',
+      thumbnail: '🏖️'
+    },
+    {
+      id: 14,
+      scene: 3,
+      shot: '14',
+      title: '夕阳剪影',
+      grade: 'A',
+      duration: 12,
+      timecode: '01:47',
+      shotType: '全景',
+      angle: '平视',
+      movement: '固定',
+      lighting: '逆光',
+      description: '夕阳西下，两人坐在海边的岩石上。陈阳从口袋里拿出一个小盒子，林小雨惊讶地捂住嘴。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '海边日落，金色夕阳，两人剪影，男孩拿出戒指盒，女孩惊讶的表情，全景固定镜头，逆光效果，浪漫至极，黄金时刻',
+      thumbnail: '🌇'
+    },
+    {
+      id: 15,
+      scene: 3,
+      shot: '15',
+      title: '我愿意',
+      grade: 'A',
+      duration: 15,
+      timecode: '01:59',
+      shotType: '特写',
+      angle: '平视',
+      movement: '慢推',
+      lighting: '暮光',
+      description: '陈阳单膝跪地，说出那句"你愿意嫁给我吗？"。林小雨泪眼婆娑，用力点头。戒指戴上手指的瞬间，时间静止。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '求婚场景，特写镜头，慢推运动，女孩流泪的眼睛，戒指戴上手指的瞬间，暮光效果，感动幸福，电影质感，浅景深',
+      thumbnail: '💍'
+    },
+    {
+      id: 16,
+      scene: 3,
+      shot: '16',
+      title: '幸福相拥',
+      grade: 'B',
+      duration: 8,
+      timecode: '02:14',
+      shotType: '中景',
+      angle: '平视',
+      movement: '环绕',
+      lighting: '暮光',
+      description: '两人紧紧拥抱在一起，海浪拍打着礁石，见证着这美好的时刻。',
+      characters: ['林小雨', '陈阳'],
+      prompt: '海边拥抱，中景环绕镜头，暮霭时分，温暖光线，幸福的恋人，海浪背景，浪漫唯美，360度环绕',
+      thumbnail: '🤗'
+    },
+    {
+      id: 17,
+      scene: 3,
+      shot: '17',
+      title: '回忆闪回',
+      grade: 'C',
+      duration: 6,
+      timecode: '02:22',
+      shotType: '蒙太奇',
+      angle: '多角度',
+      movement: '快切',
+      lighting: '混合光',
+      description: '快速闪回两人相识相爱的点点滴滴：初遇的咖啡店、第一次约会、海边的日落...',
+      characters: ['林小雨', '陈阳'],
+      prompt: '回忆蒙太奇，快速剪辑，多个场景快切，从初遇到求婚，温暖色调，音乐节奏，情感递进',
+      thumbnail: '🎞️'
+    },
+    {
+      id: 18,
+      scene: 3,
+      shot: '18',
+      title: '未来可期',
+      grade: 'B',
+      duration: 12,
+      timecode: '02:28',
+      shotType: '大全景',
+      angle: '平视',
+      movement: '拉远',
+      lighting: '星光',
+      description: '夜晚，两人手牵手望向满天星空。镜头缓缓拉远，两人的身影越来越小，融入广阔的星空下。字幕："故事，才刚刚开始..."',
+      characters: ['林小雨', '陈阳'],
+      prompt: '星空下的恋人，两人并肩仰望星空，大全景拉远运动，满天繁星，银河清晰，渺小而伟大，浪漫诗意，电影结尾感',
+      thumbnail: '✨'
+    }
+  ];
+  
+  let currentFilter = 'all';
+  let selectedShotId = null;
+  let sidebarOpen = true;
+  
+  // Render timeline markers
+  function renderTimeline() {
+    const container = document.getElementById('timelineMarkers');
+    const totalDuration = storyboards.reduce((sum, s) => sum + s.duration, 0);
+    
+    let currentTime = 0;
+    let markers = [];
+    
+    storyboards.forEach((shot, index) => {
+      const topPercent = (currentTime / totalDuration) * 100;
+      const isSceneStart = index === 0 || shot.scene !== storyboards[index - 1].scene;
+      
+      markers.push(`
+        <div class="absolute w-full text-xs text-gray-400" style="top: ${topPercent}%">
+          <div class="timeline-dot w-full h-4 flex items-center justify-center">
+          </div>
+          <div class="text-center mt-1 font-mono">${shot.timecode}</div>
+        </div>
+      `);
+      
+      if (isSceneStart && index > 0) {
+        markers.push(`
+          <div class="absolute w-full text-xs" style="top: ${topPercent - 3}%">
+            <div class="text-center">
+              <span class="bg-orange-100 text-orange-600 text-[10px] font-medium px-2 py-0.5 rounded-full">
+                第${{1:'一',2:'二',3:'三'}[shot.scene]}幕
+              </span>
+            </div>
+          </div>
+        `);
+      }
+      
+      currentTime += shot.duration;
+    });
+    
+    container.innerHTML = markers.join('');
+    container.style.height = '100%';
+  }
+  
+  // Render storyboard cards
+  function renderStoryboards() {
+    const container = document.getElementById('storyboardList');
+    const filtered = currentFilter === 'all' 
+      ? storyboards 
+      : storyboards.filter(s => s.grade === currentFilter);
+    
+    let html = '';
+    let currentScene = 0;
+    
+    // Re-add scene divider at top
+    html += `
+      <div class="scene-divider py-3">
+        <span class="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full relative z-10">
+          第一幕 · 清晨邂逅
+        </span>
+      </div>
+    `;
+    currentScene = 1;
+    
+    filtered.forEach((shot, index) => {
+      // Add scene divider if scene changes
+      if (shot.scene !== currentScene) {
+        const sceneNames = { 2: '第二幕 · 心意渐浓', 3: '第三幕 · 情定终身' };
+        html += `
+          <div class="scene-divider py-3 mt-4">
+            <span class="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full relative z-10">
+              ${sceneNames[shot.scene]}
+            </span>
+          </div>
+        `;
+        currentScene = shot.scene;
+      }
+      
+      const gradeClass = { 'A': 'grade-a', 'B': 'grade-b', 'C': 'grade-c' }[shot.grade];
+      const gradeBadge = { 'A': 'grade-badge-a', 'B': 'grade-badge-b', 'C': 'grade-badge-c' }[shot.grade];
+      const gradeText = { 'A': 'A级 · 关键', 'B': 'B级 · 重要', 'C': 'C级 · 过渡' }[shot.grade];
+      
+      html += `
+        <div class="storyboard-card ${gradeClass} bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" 
+             data-id="${shot.id}" data-grade="${shot.grade}" onclick="selectShot(${shot.id}, this)">
+          <div class="flex">
+            <!-- Thumbnail -->
+            <div class="w-28 h-20 thumbnail-placeholder flex-shrink-0 flex items-center justify-center text-3xl">
+              ${shot.thumbnail}
+            </div>
+            
+            <!-- Info -->
+            <div class="flex-1 p-3">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-gray-800">镜号 ${shot.shot}</span>
+                    <span class="${gradeBadge} text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${shot.grade}级</span>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-0.5">${shot.title}</p>
+                </div>
+                <span class="text-xs font-mono text-orange-600 font-medium">${shot.timecode}</span>
+              </div>
+              
+              <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                <span>${shot.shotType}</span>
+                <span>·</span>
+                <span>${shot.movement}</span>
+                <span>·</span>
+                <span>${shot.duration}s</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Expanded Detail -->
+          <div class="card-detail px-3 pb-3" id="detail-${shot.id}">
+            <div class="pt-3 border-t border-gray-100">
+              <p class="text-xs text-gray-600 leading-relaxed">${shot.description}</p>
+              <div class="flex items-center gap-2 mt-2">
+                ${shot.characters.map(c => `<span class="bg-amber-100 text-amber-700 text-[10px] font-medium px-2 py-0.5 rounded-full">${c}</span>`).join('')}
+              </div>
+              <div class="flex gap-2 mt-3">
+                <button class="text-xs bg-orange-50 text-orange-600 px-3 py-1.5 rounded-md hover:bg-orange-100 transition" onclick="event.stopPropagation(); regenerateShotById(${shot.id})">
+                  重新生成
+                </button>
+                <button class="text-xs bg-gray-50 text-gray-600 px-3 py-1.5 rounded-md hover:bg-gray-100 transition" onclick="event.stopPropagation(); lockShotById(${shot.id})">
+                  锁定
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    
+    container.innerHTML = html;
+    
+    // Update stats
+    updateStats();
+  }
+  
+  // Update statistics
+  function updateStats() {
+    const total = storyboards.length;
+    const gradeA = storyboards.filter(s => s.grade === 'A').length;
+    const gradeB = storyboards.filter(s => s.grade === 'B').length;
+    const gradeC = storyboards.filter(s => s.grade === 'C').length;
+    const totalSec = storyboards.reduce((sum, s) => sum + s.duration, 0);
+    const mins = Math.floor(totalSec / 60);
+    const secs = totalSec % 60;
+    
+    document.getElementById('totalShots').textContent = total;
+    document.getElementById('totalDuration').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+    document.getElementById('gradeACount').textContent = gradeA;
+    document.getElementById('gradeBCount').textContent = gradeB;
+    document.getElementById('gradeCCount').textContent = gradeC;
+  }
+  
+  // Set filter
+  function setFilter(filter, btn) {
+    currentFilter = filter;
+    
+    // Update button states
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.remove('active', 'bg-white', 'text-gray-800');
+      b.classList.add('text-gray-500');
+    });
+    btn.classList.add('active', 'bg-white', 'text-gray-800');
+    btn.classList.remove('text-gray-500');
+    
+    renderStoryboards();
+  }
+  
+  // Select a shot
+  function selectShot(id, cardEl) {
+    selectedShotId = id;
+    const shot = storyboards.find(s => s.id === id);
+    
+    if (!shot) return;
+    
+    // Open sidebar if closed
+    if (!sidebarOpen) {
+      openSidebar();
+    }
+    
+    // Update sidebar
+    updateSidebar(shot);
+    
+    // Toggle card detail
+    document.querySelectorAll('.card-detail').forEach(el => {
+      el.classList.remove('expanded');
+    });
+    const detailEl = document.getElementById(`detail-${id}`);
+    if (detailEl) {
+      detailEl.classList.add('expanded');
+    }
+    
+    // Highlight selected card
+    document.querySelectorAll('.storyboard-card').forEach(el => {
+      el.classList.remove('ring-2', 'ring-orange-300');
+    });
+    cardEl.classList.add('ring-2', 'ring-orange-300');
+  }
+  
+  // Update sidebar content
+  function updateSidebar(shot) {
+    const gradeBadge = { 'A': 'grade-badge-a', 'B': 'grade-badge-b', 'C': 'grade-badge-c' }[shot.grade];
+    
+    document.getElementById('detailTitle').textContent = `镜号 ${shot.shot} · ${shot.title}`;
+    document.getElementById('detailDuration').textContent = `00:${shot.duration.toString().padStart(2, '0')}`;
+    document.getElementById('detailDescription').textContent = shot.description;
+    document.getElementById('detailShotType').textContent = shot.shotType;
+    document.getElementById('detailAngle').textContent = shot.angle;
+    document.getElementById('detailMovement').textContent = shot.movement;
+    document.getElementById('detailLighting').textContent = shot.lighting;
+    document.getElementById('detailPrompt').textContent = shot.prompt;
+    document.getElementById('detailGrade').textContent = `${shot.grade}级`;
+    document.getElementById('detailGrade').className = `text-white text-xs font-bold px-2 py-0.5 rounded ${gradeBadge}`;
+    
+    // Update preview
+    const preview = document.getElementById('detailPreview');
+    preview.innerHTML = `
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-6xl">${shot.thumbnail}</div>
+      </div>
+      <div class="absolute top-3 right-3">
+        <span class="${gradeBadge} text-white text-xs font-bold px-2 py-0.5 rounded">${shot.grade}级</span>
+      </div>
+    `;
+    
+    // Update characters
+    const charsContainer = document.getElementById('detailCharacters');
+    charsContainer.innerHTML = shot.characters.map(c => 
+      `<span class="bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-1 rounded-full">${c}</span>`
+    ).join('');
+  }
+  
+  // Sidebar controls
+  function closeSidebar() {
+    sidebarOpen = false;
+    document.getElementById('sidebar').classList.add('hidden-sidebar');
+    document.getElementById('sidebar').classList.remove('visible-sidebar');
+  }
+  
+  function openSidebar() {
+    sidebarOpen = true;
+    document.getElementById('sidebar').classList.remove('hidden-sidebar');
+    document.getElementById('sidebar').classList.add('visible-sidebar');
+  }
+  
+  // Action functions
+  function generateAll() {
+    alert('开始生成全部分镜...\n(模拟功能 - 实际项目中会调用AI生成接口)');
+  }
+  
+  function exportStoryboard() {
+    alert('正在导出分镜表...\n(模拟功能 - 实际项目中会生成CSV/Excel文件)');
+  }
+  
+  function regenerateShot() {
+    if (selectedShotId) {
+      alert(`正在重新生成镜号 ${storyboards.find(s => s.id === selectedShotId)?.shot}...`);
+    } else {
+      alert('请先选择一个分镜');
+    }
+  }
+  
+  function regenerateShotById(id) {
+    const shot = storyboards.find(s => s.id === id);
+    alert(`正在重新生成镜号 ${shot?.shot}...`);
+  }
+  
+  function adjustParams() {
+    if (selectedShotId) {
+      alert('打开参数调整面板...');
+    } else {
+      alert('请先选择一个分镜');
+    }
+  }
+  
+  function lockShot() {
+    if (selectedShotId) {
+      const shot = storyboards.find(s => s.id === selectedShotId);
+      alert(`已锁定镜号 ${shot?.shot}`);
+    } else {
+      alert('请先选择一个分镜');
+    }
+  }
+  
+  function lockShotById(id) {
+    const shot = storyboards.find(s => s.id === id);
+    alert(`已锁定镜号 ${shot?.shot}`);
+  }
+  
+  // Initialize
+  document.addEventListener('DOMContentLoaded', function() {
+    renderTimeline();
+    renderStoryboards();
+    
+    // Select first shot by default
+    setTimeout(() => {
+      const firstCard = document.querySelector('.storyboard-card');
+      if (firstCard) {
+        selectShot(1, firstCard);
+      }
+    }, 100);
+  });
+</script>
+
+</body>
+</html>
