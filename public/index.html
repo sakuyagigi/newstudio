@@ -511,11 +511,26 @@
   </div>
   
   <!-- Toast 通知 -->
-  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 space-y-2 w-full max-w-sm px-4"></div>
   
   <!-- 图片预览 Modal -->
   <div id="image-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80" onclick="closeImageModal()">
     <img id="modal-image" class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl" src="" alt="预览"/>
+  </div>
+
+  <!-- 通用对话框 Modal -->
+  <div id="app-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur-sm">
+    <div class="bg-bg-secondary border border-border rounded-xl shadow-2xl w-full max-w-md mx-4 fade-in">
+      <div class="p-5 border-b border-border">
+        <h3 id="modal-title" class="text-lg font-semibold text-text-primary">标题</h3>
+      </div>
+      <div id="modal-body" class="p-5">
+        <!-- 动态内容 -->
+      </div>
+      <div id="modal-footer" class="p-4 border-t border-border flex justify-end gap-2">
+        <!-- 动态按钮 -->
+      </div>
+    </div>
   </div>
 
   <script>
@@ -587,6 +602,52 @@
     function closeImageModal() {
       document.getElementById('image-modal').classList.add('hidden')
       document.getElementById('image-modal').classList.remove('flex')
+    }
+
+    // ========= 弹窗组件 =========
+    function openModal(title, bodyHtml, footerHtml) {
+      document.getElementById('modal-title').textContent = title
+      document.getElementById('modal-body').innerHTML = bodyHtml
+      document.getElementById('modal-footer').innerHTML = footerHtml
+      document.getElementById('app-modal').classList.remove('hidden')
+      document.getElementById('app-modal').classList.add('flex')
+    }
+
+    function closeModal() {
+      document.getElementById('app-modal').classList.add('hidden')
+      document.getElementById('app-modal').classList.remove('flex')
+    }
+
+    function showPrompt(title, placeholder, defaultValue = '') {
+      return new Promise((resolve) => {
+        const bodyHtml = `
+          <input type="text" id="prompt-input" placeholder="${placeholder}" 
+            class="input-field w-full px-4 py-3 text-sm"
+            value="${defaultValue}">
+        `
+        const footerHtml = `
+          <button onclick="closeModal(); window.__promptResolve(null)" class="btn-secondary px-4 py-2 text-sm">取消</button>
+          <button onclick="const v = document.getElementById('prompt-input').value.trim(); closeModal(); window.__promptResolve(v || null)" class="btn-primary px-4 py-2 text-sm">确定</button>
+        `
+        window.__promptResolve = resolve
+        openModal(title, bodyHtml, footerHtml)
+        setTimeout(() => {
+          const input = document.getElementById('prompt-input')
+          if (input) input.focus()
+        }, 50)
+      })
+    }
+
+    function showConfirm(title, message) {
+      return new Promise((resolve) => {
+        const bodyHtml = `<p class="text-text-secondary text-sm">${message}</p>`
+        const footerHtml = `
+          <button onclick="closeModal(); window.__confirmResolve(false)" class="btn-secondary px-4 py-2 text-sm">取消</button>
+          <button onclick="closeModal(); window.__confirmResolve(true)" class="btn-primary px-4 py-2 text-sm">确定</button>
+        `
+        window.__confirmResolve = resolve
+        openModal(title, bodyHtml, footerHtml)
+      })
     }
     
     async function apiCall(endpoint, method = 'GET', body = null) {
@@ -660,20 +721,21 @@
     }
     
     async function loadEpisodeData(episodeId) {
-      const res = await apiCall(`/api/episodes/${episodeId}`)
+      if (!state.currentProject) return { success: false, error: '未选择项目' }
+      const res = await apiCall(`/api/projects/${state.currentProject.id}/episodes/${episodeId}`)
       if (res.success) {
         state.currentEpisode = res.episode
         state.script = res.episode.script || ''
         state.pipelineResult = res.episode.pipeline_result || null
-        state.characterChainResult = res.episode.character_chain || null
-        state.sceneChainResult = res.episode.scene_chain || null
-        state.storyboardResult = res.episode.storyboard || null
+        state.characterChainResult = res.episode.character_chain_result || null
+        state.sceneChainResult = res.episode.scene_chain_result || null
+        state.storyboardResult = res.episode.storyboard_result || null
       }
       return res
     }
     
     async function createEpisode(projectId, name, script = '') {
-      const res = await apiCall(`/api/projects/${projectId}/episodes`, 'POST', { name, script })
+      const res = await apiCall(`/api/projects/${projectId}/episodes`, 'POST', { title: name, script })
       if (res.success) {
         state.episodes.push(res.episode)
       }
@@ -681,12 +743,18 @@
     }
     
     async function saveScript() {
-      if (!state.currentEpisode) return
+      if (!state.currentEpisode || !state.currentProject) return
       state.isSaving = true
-      const res = await apiCall(`/api/episodes/${state.currentEpisode.id}`, 'PUT', {
+      const res = await apiCall(`/api/projects/${state.currentProject.id}/episodes/${state.currentEpisode.id}`, 'PUT', {
         script: state.script
       })
       state.isSaving = false
+      return res
+    }
+    
+    async function saveEpisodeData(data) {
+      if (!state.currentEpisode || !state.currentProject) return
+      const res = await apiCall(`/api/projects/${state.currentProject.id}/episodes/${state.currentEpisode.id}`, 'PUT', data)
       return res
     }
     
@@ -1077,10 +1145,39 @@
     }
     
     function openNewProjectModal() {
-      const name = prompt('请输入项目名称:')
-      if (!name || !name.trim()) return
-      const desc = prompt('请输入项目描述（可选）:') || ''
-      handleCreateProject(name.trim(), desc.trim())
+      const bodyHtml = `
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm text-text-secondary mb-2">项目名称</label>
+            <input type="text" id="new-project-name" placeholder="如：夏日记忆、都市悬疑..." 
+              class="input-field w-full px-4 py-3 text-sm">
+          </div>
+          <div>
+            <label class="block text-sm text-text-secondary mb-2">项目描述（可选）</label>
+            <textarea id="new-project-desc" placeholder="简短描述这个项目..." 
+              class="input-field w-full px-4 py-3 text-sm" rows="2"></textarea>
+          </div>
+        </div>
+      `
+      const footerHtml = `
+        <button onclick="closeModal()" class="btn-secondary px-4 py-2 text-sm">取消</button>
+        <button onclick="handleCreateProjectSubmit()" class="btn-primary px-4 py-2 text-sm">创建项目</button>
+      `
+      openModal('新建项目', bodyHtml, footerHtml)
+      setTimeout(() => {
+        document.getElementById('new-project-name')?.focus()
+      }, 50)
+    }
+
+    function handleCreateProjectSubmit() {
+      const name = document.getElementById('new-project-name')?.value.trim()
+      const desc = document.getElementById('new-project-desc')?.value.trim() || ''
+      if (!name) {
+        showToast('请输入项目名称', 'warning')
+        return
+      }
+      closeModal()
+      handleCreateProject(name, desc)
     }
     
     async function handleCreateProject(name, description) {
@@ -1095,9 +1192,31 @@
     
     function openNewEpisodeModal() {
       if (!state.currentProject) return
-      const name = prompt('请输入集名称（如：第一集）:')
-      if (!name || !name.trim()) return
-      handleCreateEpisode(name.trim())
+      const bodyHtml = `
+        <div>
+          <label class="block text-sm text-text-secondary mb-2">集名称</label>
+          <input type="text" id="new-episode-name" placeholder="如：第一集、序幕、第3话..." 
+            class="input-field w-full px-4 py-3 text-sm">
+        </div>
+      `
+      const footerHtml = `
+        <button onclick="closeModal()" class="btn-secondary px-4 py-2 text-sm">取消</button>
+        <button onclick="handleCreateEpisodeSubmit()" class="btn-primary px-4 py-2 text-sm">创建</button>
+      `
+      openModal('新建分集', bodyHtml, footerHtml)
+      setTimeout(() => {
+        document.getElementById('new-episode-name')?.focus()
+      }, 50)
+    }
+
+    function handleCreateEpisodeSubmit() {
+      const name = document.getElementById('new-episode-name')?.value.trim()
+      if (!name) {
+        showToast('请输入集名称', 'warning')
+        return
+      }
+      closeModal()
+      handleCreateEpisode(name)
     }
     
     async function handleCreateEpisode(name) {
@@ -1127,11 +1246,6 @@
       document.getElementById('header-actions').innerHTML = `
         <div class="flex items-center gap-2">
           ${state.currentProject ? renderEpisodeSelector() : ''}
-          <select id="tier-select" class="input-field text-sm px-3 py-2 w-28">
-            <option value="standard">标准版</option>
-            <option value="pro">专业版</option>
-            <option value="full">旗舰版</option>
-          </select>
           <button onclick="runPipeline()" class="btn-primary px-4 py-2 text-sm font-medium">
             ▶ 开始分析
           </button>
@@ -1156,9 +1270,20 @@
                 style="min-height: 200px;"
                 oninput="handleScriptInput()">${state.script || ''}</textarea>
             </div>
-            <div class="p-3 border-t border-border space-y-2">
+            <div class="p-3 border-t border-border space-y-3">
+              <!-- 上传进度条 -->
+              <div id="upload-progress-container" class="hidden">
+                <div class="text-xs text-text-secondary mb-1 flex justify-between">
+                  <span id="upload-progress-text">上传中...</span>
+                  <span id="upload-progress-percent">0%</span>
+                </div>
+                <div class="w-full h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
+                  <div id="upload-progress-bar" class="h-full bg-accent rounded-full transition-all duration-200" style="width: 0%"></div>
+                </div>
+              </div>
+              
               <div class="flex gap-2">
-                <button onclick="document.getElementById('script-file').click()" class="btn-secondary px-3 py-2 text-xs flex-1">
+                <button id="upload-btn" onclick="document.getElementById('script-file').click()" class="btn-secondary px-3 py-2 text-xs flex-1">
                   📂 上传文件
                 </button>
                 <button onclick="autoSplitEpisodesBtn()" class="btn-secondary px-3 py-2 text-xs flex-1">
@@ -1166,6 +1291,21 @@
                 </button>
                 <input type="file" id="script-file" class="hidden" accept=".txt,.docx,.pdf,.md" onchange="handleScriptFileUpload(event)">
               </div>
+              
+              <!-- 分析模式选择 + 开始按钮 -->
+              <div class="pt-2 border-t border-border/50">
+                <div class="text-xs text-text-tertiary mb-2">分析模式</div>
+                <select id="tier-select-bottom" class="input-field w-full px-3 py-2 text-sm mb-2">
+                  <option value="standard">⚡ 标准版 - 约¥0.5</option>
+                  <option value="pro" selected>✨ 专业版 - 约¥1.5</option>
+                  <option value="full">🎯 旗舰版 - 约¥3.0</option>
+                </select>
+                <p class="text-[11px] text-text-muted mb-2">💰 价格为估算值，实际消耗以模型调用为准</p>
+                <button id="run-pipeline-btn" onclick="runPipelineFromBottom()" class="btn-primary w-full py-2.5 text-sm font-medium">
+                  ▶ 开始分析
+                </button>
+              </div>
+              
               <div class="text-xs text-text-tertiary">快速示例：</div>
               <div class="flex gap-2 flex-wrap">
                 <button onclick="loadSampleScript()" class="capsule-btn hover:bg-orange-500/10 hover:text-orange-400">
@@ -1301,35 +1441,7 @@
                 </div>
               </div>
               
-              <!-- 套餐选择 -->
-              <div class="sidebar-panel">
-                <div class="sidebar-header">
-                  <h4>💎 选择套餐</h4>
-                </div>
-                <div class="p-3 space-y-2">
-                  <label class="flex items-center p-3 rounded-lg cursor-pointer border border-border hover:border-orange-500/30 transition-colors">
-                    <input type="radio" name="tier" value="standard" checked class="mr-3 accent-orange-500">
-                    <div class="flex-1">
-                      <div class="text-sm font-medium text-text-primary">标准版</div>
-                      <div class="text-xs text-text-tertiary">2导演 · 约¥0.5</div>
-                    </div>
-                  </label>
-                  <label class="flex items-center p-3 rounded-lg cursor-pointer border border-orange-500/30 bg-orange-500/5 transition-colors">
-                    <input type="radio" name="tier" value="pro" class="mr-3 accent-orange-500">
-                    <div class="flex-1">
-                      <div class="text-sm font-medium text-text-primary">专业版 <span class="tag tag-orange text-[10px] ml-1">推荐</span></div>
-                      <div class="text-xs text-text-tertiary">4导演 · 约¥1.5</div>
-                    </div>
-                  </label>
-                  <label class="flex items-center p-3 rounded-lg cursor-pointer border border-border hover:border-orange-500/30 transition-colors">
-                    <input type="radio" name="tier" value="full" class="mr-3 accent-orange-500">
-                    <div class="flex-1">
-                      <div class="text-sm font-medium text-text-primary">旗舰版</div>
-                      <div class="text-xs text-text-tertiary">5导演全链路 · 约¥3.0</div>
-                    </div>
-                  </label>
-                </div>
-              </div>
+
             `}
           </div>
         </div>
@@ -1338,14 +1450,24 @@
     
     function renderEmptyAnalysis() {
       return `
-        <div class="text-center py-20">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-bg-tertiary flex items-center justify-center">
-            <svg class="w-8 h-8 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
+        <div class="text-center py-16">
+          <div class="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/10 flex items-center justify-center">
+            <span class="text-3xl">🎬</span>
           </div>
-          <p class="text-sm text-text-secondary mb-1">等待分析</p>
-          <p class="text-xs text-text-tertiary">在左侧粘贴剧本，点击"开始分析"</p>
+          <p class="text-base font-medium text-text-primary mb-2">准备好开始分析了吗？</p>
+          <p class="text-sm text-text-tertiary mb-6 max-w-xs mx-auto">在左侧粘贴或上传剧本内容，选择分析模式后点击开始</p>
+          <p class="text-xs text-text-muted mb-6">支持 .txt / .docx / .pdf / .md 格式</p>
+          <div class="pt-6 border-t border-border/50">
+            <p class="text-xs text-text-tertiary mb-3">快速体验</p>
+            <div class="flex justify-center gap-2">
+              <button onclick="loadSampleScript(); setTimeout(runPipeline, 300)" class="capsule-btn hover:bg-orange-500/10 hover:text-orange-400">
+                爱情短片示例
+              </button>
+              <button onclick="loadSampleScript2(); setTimeout(runPipeline, 300)" class="capsule-btn hover:bg-orange-500/10 hover:text-orange-400">
+                悬疑片段示例
+              </button>
+            </div>
+          </div>
         </div>
       `
     }
@@ -1692,6 +1814,22 @@
       }
     }
     
+    function showUploadProgress(show) {
+      const container = document.getElementById('upload-progress-container')
+      const uploadBtn = document.getElementById('upload-btn')
+      if (container) container.classList.toggle('hidden', !show)
+      if (uploadBtn) uploadBtn.disabled = show
+    }
+    
+    function updateUploadProgress(percent, text) {
+      const bar = document.getElementById('upload-progress-bar')
+      const percentEl = document.getElementById('upload-progress-percent')
+      const textEl = document.getElementById('upload-progress-text')
+      if (bar) bar.style.width = percent + '%'
+      if (percentEl) percentEl.textContent = Math.round(percent) + '%'
+      if (textEl && text) textEl.textContent = text
+    }
+    
     async function handleScriptFileUpload(event) {
       const file = event.target.files[0]
       if (!file) return
@@ -1704,34 +1842,102 @@
       const formData = new FormData()
       formData.append('file', file)
       
-      showToast('正在上传文件...', 'info')
+      // 显示上传中状态
+      const input = document.getElementById('script-input')
+      if (input && input.parentElement) {
+        input.style.opacity = '0.3'
+      }
+      showUploadProgress(true)
+      updateUploadProgress(0, '上传中...')
       
-      try {
-        const res = await fetch('/api/script/upload', {
-          method: 'POST',
-          body: formData
-        })
-        const data = await res.json()
-        
-        if (data.success) {
-          state.script = data.content
-          const input = document.getElementById('script-input')
-          if (input) {
-            input.value = data.content
-          }
-          updateScriptStats()
-          showToast('文件上传成功', 'success')
-          
-          // 自动保存
-          if (state.currentEpisode) {
-            await saveScript()
-            updateSaveStatus()
-          }
-        } else {
-          showToast('上传失败: ' + (data.error || '未知错误'), 'error')
+      const xhr = new XMLHttpRequest()
+      
+      xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+          const percent = (e.loaded / e.total) * 90
+          updateUploadProgress(percent, '上传中...')
         }
-      } catch (e) {
-        showToast('上传失败: ' + e.message, 'error')
+      }
+      
+      xhr.onload = function() {
+        try {
+          const data = JSON.parse(xhr.responseText)
+          
+          if (data.success) {
+            updateUploadProgress(100, '解析完成')
+            state.script = data.data.content
+            if (input) {
+              input.value = data.data.content
+              input.style.opacity = '1'
+            }
+            updateScriptStats()
+            showToast('✅ 文件上传成功，共 ' + data.data.char_count + ' 字', 'success')
+            
+            // 自动保存
+            if (state.currentEpisode) {
+              saveScript().then(() => updateSaveStatus())
+            }
+            
+            setTimeout(() => showUploadProgress(false), 800)
+          } else {
+            if (input) input.style.opacity = '1'
+            showUploadProgress(false)
+            showToast('上传失败: ' + (data.error || '未知错误'), 'error')
+          }
+        } catch (e) {
+          if (input) input.style.opacity = '1'
+          showUploadProgress(false)
+          showToast('上传失败: ' + e.message, 'error')
+        }
+      }
+      
+      xhr.onerror = function() {
+        if (input) input.style.opacity = '1'
+        showUploadProgress(false)
+        showToast('上传失败: 网络错误', 'error')
+      }
+      
+      xhr.open('POST', '/api/script/upload')
+      xhr.send(formData)
+      
+      // 上传完成后进入后端解析阶段，进度条缓慢增长
+      let parsePercent = 90
+      let parseTimer = null
+      
+      const startParseProgress = () => {
+        updateUploadProgress(parsePercent, '解析中...')
+        parseTimer = setInterval(() => {
+          if (parsePercent < 98) {
+            parsePercent += 0.5
+            updateUploadProgress(parsePercent, '解析中...')
+          }
+        }, 400)
+      }
+      
+      // 500ms后如果还没完成，开始显示解析进度动画
+      setTimeout(() => {
+        const bar = document.getElementById('upload-progress-bar')
+        if (bar) {
+          const current = parseFloat(bar.style.width)
+          if (current < 95) {
+            parsePercent = Math.max(90, current)
+            startParseProgress()
+          }
+        }
+      }, 500)
+      
+      // 请求完成后清除定时器
+      const originalOnload = xhr.onload
+      const originalOnerror = xhr.onerror
+      
+      xhr.onload = function() {
+        if (parseTimer) clearInterval(parseTimer)
+        originalOnload.call(this)
+      }
+      
+      xhr.onerror = function() {
+        if (parseTimer) clearInterval(parseTimer)
+        if (originalOnerror) originalOnerror.call(this)
       }
       
       event.target.value = ''
@@ -1749,9 +1955,8 @@
         return
       }
       
-      if (!confirm('将根据剧本内容自动拆分集数，当前集数将被替换，确定继续吗？')) {
-        return
-      }
+      const confirmed = await showConfirm('自动拆分集数', '将根据剧本内容自动拆分集数，当前集数将被替换，确定继续吗？')
+      if (!confirmed) return
       
       showToast('正在自动拆分集数...', 'info')
       
@@ -1879,31 +2084,154 @@
         return
       }
       
-      const tier = document.getElementById('tier-select')?.value || 'standard'
+      const tierSelect = document.getElementById('tier-select') || document.getElementById('tier-select-bottom')
+      const tier = tierSelect?.value || 'standard'
       state.script = script
       
       // 显示加载状态
       const content = document.getElementById('director-content')
       content.innerHTML = `
         <div class="text-center py-20">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-3 border-orange-500/30 border-t-orange-500 mb-4"></div>
-          <p class="text-sm text-text-primary mb-1">正在分析剧本...</p>
-          <p class="text-xs text-text-tertiary">五导演联合审片中，约需30秒</p>
+          <div class="relative w-24 h-24 mx-auto mb-6">
+            <div class="absolute inset-0 rounded-full border-4 border-orange-500/20"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-orange-500 animate-spin"></div>
+            <div class="absolute inset-2 rounded-full border-4 border-transparent border-t-amber-400 animate-spin" style="animation-duration: 1.5s; animation-direction: reverse;"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-2xl">🎬</span>
+            </div>
+          </div>
+          <p class="text-lg font-semibold text-text-primary mb-2" id="analysis-status">正在分析剧本...</p>
+          <p class="text-sm text-text-tertiary mb-6" id="analysis-substatus">五导演联合审片中，请稍候</p>
+          <div class="w-64 mx-auto">
+            <div class="h-1.5 bg-bg-tertiary rounded-full overflow-hidden">
+              <div id="analysis-progress" class="h-full bg-gradient-to-r from-orange-500 to-amber-400 rounded-full transition-all duration-500" style="width: 10%"></div>
+            </div>
+            <p class="text-xs text-text-muted mt-2" id="analysis-percent">10%</p>
+          </div>
         </div>
       `
+      
+      // 模拟进度更新
+      const progressTimers = []
+      const steps = [
+        { percent: 25, status: '正在分析剧本结构...', substatus: '识别场景、角色、对话' },
+        { percent: 45, status: 'ALPHA 叙事导演分析中...', substatus: '拆解故事弧线与节奏点' },
+        { percent: 60, status: 'BETA 视觉导演分析中...', substatus: '提取场景描述与视觉参考' },
+        { percent: 75, status: 'GAMMA 节奏导演分析中...', substatus: '设计镜头语言与分镜结构' },
+        { percent: 88, status: 'KAPPA 角色导演分析中...', substatus: '锚定角色形象一致性' },
+        { percent: 95, status: 'EPSILON 制片总结中...', substatus: '整合分析结果与成本核算' },
+      ]
+      
+      let currentStep = 0
+      let slowGrowthTimer = null
+      
+      const updateProgress = (step) => {
+        const statusEl = document.getElementById('analysis-status')
+        const substatusEl = document.getElementById('analysis-substatus')
+        const progressEl = document.getElementById('analysis-progress')
+        const percentEl = document.getElementById('analysis-percent')
+        if (statusEl) statusEl.textContent = step.status
+        if (substatusEl) substatusEl.textContent = step.substatus
+        if (progressEl) progressEl.style.width = step.percent + '%'
+        if (percentEl) percentEl.textContent = step.percent + '%'
+      }
+      
+      // 分步更新进度
+      steps.forEach((step, i) => {
+        const timer = setTimeout(() => {
+          currentStep = i
+          updateProgress(step)
+          
+          // 最后一步后启动缓慢增长模式
+          if (i === steps.length - 1) {
+            let slowPercent = step.percent
+            let dotCount = 0
+            const finalHints = [
+              '正在整合五导演分析结果...',
+              '正在生成制片总结报告...',
+              '正在核算成本与排期...',
+              '最后打磨中，马上就好...'
+            ]
+            let hintIndex = 0
+            
+            slowGrowthTimer = setInterval(() => {
+              if (slowPercent < 99) {
+                slowPercent += 0.2
+                const progressEl = document.getElementById('analysis-progress')
+                const percentEl = document.getElementById('analysis-percent')
+                const substatusEl = document.getElementById('analysis-substatus')
+                if (progressEl) progressEl.style.width = slowPercent + '%'
+                if (percentEl) percentEl.textContent = Math.round(slowPercent) + '%'
+                
+                // 动态更新子状态，让用户知道还在跑
+                dotCount = (dotCount + 1) % 4
+                const dots = '.'.repeat(dotCount + 1)
+                if (substatusEl && slowPercent > 97) {
+                  substatusEl.textContent = finalHints[hintIndex] + dots
+                  // 每15次换一个提示
+                  if (dotCount === 0) {
+                    hintIndex = (hintIndex + 1) % finalHints.length
+                  }
+                }
+              }
+            }, 400)
+          }
+        }, (i + 1) * 1500)
+        progressTimers.push(timer)
+      })
       
       try {
         const result = await apiCall('/api/directors/pipeline', 'POST', { script, tier, async: false })
         
+        // 清除所有定时器
+        progressTimers.forEach(t => clearTimeout(t))
+        if (slowGrowthTimer) clearInterval(slowGrowthTimer)
+        
         if (result.success) {
           state.pipelineResult = result.data
+          // 保存分析结果到后端
+          saveEpisodeData({
+            pipeline_result: result.data
+          }).catch(e => console.error('保存分析结果失败:', e))
           renderScriptPage(document.getElementById('page-content'))
-          showToast('分析完成！', 'success')
+          showToast('🎉 分析完成！', 'success')
         } else {
           showToast('分析失败: ' + (result.error || '未知错误'), 'error')
         }
       } catch (e) {
+        progressTimers.forEach(t => clearTimeout(t))
         showToast('请求失败，请检查服务是否运行', 'error')
+      }
+    }
+
+    // 底部开始分析按钮
+    function runPipelineFromBottom() {
+      // 同步底部选择器的值到顶部（如果顶部存在）
+      const bottomSelect = document.getElementById('tier-select-bottom')
+      const topSelect = document.getElementById('tier-select')
+      if (bottomSelect && topSelect) {
+        topSelect.value = bottomSelect.value
+      }
+      
+      // 禁用按钮并显示加载状态
+      const bottomBtn = document.getElementById('run-pipeline-btn')
+      if (bottomBtn) {
+        bottomBtn.disabled = true
+        bottomBtn.innerHTML = '⏳ 分析中...'
+        bottomBtn.style.opacity = '0.7'
+      }
+      
+      runPipeline()
+    }
+
+    // 同步两个模式选择器
+    function syncTierSelects(sourceId) {
+      const source = document.getElementById(sourceId)
+      if (!source) return
+      const targetId = sourceId === 'tier-select' ? 'tier-select-bottom' : 'tier-select'
+      const target = document.getElementById(targetId)
+      if (target) {
+        target.value = source.value
       }
     }
     
@@ -2188,6 +2516,10 @@
             (finalResult) => {
               if (finalResult?.success) {
                 state.characterChainResult = finalResult
+                // 保存到后端
+                saveEpisodeData({
+                  character_chain_result: finalResult
+                }).catch(e => console.error('保存角色链失败:', e))
                 renderCharacterPage(document.getElementById('page-content'))
                 showToast('角色定妆照生成完成！', 'success')
               } else {
@@ -2486,6 +2818,10 @@
             (finalResult) => {
               if (finalResult?.success) {
                 state.sceneChainResult = finalResult
+                // 保存到后端
+                saveEpisodeData({
+                  scene_chain_result: finalResult
+                }).catch(e => console.error('保存场景链失败:', e))
                 renderStoryboardPage(document.getElementById('page-content'))
                 showToast('场景概念图生成完成！', 'success')
               } else {
@@ -2527,6 +2863,10 @@
             (data) => {},
             (finalResult) => {
               state.storyboardResult = finalResult
+              // 保存到后端
+              saveEpisodeData({
+                storyboard_result: finalResult
+              }).catch(e => console.error('保存分镜结果失败:', e))
               renderStoryboardPage(document.getElementById('page-content'))
               showToast(`分镜图生成完成！共 ${finalResult?.success_count || 0}/${finalResult?.shots?.length || 0} 张`, 'success')
             },

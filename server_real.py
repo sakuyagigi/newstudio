@@ -2532,9 +2532,37 @@ class DirectorStudioHandler(SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
+    
+    def do_PUT(self):
+        parsed = urlparse(self.path)
+        path = parsed.path
+        
+        if path.startswith('/api/'):
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = {}
+            if content_length > 0:
+                try:
+                    body = json.loads(self.rfile.read(content_length))
+                except:
+                    pass
+            
+            self.handle_api('PUT', path, parsed, body)
+            return
+        
+        self.send_error(405)
+    
+    def do_DELETE(self):
+        parsed = urlparse(self.path)
+        path = parsed.path
+        
+        if path.startswith('/api/'):
+            self.handle_api('DELETE', path, parsed)
+            return
+        
+        self.send_error(405)
     
     def send_error(self, code, message=None):
         if code == 404 and not self.path.startswith('/api/'):
